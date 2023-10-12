@@ -24,3 +24,12 @@
 ## Achievement system (as a nice to have)
 -> show progress bar?  
 -> achievements for every year survived?
+
+## Dice system (please don't tell anyone about this)
+-> click a dice to generate a random output... (maybe select categories to specify output, could be school, hub and company for example)
+
+
+-> Users: Apprenticeship taking people  
+-> What: split up into seperate, small features  
+-> Why: the reason for a specific feature  
+-> Start with epics, then go into stories/tasks

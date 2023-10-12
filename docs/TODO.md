@@ -10,6 +10,7 @@ This is the markdown todo file for the ASBN App project.
 - [ ] Save data dialog (update with state from backend)
 - [ ] Date Picker (as a pop-up / overlay)
 - [ ] Component pill as a selector (used on DailyStart for example)
+- [ ] Info message if the app can't be used on my device (not supported by browser / device)
 
 
 ## Start Page
@@ -66,7 +67,33 @@ Let's the user create and sign the PDFs, save them locally.
 - [ ] C# Object User -> Name, Job, Locations/Working hours, LegalRepresentitive?, CompanyName?, SchoolName?
 - [ ] Create .json files on the users system
 - [ ] Read/Write files on the users system using the FileSystemAccess API (helpful? https://github.com/KristofferStrube/Blazor.FileSystemAccess)
+- [ ] Get username from the myCard, use that on the document where it says "name"
 - [ ] Store user settings in JSON file
 - [ ] Get save state, update status bar with current save state
-- [ ] Sign PDF files
-- [ ] xx
+- [ ] Sign PDF files  
+- [ ] Use exisiting pdf template, index available input fields
+
+
+
+```mermaid
+gitGraph
+   commit
+   branch feature1
+   checkout feature1
+   commit
+   commit
+   checkout main
+   merge feature1
+   branch rc/1
+   checkout rc/1
+   commit
+   checkout main
+   branch feature2
+   checkout feature2
+   commit
+   checkout main
+   merge feature2
+   branch rc/2
+   checkout rc/2
+   commit
+```

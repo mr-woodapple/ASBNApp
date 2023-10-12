@@ -1,0 +1,12 @@
+.navbar {
+    background-color: #e20074;
+}
+
+
+.profile-icon {
+    box-sizing: border-box;
+    border-radius: 50%;
+    background-color: lightgrey;
+    height: 40px;
+    width: 40px;
+}
