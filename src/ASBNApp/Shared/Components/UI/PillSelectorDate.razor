@@ -1,0 +1,37 @@
+@* 
+Simple selector component for dates, shows today and tomorrow, as well as a date picker.
+Created 13.10.2023
+*@
+
+
+<div class="row mx-0 justify-content-start">
+    
+    <div class="col-auto me-2 pill-selector-date @(Selected == "today" ? "active" : "")" @onclick="@(e => { Selected = "today"; SelectDate(); })">
+        <p class="m-0">Today (@Today.Date.ToString("dd.MM.yyyy"))</p>
+    </div>
+
+    <div class="col-auto me-2 pill-selector-date @(Selected == "tomorrow" ? "active" : "")" @onclick="@(e => { Selected = "tomorrow"; SelectDate(); })">
+        <p class="m-0">Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))</p>
+    </div>
+
+    <div class="col-auto pill-selector-date @(Selected == "customdate" ? "active" : "")">
+            <label for="date">Pick day: </label>
+
+            @* @onfocusout is not the best option, try to find a better working one! *@
+            <input type="date" id="date" @bind="SelectedDate" @onfocusout="@(e => { Selected = "customdate"; SelectDate(); })"/>
+    </div>
+
+</div>
+
+@code {
+    public DateTime SelectedDate = DateTime.Now;
+    private DateTime Today = DateTime.Now;
+    private DateTime Tomorrow = DateTime.Now.AddDays(1);
+    private string Selected = "today";
+
+    private void SelectDate() {
+        Console.WriteLine(SelectedDate.Date.ToString("yyyy-MM-dd"));
+        Console.WriteLine(Selected);
+    }
+
+}

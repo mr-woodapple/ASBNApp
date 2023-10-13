@@ -1,4 +1,4 @@
-/* ################ Index view switch ################ */
+/* ################ Main view switch ################ */
 
 .view-selector {
     color: black;
@@ -7,7 +7,7 @@
     cursor: pointer;
 }
 
-.view-selector:hover {
+.view-selector.False:hover {
     opacity: 50%;
 }
 
@@ -17,14 +17,34 @@
     transition: .2s;
 }
 
-.view-selector.active:hover {
-    opacity: 50%;
-}
-
 .view-selector:nth-child(1) {
     border-radius: 20px 0 0 20px;
 }
 
 .view-selector:nth-child(2) {
     border-radius: 0 20px 20px 0;
+}
+
+
+/* ################ Pill Selector Date ################ */
+
+.pill-selector-date {
+    background-color: #d3d3d3;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.pill-selector-date.active {
+    color: white;
+    background-color: black;
+    transition: .2s;
+}
+
+.pill-selector-date input {
+    background: none;
+    border: none;
+}
+
+.pill-selector-date.active input {
+    color: white;
 }
