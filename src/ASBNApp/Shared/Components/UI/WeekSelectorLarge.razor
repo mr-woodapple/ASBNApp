@@ -1,0 +1,50 @@
+@* 
+Large picker to select the week we want to edit.
+Created 16.10.2023
+*@
+
+<div class="row mx-0 justify-content-center">
+
+    <div class="col-auto p-0">
+        <p class="m-0">
+            <span class="material-symbols-outlined">chevron_left</span>
+        </p>
+    </div>
+
+    <div class="col-auto p-0" onclick="@Debug">
+        <p class="m-0">Haupt</p>
+        <p>09.10. - 16.10.2023</p>
+    </div>
+
+    <div class="col-auto p-0">
+        <p class="m-0">
+            <span class="material-symbols-outlined">chevron_right</span>
+        </p>
+    </div>
+
+</div>
+
+@code {
+    // move this to an seperate file -> so it's accessible from other pages as well?
+
+
+    private double GetWeekOfYear() {
+        double DayOfYear = new DateTime(2023, 10, 21).DayOfYear;
+        double WeekOfYear = DateTime.Now.DayOfYear / 7;
+
+        Console.WriteLine(DayOfYear);
+
+        if (WeekOfYear % 1 == 0) {
+            WeekOfYear = DayOfYear / 7 + 1;
+            Console.WriteLine("+1");
+        } else {
+            WeekOfYear = DayOfYear / 7;
+        }
+        
+        return (int)WeekOfYear;
+    }
+
+    private void Debug() {
+        Console.WriteLine(GetWeekOfYear());
+    }
+}
