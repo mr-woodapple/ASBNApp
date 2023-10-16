@@ -1,0 +1,21 @@
+<div class="row align-items-center wrapper-switch-day-week">
+    <p class="col m-0">Choose view:</p>
+
+    <div class="col d-flex wrapper-selector-pill">
+        <div class="view-selector @(IsDay ? "active" : "")" @onclick="@(e => IsDay = true)">
+            <p class="m-1 px-2">Day</p>
+        </div>
+        <div class="view-selector @(!IsDay ? "active" : "")" @onclick="@(e => IsDay = false)">
+            <p class="m-1 px-2">Week</p>
+        </div>
+    </div>
+    
+
+</div>
+
+
+
+
+@code {
+    public bool IsDay { get; set; } = true;
+}
