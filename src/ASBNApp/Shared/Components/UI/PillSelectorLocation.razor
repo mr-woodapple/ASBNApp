@@ -6,13 +6,14 @@ Created 13.10.2023
 <div class="row mx-0 justify-content-start align-items-center">
     
     @foreach (var entry in WorkLocationHours.DemoWorkLocationData) {
-        <div class="col-auto me-2 pill-selector-date @(SelectedLocation == entry.Location ? "active" : "")" @onclick="@(e => SelectedLocation = entry.Location )">
-
-            @* TODO: fix the x being not in line with the p tag *@
-            <p class="m-0"> @entry.Location <span class="material-symbols-outlined" @onclick="ResetSelection">close</span> </p>
+        @* Make this selectable with @onkeydown Enter *@
+        <div 
+            class="col-auto me-2 pill-selector-date @(SelectedLocation == entry.Location ? "active" : "")" 
+            @onclick="@(e => SelectedLocation = entry.Location )"
+            tabindex="0">
             
+            <p class="m-0"> @entry.Location </p>
         </div>
-
     }
     
 
@@ -21,7 +22,4 @@ Created 13.10.2023
 @code {
     private string SelectedLocation = "";
 
-    public void ResetSelection() {
-        SelectedLocation = "";
-    }
 }

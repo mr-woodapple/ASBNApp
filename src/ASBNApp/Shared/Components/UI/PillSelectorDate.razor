@@ -6,11 +6,11 @@ Created 13.10.2023
 
 <div class="row mx-0 justify-content-start">
     
-    <div class="col-auto me-2 pill-selector-date @(Selected == "today" ? "active" : "")" @onclick="@(e => { Selected = "today"; SelectDate(); })">
+    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "today" ? "active" : "")" @onclick="@(e => { Selected = "today"; SelectDate(); })">
         <p class="m-0">Today (@Today.Date.ToString("dd.MM.yyyy"))</p>
     </div>
 
-    <div class="col-auto me-2 pill-selector-date @(Selected == "tomorrow" ? "active" : "")" @onclick="@(e => { Selected = "tomorrow"; SelectDate(); })">
+    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "tomorrow" ? "active" : "")" @onclick="@(e => { Selected = "tomorrow"; SelectDate(); })">
         <p class="m-0">Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))</p>
     </div>
 
