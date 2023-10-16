@@ -11,7 +11,7 @@
     opacity: 50%;
 }
 
-.view-selector.True {
+.view-selector.active {
     color: white;
     background-color: black;
     transition: .2s;

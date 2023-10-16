@@ -2,10 +2,10 @@
     <p class="col m-0">Choose view:</p>
 
     <div class="col d-flex wrapper-selector-pill">
-        <div class="view-selector @IsDay" @onclick="SwitchView">
+        <div class="view-selector @(IsDay ? "active" : "")" @onclick="@(e => IsDay = true)">
             <p class="m-1 px-2">Day</p>
         </div>
-        <div class="view-selector @IsWeek" @onclick="SwitchView">
+        <div class="view-selector @(!IsDay ? "active" : "")" @onclick="@(e => IsDay = false)">
             <p class="m-1 px-2">Week</p>
         </div>
     </div>
@@ -17,18 +17,5 @@
 
 
 @code {
-    // seems kinda ugly, maybe reduce to one bool?
-    private bool IsDay { get; set; } = true;
-    private bool IsWeek { get; set; } = false;
-
-    private void SwitchView() {
-        if (IsDay) {
-            IsDay = false;
-            IsWeek = true;
-        } else {
-            IsDay = true;
-            IsWeek = false;
-        }
-    }
-
+    public bool IsDay { get; set; } = true;
 }
