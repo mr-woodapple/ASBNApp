@@ -3,69 +3,44 @@ Large picker to select the week we want to edit.
 Created 16.10.2023
 *@
 
-<div class="row mx-0 justify-content-center">
+<div class="row my-4 mx-0 justify-content-center">
 
-    <div class="col-auto p-0">
-        <p class="m-0">
-            <span class="material-symbols-outlined">chevron_left</span>
-        </p>
+    <div class="col-auto week-change-button">
+        <p class="m-0 material-symbols-outlined align-self-center"> chevron_left </p>
     </div>
 
-    <div class="col-auto p-0">
-        <p class="m-0"> @CurrentWeek </p>
-        <p>@FirstDayOfWeek - @LastDayOfWeek</p>
+    <div class="col-auto px-5 mx-3 text-center week-change-center">
+        <p class="m-0 text-current-week"> 
+            <strong> KW @CurrentWeek </strong>
+        </p>
+        <p class="m-0 pb-1 text-date-week"> @FirstDayOfWeek - @LastDayOfWeek </p>
     </div>
 
-    <div class="col-auto p-0">
-        <p class="m-0">
-            <span class="material-symbols-outlined">chevron_right</span>
-        </p>
+    <div class="col-auto week-change-button">
+        <p class="m-0 material-symbols-outlined align-self-center"> chevron_right </p>
     </div>
 
 </div>
 
 
 
+
 @code {
     // move this to an seperate file -> so it's accessible from other pages as well?
+
+
+    // used the onInitialize to assign calculated values to the matching variables, avoids data not being loaded into memory
     protected override void OnInitialized(){
-        CurrentWeek = GetWeekOfYear();
-        FirstDayOfWeek = GetFirstDayOfWeek();
-        LastDayOfWeek = GetLastDayOfWeek();
-    }
+        
+        CurrentWeek = weekHandler.GetWeekOfYear();
+        FirstDayOfWeek = weekHandler.GetFirstDayOfWeek();
+        LastDayOfWeek = weekHandler.GetLastDayOfWeek();
+    } 
+
+    WeekHandler weekHandler = new WeekHandler();
     
     private int? CurrentWeek = null;
     private string? FirstDayOfWeek = null;
     private string? LastDayOfWeek = null;
-
-    private int GetWeekOfYear() {
-    
-        // get culture info & current date/time from thread
-        var CultureInfo = Thread.CurrentThread.CurrentCulture;
-        @* DateTime Date = new DateTime(2023, 10, 16); *@
-        DateTime Date = DateTime.Now;
-
-        DayOfWeek FirstDay = CultureInfo.DateTimeFormat.FirstDayOfWeek;
-        System.Globalization.CalendarWeekRule weekRule = CultureInfo.DateTimeFormat.CalendarWeekRule;
-        System.Globalization.Calendar Cal = CultureInfo.Calendar;
-        int Week = Cal.GetWeekOfYear(Date, weekRule, FirstDay);
-
-        return Week;
-    }
-
-    private string GetFirstDayOfWeek() {
-        // (int)Date.DayOfWeek returns from a 0 for Sunday up to a 6 for Saturday -> + Monday makes the start of the week Monday
-        var FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
-        
-        //Console.WriteLine(FirstDay.Date.ToString("dd.MM"));
-        return FirstDay.Date.ToString("dd.MM");
-    }
-
-    private string GetLastDayOfWeek() {
-        // get 7 - DayOfWeek, add result to FirstDayOfWeek
-        var LastDay = DateTime.Today.AddDays(7 - (int)DateTime.Today.DayOfWeek);
-
-        return LastDay.Date.ToString("dd.MM.yyyy");
-    }
 
 }

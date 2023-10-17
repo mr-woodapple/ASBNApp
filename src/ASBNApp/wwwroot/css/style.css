@@ -1,4 +1,4 @@
-/* ################ Main view switch ################ */
+/* ################ Main view switch Day / Week ################ */
 
 .view-selector {
     color: black;
@@ -26,7 +26,7 @@
 }
 
 
-/* ################ Pill Selector Date ################ */
+/* ################ Pill Selector Date Daily View ################ */
 
 .pill-selector-date {
     background-color: #d3d3d3;
@@ -48,3 +48,39 @@
 .pill-selector-date.active input {
     color: white;
 }
+
+
+/* ################ Week Switcher Weekly View ################ */
+
+.week-change-center {
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+}
+
+.week-change-button {
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    display: flex;
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.week-change-button:hover {
+    opacity: 50%;
+}
+
+.week-switcher-subline {
+    color: #BCBABA;
+}
+
+.text-current-week {
+    font-size: 1.3em;
+}
+
+.text-date-week {
+    font-size: .6em;
+}
+
