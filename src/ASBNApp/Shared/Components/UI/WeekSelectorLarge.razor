@@ -11,9 +11,9 @@ Created 16.10.2023
         </p>
     </div>
 
-    <div class="col-auto p-0" onclick="@Debug">
-        <p class="m-0">Haupt</p>
-        <p>09.10. - 16.10.2023</p>
+    <div class="col-auto p-0">
+        <p class="m-0"> @CurrentWeek </p>
+        <p>@FirstDayOfWeek - @LastDayOfWeek</p>
     </div>
 
     <div class="col-auto p-0">
@@ -24,27 +24,48 @@ Created 16.10.2023
 
 </div>
 
+
+
 @code {
     // move this to an seperate file -> so it's accessible from other pages as well?
+    protected override void OnInitialized(){
+        CurrentWeek = GetWeekOfYear();
+        FirstDayOfWeek = GetFirstDayOfWeek();
+        LastDayOfWeek = GetLastDayOfWeek();
+    }
+    
+    private int? CurrentWeek = null;
+    private string? FirstDayOfWeek = null;
+    private string? LastDayOfWeek = null;
 
+    private int GetWeekOfYear() {
+    
+        // get culture info & current date/time from thread
+        var CultureInfo = Thread.CurrentThread.CurrentCulture;
+        @* DateTime Date = new DateTime(2023, 10, 16); *@
+        DateTime Date = DateTime.Now;
 
-    private double GetWeekOfYear() {
-        double DayOfYear = new DateTime(2023, 10, 21).DayOfYear;
-        double WeekOfYear = DateTime.Now.DayOfYear / 7;
+        DayOfWeek FirstDay = CultureInfo.DateTimeFormat.FirstDayOfWeek;
+        System.Globalization.CalendarWeekRule weekRule = CultureInfo.DateTimeFormat.CalendarWeekRule;
+        System.Globalization.Calendar Cal = CultureInfo.Calendar;
+        int Week = Cal.GetWeekOfYear(Date, weekRule, FirstDay);
 
-        Console.WriteLine(DayOfYear);
+        return Week;
+    }
 
-        if (WeekOfYear % 1 == 0) {
-            WeekOfYear = DayOfYear / 7 + 1;
-            Console.WriteLine("+1");
-        } else {
-            WeekOfYear = DayOfYear / 7;
-        }
+    private string GetFirstDayOfWeek() {
+        // (int)Date.DayOfWeek returns from a 0 for Sunday up to a 6 for Saturday -> + Monday makes the start of the week Monday
+        var FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
         
-        return (int)WeekOfYear;
+        //Console.WriteLine(FirstDay.Date.ToString("dd.MM"));
+        return FirstDay.Date.ToString("dd.MM");
     }
 
-    private void Debug() {
-        Console.WriteLine(GetWeekOfYear());
+    private string GetLastDayOfWeek() {
+        // get 7 - DayOfWeek, add result to FirstDayOfWeek
+        var LastDay = DateTime.Today.AddDays(7 - (int)DateTime.Today.DayOfWeek);
+
+        return LastDay.Date.ToString("dd.MM.yyyy");
     }
+
 }
