@@ -49,6 +49,10 @@
     color: white;
 }
 
+.pill-selector-date.active input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert();
+}
+
 
 /* ################ Week Switcher Weekly View ################ */
 
@@ -62,18 +66,12 @@
     background-color: #d9d9d9;
     border-radius: 20px;
     display: flex;
-    height: 50px;
-    width: 50px;
     cursor: pointer;
     transition: .2s;
 }
 
 .week-change-button:hover {
     opacity: 50%;
-}
-
-.week-switcher-subline {
-    color: #BCBABA;
 }
 
 .text-current-week {
@@ -84,3 +82,12 @@
     font-size: .6em;
 }
 
+.week-change-center input {
+    color: white;
+    border: none;
+    background: none;
+}
+
+input[type="week"]::-webkit-calendar-picker-indicator {
+    filter: invert();
+}

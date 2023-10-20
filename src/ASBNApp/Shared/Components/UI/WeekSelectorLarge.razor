@@ -5,18 +5,22 @@ Created 16.10.2023
 
 <div class="row my-4 mx-0 justify-content-center">
 
-    <div class="col-auto week-change-button">
+    <div class="col-auto week-change-button" @onclick="SelectPreviousWeek">
         <p class="m-0 material-symbols-outlined align-self-center"> chevron_left </p>
     </div>
 
-    <div class="col-auto px-5 mx-3 text-center week-change-center">
-        <p class="m-0 text-current-week"> 
-            <strong> KW @CurrentWeek </strong>
-        </p>
-        <p class="m-0 pb-1 text-date-week"> @FirstDayOfWeek - @LastDayOfWeek </p>
+    <div class="col-auto px-3 mx-3 text-center week-change-center">
+        @* <p class="m-0 text-current-week"> 
+            <strong> KW @CurrentWeek </strong> 
+        </p> *@
+        @* <p class="m-0 pb-1 text-date-week"> @FirstDayOfWeek - @LastDayOfWeek </p> *@
+
+        @* @onfocusout is not the best option, try to find a better working one! *@
+        <label for="week">Select week:</label>
+        <input type="week" id="week" @bind="WeekFormatInput" />
     </div>
 
-    <div class="col-auto week-change-button">
+    <div class="col-auto week-change-button" @onclick="SelectNextWeek">
         <p class="m-0 material-symbols-outlined align-self-center"> chevron_right </p>
     </div>
 
@@ -26,21 +30,26 @@ Created 16.10.2023
 
 
 @code {
-    // move this to an seperate file -> so it's accessible from other pages as well?
-
-
     // used the onInitialize to assign calculated values to the matching variables, avoids data not being loaded into memory
     protected override void OnInitialized(){
-        
-        CurrentWeek = weekHandler.GetWeekOfYear();
-        FirstDayOfWeek = weekHandler.GetFirstDayOfWeek();
-        LastDayOfWeek = weekHandler.GetLastDayOfWeek();
+        CurrentWeek = dateHandler.GetWeekOfYear();
+        WeekFormatInput = CurrentYear + "-W" + CurrentWeek;
     } 
 
-    WeekHandler weekHandler = new WeekHandler();
-    
-    private int? CurrentWeek = null;
-    private string? FirstDayOfWeek = null;
-    private string? LastDayOfWeek = null;
+    DateHandler dateHandler = new DateHandler();
 
+    private int? CurrentWeek = null;
+    private int CurrentYear = DateTime.Now.Year;
+    private string? WeekFormatInput = null;
+
+
+    public void SelectNextWeek() {
+        CurrentWeek++;
+        WeekFormatInput = CurrentYear + "-W" + CurrentWeek;
+    }
+
+    public void SelectPreviousWeek() {
+        CurrentWeek--;
+        WeekFormatInput = CurrentYear + "-W" + CurrentWeek;
+    }
 }

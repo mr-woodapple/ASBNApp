@@ -5,7 +5,7 @@
 // return a value corresponding to the given date
 
 
-public class WeekHandler {
+public class DateHandler {
 
 
 
@@ -23,7 +23,6 @@ public class WeekHandler {
         return Week;
     }
 
-
     public string GetFirstDayOfWeek() {
         // (int)Date.DayOfWeek returns from a 0 for Sunday up to a 6 for Saturday -> + Monday makes the start of the week Monday
         var FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
@@ -37,5 +36,7 @@ public class WeekHandler {
 
         return LastDay.Date.ToString("dd.MM.yyyy");
     }
+
+
 
 }
