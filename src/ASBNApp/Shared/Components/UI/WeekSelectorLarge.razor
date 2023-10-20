@@ -10,12 +10,8 @@ Created 16.10.2023
     </div>
 
     <div class="col-auto px-3 mx-3 text-center week-change-center">
-        @* <p class="m-0 text-current-week"> 
-            <strong> KW @CurrentWeek </strong> 
-        </p> *@
-        @* <p class="m-0 pb-1 text-date-week"> @FirstDayOfWeek - @LastDayOfWeek </p> *@
 
-        @* @onfocusout is not the best option, try to find a better working one! *@
+
         <label for="week">Select week:</label>
         <input type="week" id="week" @bind="WeekFormatInput" />
     </div>

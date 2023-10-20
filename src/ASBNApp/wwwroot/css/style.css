@@ -74,20 +74,54 @@
     opacity: 50%;
 }
 
-.text-current-week {
-    font-size: 1.3em;
-}
-
-.text-date-week {
-    font-size: .6em;
-}
-
 .week-change-center input {
     color: white;
     border: none;
     background: none;
 }
 
+.week-change-center input:hover {
+    cursor: pointer;
+}
+
 input[type="week"]::-webkit-calendar-picker-indicator {
     filter: invert();
+}
+
+input[type="week"]::-webkit-calendar-picker-indicator:hover {
+    cursor: pointer;
+}
+
+
+/* ################ Entry Row Weekly View ################ */
+.entry-row {
+    background-color: #d9d9d9;
+    border-radius: 10px;
+}
+
+.entry-row-date {
+
+}
+.entry-row-date input {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.entry-row-date input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    cursor: pointer;
+}
+
+.entry-row-note.form-control {
+    background: none;
+}
+
+.entry-row-location {
+    
+}
+
+.entry-row-location select {
+    cursor: pointer;
+    border: none;
+    background: none;
 }
