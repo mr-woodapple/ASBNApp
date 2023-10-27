@@ -6,20 +6,20 @@ Created 20.10.2023
 <div class="row mb-3">
 
     
-    <div class="col-2 entry-row entry-row-date">
-        <p class="m-0">Monday</p>
+    <div class="col-auto entry-row entry-row-date align-items-center ">
+        <p class="m-0"> @GetWeekDay(), &nbsp; </p>
         <input type="date" id="date" @bind="SelectedDate"/>
     </div>
 
-    <div class="col mx-4 entry-row entry-row-note">
+    <div class="col mx-4 p-0 entry-row entry-row-note">
         <div class="form-group">
-            <textarea class="form-control" rows="2" id="notes" placeholder="I did learn something... Forget what though."></textarea>
+            <textarea class="form-control" rows="2" id="notes" placeholder="I did learn something... Forget what though." @bind="Note"></textarea>
         </div>
     </div>
 
-    <div class="col-2 entry-row entry-row-location align-items-center">
+    <div class="col-auto entry-row entry-row-location align-items-center justify-content-center">
         <div class="select-location-dropdown">
-            <select name="work-location" id="work-location">
+            <select name="work-location" id="work-location" @bind="Location">
                 <option value="" disabled selected>Select location </option>
 
                 @foreach (var entry in WorkLocationHours.DemoWorkLocationData) {
@@ -34,7 +34,14 @@ Created 20.10.2023
 
 
 @code {
-
     private DateTime SelectedDate = DateTime.Now;
+    private string? Location;
+    private string? Note;
     
+
+    // Returns a DayOfWeek objekt with the day of the week for the SelectedDate.
+    private DayOfWeek GetWeekDay() {
+        return SelectedDate.DayOfWeek;
+    }
+
 }

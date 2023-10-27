@@ -100,8 +100,9 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .entry-row-date {
-
+    display: flex;
 }
+
 .entry-row-date input {
     border: none;
     background: none;
@@ -112,12 +113,13 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
     cursor: pointer;
 }
 
-.entry-row-note.form-control {
-    background: none;
+.entry-row-note .form-control {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
 }
 
 .entry-row-location {
-    
+    display: flex;
 }
 
 .entry-row-location select {
@@ -125,3 +127,4 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
     border: none;
     background: none;
 }
+

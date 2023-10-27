@@ -18,6 +18,7 @@ Created 13.10.2023
             <label for="date">Pick day: </label>
 
             @* @onfocusout is not the best option, try to find a better working one! *@
+            @* simply use bind and add the methods from onfocusout??  *@
             <input type="date" id="date" @bind="SelectedDate" @onfocusout="@(e => { Selected = "customdate"; SelectDate(); })"/>
     </div>
 
