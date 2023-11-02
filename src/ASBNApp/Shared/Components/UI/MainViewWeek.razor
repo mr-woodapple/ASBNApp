@@ -5,6 +5,7 @@ Created 16.10.2023
 
 <div class="container-fluid mt-3 p-0">
 
+    @* TODO: Create connection from here downwards to have the weeks date available here as well *@
     <WeekSelectorLarge />
 
     @* for every entry in given date range, show one item *@
@@ -27,5 +28,10 @@ Created 16.10.2023
 
 
 @code {
+
+    // TODO:
+    // - Create a date variable for each entry (Mon to Fri by default), which is then passed down to the individual component -> EventCallback to track changes here
+    // - Create a min and max value from the current week for the dates in EntryRow to prevent the user from inputting a date that's not in the range of the current week
+    // - Create a week value to pass down to WeekSelectorLarge -> add Callback to track changes here and modify values of EntryRows if needed
     
 }
