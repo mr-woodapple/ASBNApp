@@ -7,14 +7,18 @@
     cursor: pointer;
 }
 
-.view-selector.False:hover {
+.view-selector:hover {
     opacity: 50%;
 }
 
-.view-selector.True {
+.view-selector.active {
     color: white;
     background-color: black;
     transition: .2s;
+}
+
+.view-selector.active:hover {
+    opacity: 50%;
 }
 
 .view-selector:nth-child(1) {

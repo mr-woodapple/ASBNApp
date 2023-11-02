@@ -10,12 +10,23 @@
             <HeaderLarge Header="Let's see what you've been up to!" />
         </div>
         <div class="col-md-auto">
-            <SwitchDayWeek />
+
+            @* Two way binding, this works by binding the bool from the component to the bool here. If IsDayBool changes, so does IsDay in the SwitchDayWeek.razor file. *@
+            <SwitchDayWeek @bind-IsDay="IsDayBool" />
         </div>
     </div>
 
     @* Make this controlled by the SwitchDayWeek values  *@
-    @true ? <MainViewDay /> : <MainViewWeek />
+    
+    @if (IsDayBool) {
+        <MainViewDay />
+    } else {
+        <MainViewWeek />
+    }
     
 
 </div>
+
+@code {
+    private bool IsDayBool = true;
+}

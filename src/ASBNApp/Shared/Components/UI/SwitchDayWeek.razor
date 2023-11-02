@@ -4,10 +4,10 @@
     <p class="col m-0">Choose view:</p>
 
     <div class="col d-flex wrapper-selector-pill">
-        <div class="view-selector @IsDay" @onclick="SwitchView" tabindex="0">
+        <div class="view-selector @(IsDay ? "active" : "")" @onclick="@(() => { IsDay = true; IsDayChanged.InvokeAsync(true); })" tabindex="0">
             <p class="m-1 px-2">Day</p>
         </div>
-        <div class="view-selector @IsWeek" @onclick="SwitchView" tabindex="0">
+        <div class="view-selector @(!IsDay ? "active" : "")" @onclick="@(() => { IsDay = false; IsDayChanged.InvokeAsync(false); })" tabindex="0">
             <p class="m-1 px-2">Week</p>
         </div>
     </div>
@@ -18,17 +18,12 @@
 
 
 @code {
-    // seems kinda ugly, maybe reduce to one bool?
-    public bool IsDay { get; set; } = true;
-    private bool IsWeek { get; set; } = false;
+    // Bool that is linked through the IsDayChanged.InvokeAsync(bool) method to the IsDayBool in Index.razor.
+    [Parameter]
+    public bool IsDay { get; set; }
 
-    private void SwitchView() {
-        if (IsDay) {
-            IsDay = false;
-            IsWeek = true;
-        } else {
-            IsDay = true;
-            IsWeek = false;
-        }
-    }
+    // Necessary for firing the changed bool upwards to the Index.razor page in this case.
+    [Parameter]
+    public EventCallback<bool> IsDayChanged { get; set; }
+
 }
