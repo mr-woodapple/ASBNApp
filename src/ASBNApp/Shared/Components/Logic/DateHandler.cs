@@ -7,8 +7,10 @@
 
 public class DateHandler {
 
-
-
+    /// <summary>
+    /// Function to get the current week number
+    /// </summary>
+    /// <returns>Week number as an int</returns>
     public int GetWeekOfYear() {
         // get culture info & current date/time from thread
         var CultureInfo = Thread.CurrentThread.CurrentCulture;
@@ -23,6 +25,10 @@ public class DateHandler {
         return Week;
     }
 
+    /// <summary>
+    /// Returns the first day of the current week
+    /// </summary>
+    /// <returns>Day with day & month as a string</returns>
     public string GetFirstDayOfWeek() {
         // (int)Date.DayOfWeek returns from a 0 for Sunday up to a 6 for Saturday -> + Monday makes the start of the week Monday
         var FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
@@ -30,13 +36,14 @@ public class DateHandler {
         return FirstDay.Date.ToString("dd.MM.");
     }
 
+    /// <summary>
+    /// Returns the last day of the current week
+    /// </summary>
+    /// <returns>Date with day & month as a string</returns>
     public string GetLastDayOfWeek() {
         // get 7 - DayOfWeek, add result to FirstDayOfWeek
         var LastDay = DateTime.Today.AddDays(7 - (int)DateTime.Today.DayOfWeek);
 
         return LastDay.Date.ToString("dd.MM.yyyy");
     }
-
-
-
 }

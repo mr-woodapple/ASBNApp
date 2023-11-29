@@ -6,8 +6,8 @@ Created 20.10.2023
 <div class="row mb-3">
 
     
-    <div class="col-auto entry-row entry-row-date align-items-center ">
-        <p class="m-0"> @GetWeekDay(), &nbsp; </p>
+    <div class="col-2 entry-row entry-row-date align-items-center justify-content-between">
+        <p class="m-0"> @Entry.Date.DayOfWeek, &nbsp; </p>
         <input type="date" id="date" @bind="Entry.Date" />
     </div>
 
@@ -34,13 +34,6 @@ Created 20.10.2023
 
 
 @code {
-    // Returns a DayOfWeek objekt with the day of the week for the SelectedDate.
-    private DayOfWeek GetWeekDay() {
-        // return SelectedDate.DayOfWeek;
-        // return Entry[Date].DayOfWeek;
-        return DateTime.Now.DayOfWeek;
-    }
-
     // dealing with two way binding
     [Parameter]
     public MainViewWeek.EntryRowModel Entry { get; set; }

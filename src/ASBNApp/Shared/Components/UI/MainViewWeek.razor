@@ -6,10 +6,7 @@ Created 16.10.2023
 <div class="container-fluid mt-3 p-0">
 
     @* TODO: Create connection from here downwards to have the weeks date available here as well *@
-    <WeekSelectorLarge @bind-CurrentWeek="CurrentWeek" />
-
-    @* for every entry in given date range, show one item *@
-    @* should never be more than 5 -> set option in settings to set the amount of work days?? *@
+    <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
     @* TODO: pass down the min & max values for the date pickers *@
@@ -18,14 +15,11 @@ Created 16.10.2023
         <EntryRow Entry="entry" />
     }
 
-
-
     <div class="row justify-content-end">
         <div class="col-auto">
             <button class="btn btn-dark mt-4" type="submit" @onclick="PrintSavedDataToConsole">Save</button>
         </div>
     </div>
-    
 
 </div>
 
@@ -34,19 +28,18 @@ Created 16.10.2023
 @code {
 
     // TODO:
-    // - Create a date variable for each entry (Mon to Fri by default), which is then passed down to the individual component -> EventCallback to track changes here
     // - Create a min and max value from the current week for the dates in EntryRow to prevent the user from inputting a date that's not in the range of the current week
-    // - Create a week value to pass down to WeekSelectorLarge -> add Callback to track changes here and modify values of EntryRows if needed
-    //
-    // -> Also control the WeekSelectorLarge (+ next and previous week buttons) and the date values for each entry from in here
-    //
-    // pass down week number, convert to the display value in the next step
 
+
+    // Stuff for EntryRows
 
     // Initializes the List rows with their unique starting date ->
     // should be able to load exisiting date later on
     protected override async Task OnInitializedAsync(){
         // TODO: LoadData
+
+        // TODO: Make this start on Mondays, no matter what day it is today -> show Mon - Fri as standard
+
         rows = Enumerable.Range(0, 5).Select(x => new EntryRowModel(){
             Date = DateTime.Now.AddDays(x),
             Location = string.Empty,
@@ -63,14 +56,20 @@ Created 16.10.2023
     }
 
 
-    // Various handlers / variables around the date
-    DateHandler dateHandler = new DateHandler();
-    private int? CurrentWeek = null;
-    private int CurrentYear = DateTime.Now.Year;
 
+    // Stuff for the WeekSelectorLarge
+
+    // Creates DateHandler instance & variables to pass down to child component
+    DateHandler dateHandler = new DateHandler();
+    private int? SelectedWeek = null;
+    private int? SelectedYear = null;
+
+
+    // Debug stuff
 
     // debug method to print what's saved in the variable rows
     private void PrintSavedDataToConsole() {
+        Console.WriteLine("Week Nr: " + SelectedWeek + " Year " + SelectedYear);
         foreach (var entry in rows) {
             Console.WriteLine("Date: " + entry.Date.ToString() + "; Note: " + entry.Note + "; Location: " + entry.Location);
         }
