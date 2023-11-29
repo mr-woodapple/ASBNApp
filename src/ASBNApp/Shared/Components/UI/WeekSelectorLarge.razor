@@ -13,7 +13,8 @@ Created 16.10.2023
 
 
         <label for="week">Select week:</label>
-        <input type="week" id="week" @bind="WeekFormatInput" />
+        @* <input type="week" id="week" @bind="WeekFormatInput" /> *@
+        <input type="week" id="week" @onchange="CheckChanged" />
     </div>
 
     <div class="col-auto week-change-button" @onclick="SelectNextWeek">
@@ -26,26 +27,44 @@ Created 16.10.2023
 
 
 @code {
+    
+    [Parameter]
+    public int? CurrentWeek { get; set; }
+
+    [Parameter]
+    public EventCallback<int?> CurrentWeekChanged { get; set; }
+
+
+    DateHandler dateHandler = new DateHandler();
     // used the onInitialize to assign calculated values to the matching variables, avoids data not being loaded into memory
     protected override void OnInitialized(){
         CurrentWeek = dateHandler.GetWeekOfYear();
+        CurrentWeekChanged.InvokeAsync(CurrentWeek);
+
         WeekFormatInput = CurrentYear + "-W" + CurrentWeek;
-    } 
+    }
 
-    DateHandler dateHandler = new DateHandler();
 
-    private int? CurrentWeek = null;
     private int CurrentYear = DateTime.Now.Year;
     private string? WeekFormatInput = null;
 
 
     public void SelectNextWeek() {
         CurrentWeek++;
+        CurrentWeekChanged.InvokeAsync(CurrentWeek);
         WeekFormatInput = CurrentYear + "-W" + CurrentWeek;
     }
 
     public void SelectPreviousWeek() {
         CurrentWeek--;
+        CurrentWeekChanged.InvokeAsync(CurrentWeek);
         WeekFormatInput = CurrentYear + "-W" + CurrentWeek;
+    }
+
+
+    // check if values have changed
+    // not sure if
+    private void CheckChanged() {
+        Console.WriteLine("test");
     }
 }

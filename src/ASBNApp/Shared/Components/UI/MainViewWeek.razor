@@ -6,19 +6,23 @@ Created 16.10.2023
 <div class="container-fluid mt-3 p-0">
 
     @* TODO: Create connection from here downwards to have the weeks date available here as well *@
-    <WeekSelectorLarge />
+    <WeekSelectorLarge @bind-CurrentWeek="CurrentWeek" />
 
     @* for every entry in given date range, show one item *@
     @* should never be more than 5 -> set option in settings to set the amount of work days?? *@
-    <EntryRow />
-    <EntryRow />
-    <EntryRow />
-    <EntryRow />
-    <EntryRow />
+
+    @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
+    @* TODO: pass down the min & max values for the date pickers *@
+    @foreach (var entry in rows) {
+        //<EntryRow @bind-Entry="entry" />
+        <EntryRow Entry="entry" />
+    }
+
+
 
     <div class="row justify-content-end">
         <div class="col-auto">
-            <button class="btn btn-dark mt-4" type="submit">Save</button>
+            <button class="btn btn-dark mt-4" type="submit" @onclick="PrintSavedDataToConsole">Save</button>
         </div>
     </div>
     
@@ -33,5 +37,42 @@ Created 16.10.2023
     // - Create a date variable for each entry (Mon to Fri by default), which is then passed down to the individual component -> EventCallback to track changes here
     // - Create a min and max value from the current week for the dates in EntryRow to prevent the user from inputting a date that's not in the range of the current week
     // - Create a week value to pass down to WeekSelectorLarge -> add Callback to track changes here and modify values of EntryRows if needed
-    
+    //
+    // -> Also control the WeekSelectorLarge (+ next and previous week buttons) and the date values for each entry from in here
+    //
+    // pass down week number, convert to the display value in the next step
+
+
+    // Initializes the List rows with their unique starting date ->
+    // should be able to load exisiting date later on
+    protected override async Task OnInitializedAsync(){
+        // TODO: LoadData
+        rows = Enumerable.Range(0, 5).Select(x => new EntryRowModel(){
+            Date = DateTime.Now.AddDays(x),
+            Location = string.Empty,
+            Note = string.Empty
+        }).ToList();
+    }
+
+    // Define the list of rows and the struct they're made up from using the OnInitializedAsync method
+    List<EntryRowModel> rows;
+    public class EntryRowModel {
+        public DateTime Date;
+        public string? Location;
+        public string? Note;
+    }
+
+
+    // Various handlers / variables around the date
+    DateHandler dateHandler = new DateHandler();
+    private int? CurrentWeek = null;
+    private int CurrentYear = DateTime.Now.Year;
+
+
+    // debug method to print what's saved in the variable rows
+    private void PrintSavedDataToConsole() {
+        foreach (var entry in rows) {
+            Console.WriteLine("Date: " + entry.Date.ToString() + "; Note: " + entry.Note + "; Location: " + entry.Location);
+        }
+    }
 }
