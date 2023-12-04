@@ -29,7 +29,7 @@ public class DateHandler {
     /// Returns the first day of the current week
     /// </summary>
     /// <returns>Day with day & month as a string</returns>
-    public string GetFirstDayOfWeek() {
+    public string GetFirstDayOfWeekAsString() {
         // (int)Date.DayOfWeek returns from a 0 for Sunday up to a 6 for Saturday -> + Monday makes the start of the week Monday
         var FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
         
@@ -40,10 +40,23 @@ public class DateHandler {
     /// Returns the last day of the current week
     /// </summary>
     /// <returns>Date with day & month as a string</returns>
-    public string GetLastDayOfWeek() {
+    public string GetLastDayOfWeekAsString() {
         // get 7 - DayOfWeek, add result to FirstDayOfWeek
         var LastDay = DateTime.Today.AddDays(7 - (int)DateTime.Today.DayOfWeek);
 
         return LastDay.Date.ToString("dd.MM.yyyy");
+    }
+
+    /// <summary>
+    /// Get first day of the week for a given week & year
+    /// </summary>
+    /// <returns>DateTime object for the first day in a week</returns>
+    public DateTime GetFirstDateOfWeek(int week, int year) {
+        // Get first Monday of a year
+        DateTime FirstDayOfAYear = new DateTime(year, 1, 1);
+        DateTime FirstMondayOfAYear = new DateTime(year, 1, (8 - (int)FirstDayOfAYear.DayOfWeek) % 7 + 1);
+
+        // Calculate how many days we're in from that first Monday by the number of weeks
+        return FirstMondayOfAYear.AddDays((week - 1) * 7);
     }
 }

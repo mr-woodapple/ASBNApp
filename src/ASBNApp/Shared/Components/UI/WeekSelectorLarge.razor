@@ -14,7 +14,7 @@ Created 16.10.2023
 
         <label for="week">Select week:</label>
         @* @onfocusout might not be the best idea, there might be a better way to do this *@
-        <input type="week" id="week" @bind="WeekFormatInput" @onfocusout="UpdateWeekFromSelector"  @onclick="ShowWeekNumber"/>
+        <input type="week" id="week" @bind="WeekFormatInput" @onfocusout="UpdateWeekFromSelector" />
     </div>
 
     <div class="col-auto week-change-button" @onclick="SelectNextWeek">
@@ -25,7 +25,7 @@ Created 16.10.2023
 
 
 @code {
-    //Two way binding stuff
+    //Two way binding paramters
     [Parameter]
     public int? SelectedWeek { get; set; }
     [Parameter]
@@ -103,12 +103,5 @@ Created 16.10.2023
         } else {
             WeekFormatInput = SelectedYear + "-W" + SelectedWeek;
         }
-    }
-
-
-
-
-    public void ShowWeekNumber() {
-        Console.WriteLine(WeekFormatInput);
     }
 }

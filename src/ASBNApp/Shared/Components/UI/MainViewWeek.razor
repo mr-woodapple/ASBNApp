@@ -2,6 +2,7 @@
 Main view to input and edit data, displayed when the user selects the weekly view. 
 Created 16.10.2023
 *@
+@inject IASBNDataService dataService
 
 <div class="container-fluid mt-3 p-0">
 
@@ -10,14 +11,16 @@ Created 16.10.2023
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
     @* TODO: pass down the min & max values for the date pickers *@
-    @foreach (var entry in rows) {
-        //<EntryRow @bind-Entry="entry" />
-        <EntryRow Entry="entry" />
+    @if(SelectedYear != null && SelectedWeek != null){
+        @foreach (var entry in rowsList) {
+            <EntryRow Entry="entry" />
+        }
     }
+    
 
     <div class="row justify-content-end">
         <div class="col-auto">
-            <button class="btn btn-dark mt-4" type="submit" @onclick="PrintSavedDataToConsole">Save</button>
+            <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
         </div>
     </div>
 
@@ -26,7 +29,6 @@ Created 16.10.2023
 
 
 @code {
-
     // TODO:
     // - Create a min and max value from the current week for the dates in EntryRow to prevent the user from inputting a date that's not in the range of the current week
 
@@ -35,42 +37,84 @@ Created 16.10.2023
 
     // Initializes the List rows with their unique starting date ->
     // should be able to load exisiting date later on
+    // Might wanna remove this one, as GetDataFromDate() will be called anyway once the numbers change
     protected override async Task OnInitializedAsync(){
-        // TODO: LoadData
-
         // TODO: Make this start on Mondays, no matter what day it is today -> show Mon - Fri as standard
 
-        rows = Enumerable.Range(0, 5).Select(x => new EntryRowModel(){
-            Date = DateTime.Now.AddDays(x),
-            Location = string.Empty,
-            Note = string.Empty
-        }).ToList();
+        // Load data for the selected dates
+        
     }
 
-    // Define the list of rows and the struct they're made up from using the OnInitializedAsync method
-    List<EntryRowModel> rows;
-    public class EntryRowModel {
-        public DateTime Date;
-        public string? Location;
-        public string? Note;
-    }
+    // Define the IEnumerable and List variables the fill with data
+    IEnumerable<EntryRowModel> rows;
+    List<EntryRowModel> rowsList;
 
+
+    // Update the data we have from the data the (dummy) interface implementation returns
+    // Will be called on initialization & once SelectedWeek or SelectedYear changes
+    public async void GetDataFromDate() 
+    {
+        rows = await dataService.GetWeek(SelectedYear, SelectedWeek);
+
+        // Convert the IEnumerable to a list -> because we need to add entries
+        rowsList = rows.ToList();
+
+        // If no entries present, create 5 entries for the selected week
+        if (rowsList.Count() == 0 && SelectedWeek != null && SelectedYear != null)
+        {
+            var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+            Console.WriteLine(FirstDateInWeek);
+            // get first date in the week
+            for (int i = 0; i < 5; i++) {
+                rowsList.Add(new EntryRowModel() {
+                    Date = FirstDateInWeek.AddDays(i),
+                    Location = string.Empty,
+                    Note = string.Empty
+                });
+            }
+        }
+    }
 
 
     // Stuff for the WeekSelectorLarge
 
     // Creates DateHandler instance & variables to pass down to child component
+    // TODO: What exactly did I build here? What is it with the private and the get/set then?
     DateHandler dateHandler = new DateHandler();
-    private int? SelectedWeek = null;
-    private int? SelectedYear = null;
+    private int? _selectedWeek = null;
+    // Custom get and set so we can call the GetDataFromDate() update function if the value changes
+    public int? SelectedWeek 
+    {
+        get => _selectedWeek;
+        set {
+            if (value != _selectedWeek)
+            {
+                _selectedWeek = value;
+                GetDataFromDate();
+            }
+        }
+    }
+
+    private int? _selectedYear = null;
+    public int? SelectedYear
+    {
+        get => _selectedYear;
+        set {
+            if (value != _selectedYear) {
+                _selectedYear = value;
+                GetDataFromDate();
+            }
+        }
+    }
 
 
-    // Debug stuff
+    
+    private void SaveData() {
+        dataService.SaveWeek(rowsList);
 
-    // debug method to print what's saved in the variable rows
-    private void PrintSavedDataToConsole() {
+        // debug method to print what's saved in the variable rows
         Console.WriteLine("Week Nr: " + SelectedWeek + " Year " + SelectedYear);
-        foreach (var entry in rows) {
+        foreach (var entry in rowsList) {
             Console.WriteLine("Date: " + entry.Date.ToString() + "; Note: " + entry.Note + "; Location: " + entry.Location);
         }
     }
