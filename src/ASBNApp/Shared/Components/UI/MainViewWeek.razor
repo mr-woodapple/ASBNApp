@@ -2,6 +2,7 @@
 Main view to input and edit data, displayed when the user selects the weekly view. 
 Created 16.10.2023
 *@
+
 @inject IASBNDataService dataService
 
 <div class="container-fluid mt-3 p-0">
@@ -34,17 +35,7 @@ Created 16.10.2023
 
 
     // Stuff for EntryRows
-
-    // Initializes the List rows with their unique starting date ->
-    // should be able to load exisiting date later on
-    // Might wanna remove this one, as GetDataFromDate() will be called anyway once the numbers change
-    protected override async Task OnInitializedAsync(){
-        // TODO: Make this start on Mondays, no matter what day it is today -> show Mon - Fri as standard
-
-        // Load data for the selected dates
-        
-    }
-
+    
     // Define the IEnumerable and List variables the fill with data
     IEnumerable<EntryRowModel> rows;
     List<EntryRowModel> rowsList;
@@ -52,7 +43,7 @@ Created 16.10.2023
 
     // Update the data we have from the data the (dummy) interface implementation returns
     // Will be called on initialization & once SelectedWeek or SelectedYear changes
-    public async void GetDataFromDate() 
+    public async void GetDataFromDates() 
     {
         rows = await dataService.GetWeek(SelectedYear, SelectedWeek);
 
@@ -62,9 +53,8 @@ Created 16.10.2023
         // If no entries present, create 5 entries for the selected week
         if (rowsList.Count() == 0 && SelectedWeek != null && SelectedYear != null)
         {
+            // Get first date in the week
             var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
-            Console.WriteLine(FirstDateInWeek);
-            // get first date in the week
             for (int i = 0; i < 5; i++) {
                 rowsList.Add(new EntryRowModel() {
                     Date = FirstDateInWeek.AddDays(i),
@@ -90,11 +80,12 @@ Created 16.10.2023
             if (value != _selectedWeek)
             {
                 _selectedWeek = value;
-                GetDataFromDate();
+                GetDataFromDates();
             }
         }
     }
 
+    // Custom get and set so we can call the GetDataFromDate() update function if the value changes
     private int? _selectedYear = null;
     public int? SelectedYear
     {
@@ -102,7 +93,7 @@ Created 16.10.2023
         set {
             if (value != _selectedYear) {
                 _selectedYear = value;
-                GetDataFromDate();
+                GetDataFromDates();
             }
         }
     }

@@ -33,3 +33,7 @@
 -> What: split up into seperate, small features  
 -> Why: the reason for a specific feature  
 -> Start with epics, then go into stories/tasks
+
+
+## Nice to have ideas:
+-> Figure out when someone is on holiday (from accessing their Outlook calendar)

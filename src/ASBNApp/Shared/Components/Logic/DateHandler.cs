@@ -48,7 +48,7 @@ public class DateHandler {
     }
 
     /// <summary>
-    /// Get first day of the week for a given week & year
+    /// Returns the Monday date for a given week & year
     /// </summary>
     /// <returns>DateTime object for the first day in a week</returns>
     public DateTime GetFirstDateOfWeek(int week, int year) {

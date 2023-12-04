@@ -13,7 +13,7 @@ Created 16.10.2023
 
 
         <label for="week">Select week:</label>
-        @* @onfocusout might not be the best idea, there might be a better way to do this *@
+        @* TODO: @onfocusout might not be the best idea, there might be a better way to do this *@
         <input type="week" id="week" @bind="WeekFormatInput" @onfocusout="UpdateWeekFromSelector" />
     </div>
 

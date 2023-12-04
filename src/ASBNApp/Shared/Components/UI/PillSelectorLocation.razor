@@ -9,7 +9,7 @@ Created 13.10.2023
         @* Make this selectable with @onkeydown Enter *@
         <div 
             class="col-auto me-2 pill-selector-date @(SelectedLocation == entry.Location ? "active" : "")" 
-            @onclick="@(e => SelectedLocation = entry.Location )"
+            @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })"
             tabindex="0">
             
             <p class="m-0"> @entry.Location </p>
@@ -20,6 +20,11 @@ Created 13.10.2023
 </div>
 
 @code {
-    private string? SelectedLocation;
 
+    [Parameter]
+    public string? SelectedLocation { get; set; }
+    [Parameter]
+    public EventCallback<string?> SelectedLocationChanged { get; set; }
+
+    // TODO: Implement to dynamically load the work locations from the JSON file
 }
