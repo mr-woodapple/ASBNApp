@@ -50,7 +50,7 @@ public class DateHandler {
     /// <summary>
     /// Returns the Monday date for a given week & year
     /// </summary>
-    /// <returns>DateTime object for the first day in a week</returns>
+    /// <returns> DateTime object for the first day in a week </returns>
     public DateTime GetFirstDateOfWeek(int week, int year) {
         // Get first Monday of a year
         DateTime FirstDayOfAYear = new DateTime(year, 1, 1);
@@ -58,5 +58,19 @@ public class DateHandler {
 
         // Calculate how many days we're in from that first Monday by the number of weeks
         return FirstMondayOfAYear.AddDays((week - 1) * 7);
+    }
+
+    /// <summary>
+    /// Returns the Sunday date for a given week & year
+    /// </summary>
+    /// <returns> DateTime object for the first day in a week </returns>
+    public DateTime GetLastDateOfWeek(int week, int year) {
+        // Get first Monday of a year
+        DateTime FirstDayOfAYear = new DateTime(year, 1, 1);
+        DateTime FirstMondayOfAYear = new DateTime(year, 1, (8 - (int)FirstDayOfAYear.DayOfWeek) % 7 + 1);
+
+        // Calculate how many days we're in from that first Monday by the number of weeks, 
+        // add 6 days to get the last date in a week
+        return FirstMondayOfAYear.AddDays((week - 1) * 7 + 6);
     }
 }

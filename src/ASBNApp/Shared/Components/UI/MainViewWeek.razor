@@ -11,14 +11,12 @@ Created 16.10.2023
     <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
-    @* TODO: pass down the min & max values for the date pickers *@
     @if(SelectedYear != null && SelectedWeek != null){
         @foreach (var entry in rowsList) {
-            <EntryRow Entry="entry" />
+            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" />
         }
     }
     
-
     <div class="row justify-content-end">
         <div class="col-auto">
             <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
@@ -30,11 +28,7 @@ Created 16.10.2023
 
 
 @code {
-    // TODO:
-    // - Create a min and max value from the current week for the dates in EntryRow to prevent the user from inputting a date that's not in the range of the current week
-
-
-    // Stuff for EntryRows
+    // STUFF FOR EntryRows
     
     // Define the IEnumerable and List variables the fill with data
     IEnumerable<EntryRowModel> rows;
@@ -55,8 +49,10 @@ Created 16.10.2023
         {
             // Get first date in the week
             var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
-            for (int i = 0; i < 5; i++) {
-                rowsList.Add(new EntryRowModel() {
+            for (int i = 0; i < 5; i++) 
+            {
+                rowsList.Add(new EntryRowModel() 
+                {
                     Date = FirstDateInWeek.AddDays(i),
                     Location = string.Empty,
                     Note = string.Empty
@@ -66,7 +62,7 @@ Created 16.10.2023
     }
 
 
-    // Stuff for the WeekSelectorLarge
+    // STUFF FOR WeekSelectorLarge
 
     // Creates DateHandler instance & variables to pass down to child component
     // TODO: What exactly did I build here? What is it with the private and the get/set then?

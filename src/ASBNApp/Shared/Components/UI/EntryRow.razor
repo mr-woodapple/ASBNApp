@@ -8,7 +8,7 @@ Created 20.10.2023
     
     <div class="col-2 entry-row entry-row-date align-items-center justify-content-between">
         <p class="m-0"> @Entry.Date.DayOfWeek, &nbsp; </p>
-        <input type="date" id="date" @bind="Entry.Date" />
+        <input type="date" id="date" @bind="Entry.Date" min="@_minDateValue" max="@_maxDateValue" />
     </div>
 
     <div class="col mx-4 p-0 entry-row entry-row-note">
@@ -40,5 +40,29 @@ Created 20.10.2023
 
     [Parameter]
     public EventCallback<EntryRowModel> OnUpdate { get; set; }
+
+    // Week & year variables to set min and max values for 
+    [Parameter]
+    public int? SelectedWeek { get; set; }
+    [Parameter]
+    public int? SelectedYear { get; set; }
+
+    DateHandler dateHandler = new DateHandler();
+
+    // min & max values
+    private string? _minDateValue = null;
+    private string? _maxDateValue = null;
+
+    //
+    protected override void OnInitialized()
+    {
+        if (SelectedWeek != null && SelectedYear != null)
+        {
+            // set values for min and max in the date picker
+            _minDateValue = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
+            _maxDateValue = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
+        }
+        
+    }
 
 }
