@@ -2,6 +2,46 @@
 
 <PageTitle>Export</PageTitle>
 
-<div>
-    <p>This could be your export & sign page.</p>
+<div class="container-fluid">
+    <div class="row justify-content-between align-items-center">
+        <div class="col-md-auto">
+            <HeaderLarge Header="Let's get this exported & signed!" />
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+
+        @* Left half, used for options *@
+        <div class="col-6">
+            <p>Select a week:</p>
+
+            @* Create & add PillSelectorWeek here *@
+            <PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
+
+            <div class="row">
+                <div class="col-auto">
+                    <button class="btn btn-dark mt-4" type="submit">Export</button>
+                </div>
+            </div>
+        </div>
+
+        @* Right half, used for pdf preview (eventually) *@
+        <div class="col-6">
+
+        </div>
+
+    </div>
 </div>
+
+@code {
+    public int? SelectedWeek = null;
+    public int? SelectedYear = null;
+
+    
+
+    // Export PDF for the variables SelectedWeek & SeletedYear
+    private void ExportData() {
+        throw new NotImplementedException();
+    }
+
+}

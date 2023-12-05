@@ -3,8 +3,10 @@
 <PageTitle>Settings</PageTitle>
 
 <div class="container-fluid">
+    @* Header with username *@
     <div class="row justify-content-between align-items-center">
         <div class="col-md-auto">
+            @* required for the output pdf *@
             <HeaderLarge Header="Hi {username}!" />
         </div>
     </div>
@@ -22,12 +24,59 @@
             </select>
         </div>
     </div>
-        
+
+    @* Specify your working locations and the hours for each location *@
+    <div class="row mt-4">
+        <p>Your working hours:</p>
+        @foreach (var entry in WorkLocationHours.DemoWorkLocationData) {
+            <div class="row mt-1">
+                <div class="col-auto">
+                    <input type="text" @bind="entry.Location" />
+                    <input type="text" @bind="entry.Hours" />
+                    <span class="material-symbols-outlined">edit</span>
+                </div>
+            </div> 
+        }
+        <div class="row mt-1">
+            <div class="col">
+                <input type="text" placeholder="Add new working location"/>
+                <input type="text" placeholder="Add working hours"/>
+                <span class="material-symbols-outlined">add</span>
+            </div>
+        </div> 
+    </div>
+
+    @* Specify your legal representative (if applicable) *@
+    <div class="row mt-4">
+        <p>Your legal representative (if you're under 18!):</p>
+        <div class="col-4">
+            <input type="text" placeholder="Your mama!" />
+            <span class="material-symbols-outlined">edit</span>
+        </div>
+    </div>
+
+    @* Add company name here, required for the output pdf *@
+    <div class="row mt-4">
+        <p>The company you're working at:</p>
+        <div class="col-4">
+            <input type="text" placeholder="Telekom" />
+            <span class="material-symbols-outlined">edit</span>
+        </div>
+    </div>
+
+    @* Add school name here, required for the output pdf *@
+    <div class="row mt-4">
+        <p>Your school:</p>
+        <div class="col-4">
+            <input type="text" placeholder="BSZ ET Dresden" />
+            <span class="material-symbols-outlined">edit</span>
+        </div>
+    </div>
+
 </div>
 
 
 @code {
-
     public Data.Professions Professions = new Data.Professions();
     
     public string? SelectedApprenticeship = null;
