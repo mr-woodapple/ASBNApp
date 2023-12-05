@@ -6,8 +6,8 @@
 .profile-icon {
     box-sizing: border-box;
     border-radius: 50%;
-    background-color: #e20074;
     height: 40px;
     width: 40px;
+    background-color: #5c636a;
     color: #fff;
 }

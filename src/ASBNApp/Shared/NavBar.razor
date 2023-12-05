@@ -1,7 +1,10 @@
-﻿<nav class="navbar navbar-expand">
+﻿@inject IFileSystemAccessService FileSystemAccessService;
+
+
+<nav class="navbar navbar-expand">
     <div class="container-fluid">
 
-        <a class="navbar-brand" href="">ASBN-App</a>
+        <a class="navbar-brand" href=""><b>ASBN-App</b></a>
            
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
@@ -15,10 +18,50 @@
             </div>
         </div>
 
-        <span class="profile-icon p-2">
+        <div>
+            <button type="button" class="btn btn-secondary" @onclick="OpenAndReadFile" >Open File</button>
+        </div>
+
+        <span class="profile-icon p-2 ms-3">
             <NavLink class="nav-link" href="settings">
-                JH
+                <span class="material-symbols-outlined"> settings </span>
             </NavLink>
         </span>
     </div>
 </nav>
+
+
+
+@code {
+    private string Text = "";
+
+    private async Task OpenAndReadFile()
+    {
+        KristofferStrube.Blazor.FileSystem.FileSystemFileHandle? fileHandle = null;
+        try
+        {
+            OpenFilePickerOptionsStartInWellKnownDirectory options = new()
+                {
+                    Multiple = false,
+                    StartIn = WellKnownDirectory.Downloads
+                };
+            var fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync(options);
+            fileHandle = fileHandles.Single();
+        }
+        catch (JSException ex)
+        {
+            // Handle Exception or cancelation of File Access prompt
+            Console.WriteLine(ex);
+        }
+        finally
+        {
+            if (fileHandle is not null)
+            {
+                var file = await fileHandle.GetFileAsync();
+                Text = await file.TextAsync();
+                Console.Write(Text);
+                StateHasChanged();
+            }
+        }
+    }
+}

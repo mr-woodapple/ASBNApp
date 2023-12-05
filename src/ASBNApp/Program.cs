@@ -1,12 +1,19 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using KristofferStrube.Blazor.FileSystemAccess;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
-builder.Services.AddSingleton<IASBNDataService, DummyASBNDataService>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+// ASBNDataService dependency injection
+builder.Services.AddSingleton<IASBNDataService, DummyASBNDataService>();
+// Making the FileSystemAccess package available to everyone
+builder.Services.AddFileSystemAccessService();
+
 
 var app = builder.Build();
 

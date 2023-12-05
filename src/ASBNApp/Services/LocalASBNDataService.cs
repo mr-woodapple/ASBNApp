@@ -4,6 +4,10 @@
 
 public class LocalASBNDataService : IASBNDataService
 {
+
+    // Create private variable to store the objects from our JSON in
+
+
     public Task<EntryRowModel> GetDay(DateTime? date)
     {
         throw new NotImplementedException();

@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="KristofferStrube.Blazor.FileSystemAccess" Version="3.2.2" />
+  </ItemGroup>
+
 </Project>
