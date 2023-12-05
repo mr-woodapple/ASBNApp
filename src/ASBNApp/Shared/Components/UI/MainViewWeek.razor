@@ -91,7 +91,8 @@ Created 16.10.2023
     {
         get => _selectedYear;
         set {
-            if (value != _selectedYear) {
+            if (value != _selectedYear) 
+            {
                 _selectedYear = value;
                 GetDataFromDates();
             }
@@ -100,12 +101,14 @@ Created 16.10.2023
 
 
     
-    private void SaveData() {
+    private void SaveData() 
+    {
         dataService.SaveWeek(rowsList);
 
         // debug method to print what's saved in the variable rows
         Console.WriteLine("Week Nr: " + SelectedWeek + " Year " + SelectedYear);
-        foreach (var entry in rowsList) {
+        foreach (var entry in rowsList) 
+        {
             Console.WriteLine("Date: " + entry.Date.ToString() + "; Note: " + entry.Note + "; Location: " + entry.Location);
         }
     }
