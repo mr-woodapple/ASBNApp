@@ -39,6 +39,7 @@ Created 16.10.2023
     // Will be called on initialization & once SelectedWeek or SelectedYear changes
     public async void GetDataFromDates() 
     {
+        // TODO: Uncomment to actually load data
         rows = await dataService.GetWeek(SelectedYear, SelectedWeek);
 
         // Convert the IEnumerable to a list -> because we need to add entries

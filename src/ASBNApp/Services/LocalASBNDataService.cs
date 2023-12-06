@@ -1,21 +1,26 @@
 // Created 2023-12-04
 // Implements logic to load data from a local JSON file (which the user can specify)
 
-// TODO: Not thread safe, if required at all?
+using System;
+using System.Text.Json;
 
 public class LocalASBNDataService : IASBNDataService
 {
     public string InputData;
 
+    // Returns InputData
     public string ReadData() => InputData;
 
-    // Create private variable to store the objects from our JSON in
+    // Stores the string argument in the InputData variable
+    // Convert to actual objects here
     public void WriteData(string dataFromJSON) {
-        // TODO: Still required??
-        // TODO: Check if other occurances of "ReadData" are still present, needs to be WriteData now!
         InputData = dataFromJSON;
-        
-        Console.WriteLine(InputData);
+
+        // convert into actual objects here (JSON deserialization)
+        JSONDataWrapper jsonDataWrapper = JsonSerializer.Deserialize<JSONDataWrapper>(dataFromJSON);
+        // How to access this mess
+        Console.WriteLine(jsonDataWrapper.LoggedData["2023"]["49"]["2023-12-04"].Note);
+
     }
 
     public Task<EntryRowModel> GetDay(DateTime? date)

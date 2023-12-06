@@ -10,8 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 // ASBNDataService dependency injection
-// builder.Services.AddSingleton<IASBNDataService, DummyASBNDataService>();
-builder.Services.AddSingleton<IASBNDataService, LocalASBNDataService>(); // unsinn?!
+builder.Services.AddSingleton<IASBNDataService, LocalASBNDataService>();
 // Making the FileSystemAccess package available to everyone
 builder.Services.AddFileSystemAccessService();
 

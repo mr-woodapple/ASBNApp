@@ -4,10 +4,6 @@
 class DummyASBNDataService : IASBNDataService
 {
 
-    public void ReadData(string text) {
-        throw new NotImplementedException();
-    }
-
     public string ReadData() => "";
 
     public void WriteData(string text)
@@ -78,8 +74,7 @@ class DummyASBNDataService : IASBNDataService
 
     public async Task SaveWeek(IEnumerable<EntryRowModel> entries)
     {
-        //throw new NotImplementedException();
-        Console.WriteLine("data saved");
+        throw new NotImplementedException();
     }
 
 

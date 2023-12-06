@@ -1,60 +1,63 @@
 {
-    "settings" : {
+    "Settings" : {
 
-        "username" : "Max Mustermann",
-        "profession" : "Fachinformatiker für Anwendungsentwicklung",
-        "legal-representitive" : "Max Mustermann sein Opa",
-        "company" : "Demo Company",
-        "school" : "Demo Schule"
+        "Username" : "Max Mustermann",
+        "Profession" : "Fachinformatiker für Anwendungsentwicklung",
+        "LegalRepresentitive" : "Max Mustermann sein Opa",
+        "Company" : "Demo Company",
+        "School" : "Demo Schule"
 
     },
 
-    "work-location-hours" : {
+    "WorkLocationHours" : {
         "MMS" : {
-            "location" : "MMS",
-            "hours" : 7.6
+            "Location" : "MMS",
+            "Hours" : 7.6
         },
         "HUBDresden" : {
-            "location" : "HUB Dresden",
-            "hours" : 6.2
+            "Location" : "HUB Dresden",
+            "Hours" : 6.2
         },
         "BSZETDD" : {
-            "location" : "BSZ ET Dresden",
-            "hours" : 7.2
+            "Location" : "BSZ ET Dresden",
+            "Hours" : 7.2
         }
     },
 
-    "data" : {
-        "2023" : {
+    "LoggedData" : {
 
+        "2023" : {
+            
             "49" : {
                 "2023-12-04" : {
-                    "date" : "2023-12-04",
-                    "location" : "MMS",
-                    "note" : "Hannes hat den Stift geklaut!"
+                    "Date" : "2023-12-04",
+                    "Location" : "MMS",
+                    "Note" : "Hannes hat den Stift geklaut!"
                 },
                 "2023-12-05" : {
-                    "date" : "2023-12-05",
-                    "location" : "MMS",
-                    "note" : "Hannes verkloppt und mir den Stift zurück geholt."
+                    "Date" : "2023-12-05",
+                    "Location" : "MMS",
+                    "Note" : "Hannes verkloppt und mir den Stift zurück geholt."
                 },
                 "2023-12-06" : {
-                    "date" : "2023-12-06",
-                    "location" : "MMS",
-                    "note" : "Schönes Bild gemalt."
+                    "Date" : "2023-12-06",
+                    "Location" : "MMS",
+                    "Note" : "Schönes Bild gemalt."
                 },
                 "2023-12-07" : {
-                    "date" : "2023-12-07",
-                    "location" : "",
-                    "note" : ""
+                    "Date" : "2023-12-07",
+                    "Location" : "",
+                    "Note" : ""
                 },
                 "2023-12-10" : {
-                    "date" : "2023-12-10",
-                    "location" : "MMS",
-                    "note" : "Elterngespräch mit der Lehrerin..."
+                    "Date" : "2023-12-10",
+                    "Location" : "MMS",
+                    "Note" : "Elterngespräch mit der Lehrerin..."
                 }
             },
-
+            
+            
+    
             "50" : {
                 "2023-12-11" : {
                     "date" : "2023-12-11",
@@ -83,9 +86,9 @@
                 }
             }
         },
-
+    
         "2024" : {
-
+    
             "1" : {
                 "2024-01-01" : {
                     "date" : "2024-01-01",
@@ -114,5 +117,5 @@
                 }
             }
         }
-    }
+    } 
 }
