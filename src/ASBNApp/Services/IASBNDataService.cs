@@ -1,10 +1,13 @@
 // Created 30.11.2023
 // Interface for retrieving & saving data
 
-using ASBNApp.Shared.Components.UI;
-
 interface IASBNDataService
 {
+
+    public string ReadData();
+
+    public void WriteData(string text);
+
     // Retrieving / storing weekly data
     public Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week);
 

@@ -1,4 +1,5 @@
 ﻿@inject IFileSystemAccessService FileSystemAccessService;
+@inject IASBNDataService dataService;
 
 
 <nav class="navbar navbar-expand">
@@ -33,6 +34,9 @@
 
 
 @code {
+    // Open & Read the JSON file using the FileSystemAccess package, 
+    // hand it over to our LocalASBNDataService
+
     private string Text = "";
 
     private async Task OpenAndReadFile()
@@ -40,12 +44,8 @@
         KristofferStrube.Blazor.FileSystem.FileSystemFileHandle? fileHandle = null;
         try
         {
-            OpenFilePickerOptionsStartInWellKnownDirectory options = new()
-                {
-                    Multiple = false,
-                    StartIn = WellKnownDirectory.Downloads
-                };
-            var fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync(options);
+            // removed options as I don't wanna start in the downloads folder every single time
+            var fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync();
             fileHandle = fileHandles.Single();
         }
         catch (JSException ex)
@@ -59,8 +59,11 @@
             {
                 var file = await fileHandle.GetFileAsync();
                 Text = await file.TextAsync();
-                Console.Write(Text);
-                StateHasChanged();
+                // TODO: hand over to the implementation of the interface
+                //LocalASBNDataService DataService = new LocalASBNDataService();
+
+                // using the injection here won't work because ReadData is not available in the Interface IASBNDataService
+                dataService.WriteData(Text);
             }
         }
     }

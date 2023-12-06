@@ -3,6 +3,18 @@
 
 class DummyASBNDataService : IASBNDataService
 {
+
+    public void ReadData(string text) {
+        throw new NotImplementedException();
+    }
+
+    public string ReadData() => "";
+
+    public void WriteData(string text)
+    {
+        Console.WriteLine(text);
+    }
+
     public async Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week)
     {
 
