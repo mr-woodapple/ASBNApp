@@ -1,7 +1,7 @@
-// Created 2023-12-06
-// Day class to go into a week class
+// Created 17.10.2023
+// Models how an entry for a single day looks like
 
-public class LogEntryDay 
+public class EntryRowModel
 {
     public DateTime Date { get; set; }
     public string? Location { get; set; }

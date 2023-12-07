@@ -46,43 +46,41 @@
                 },
                 "2023-12-07" : {
                     "Date" : "2023-12-07",
-                    "Location" : "",
-                    "Note" : ""
+                    "Location" : "HUB Dresden",
+                    "Note" : "Mate war alle - so ne Grütze!"
                 },
-                "2023-12-10" : {
-                    "Date" : "2023-12-10",
+                "2023-12-08" : {
+                    "Date" : "2023-12-08",
                     "Location" : "MMS",
                     "Note" : "Elterngespräch mit der Lehrerin..."
                 }
             },
             
-            
-    
             "50" : {
                 "2023-12-11" : {
-                    "date" : "2023-12-11",
-                    "location" : "MMS",
-                    "note" : "Hannes hat den Stift geklaut!"
+                    "Date" : "2023-12-11",
+                    "Location" : "MMS",
+                    "Note" : "Hannes hat den Stift geklaut!"
                 },
                 "2023-12-12" : {
-                    "date" : "2023-12-12",
-                    "location" : "MMS",
-                    "note" : "Hannes verkloppt und mir den Stift zurück geholt."
+                    "Date" : "2023-12-12",
+                    "Location" : "MMS",
+                    "Note" : "Hannes verkloppt und mir den Stift zurück geholt."
                 },
                 "2023-12-13" : {
-                    "date" : "2023-12-13",
-                    "location" : "MMS",
-                    "note" : "Schönes Bild gemalt."
+                    "Date" : "2023-12-13",
+                    "Location" : "MMS",
+                    "Note" : "Schönes Bild gemalt."
                 },
                 "2023-12-14" : {
-                    "date" : "2023-12-14",
-                    "location" : "",
-                    "note" : ""
+                    "Date" : "2023-12-14",
+                    "Location" : "",
+                    "Note" : ""
                 },
                 "2023-12-15" : {
-                    "date" : "2023-12-15",
-                    "location" : "MMS",
-                    "note" : "Elterngespräch mit der Lehrerin..."
+                    "Date" : "2023-12-15",
+                    "Location" : "MMS",
+                    "Note" : "Elterngespräch mit der Lehrerin..."
                 }
             }
         },
@@ -91,29 +89,29 @@
     
             "1" : {
                 "2024-01-01" : {
-                    "date" : "2024-01-01",
-                    "location" : "",
-                    "note" : "Feiertag"
+                    "Date" : "2024-01-01",
+                    "Location" : "",
+                    "Note" : "Feiertag"
                 },
                 "2024-01-02" : {
-                    "date" : "2024-01-02",
-                    "location" : "BSZ ET Dresden",
-                    "note" : "Super viele, spannende Sachen gelernt..."
+                    "Date" : "2024-01-02",
+                    "Location" : "BSZ ET Dresden",
+                    "Note" : "Super viele, spannende Sachen gelernt..."
                 },
                 "2024-01-03" : {
-                    "date" : "2024-01-03",
-                    "location" : "MMS",
-                    "note" : "Arbeit"
+                    "Date" : "2024-01-03",
+                    "Location" : "MMS",
+                    "Note" : "Arbeit"
                 },
                 "2024-01-04" : {
-                    "date" : "2024-01-04",
-                    "location" : "MMS",
-                    "note" : "Arbeit"
+                    "Date" : "2024-01-04",
+                    "Location" : "MMS",
+                    "Note" : "Arbeit"
                 },
                 "2024-01-05" : {
-                    "date" : "2024-01-05",
-                    "location" : "HUB Dresden",
-                    "note" : "Selbsthilfegruppe."
+                    "Date" : "2024-01-05",
+                    "Location" : "HUB Dresden",
+                    "Note" : "Selbsthilfegruppe."
                 }
             }
         }

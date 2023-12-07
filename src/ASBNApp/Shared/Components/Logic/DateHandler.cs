@@ -5,23 +5,42 @@
 // return a value corresponding to the given date
 
 
+using System.Globalization;
+
 public class DateHandler {
 
     /// <summary>
     /// Function to get the current week number
     /// </summary>
     /// <returns>Week number as an int</returns>
-    public int GetWeekOfYear() {
+    public int GetCurrentWeekOfYear() {
         // get culture info & current date/time from thread
         var CultureInfo = Thread.CurrentThread.CurrentCulture;
         DateTime Date = DateTime.Now;
 
         DayOfWeek FirstDay = CultureInfo.DateTimeFormat.FirstDayOfWeek;
-        System.Globalization.CalendarWeekRule weekRule = CultureInfo.DateTimeFormat.CalendarWeekRule;
-        System.Globalization.Calendar Cal = CultureInfo.Calendar;
+        CalendarWeekRule weekRule = CultureInfo.DateTimeFormat.CalendarWeekRule;
+        Calendar Cal = CultureInfo.Calendar;
         int Week = Cal.GetWeekOfYear(Date, weekRule, FirstDay);
 
         return Week;
+    }
+
+    /// <summary>
+    /// Calculates the week number for a given date
+    /// </summary>
+    /// <returns>int representing the week of year for the given date</returns>
+    public int GetWeekOfYear(DateTime date) {
+        // Get calendar for current culture info
+        var cultureInfo = Thread.CurrentThread.CurrentCulture;
+        Calendar calendar = cultureInfo.Calendar;
+
+        // Get the required properties
+        CalendarWeekRule calendarWeekRule = cultureInfo.DateTimeFormat.CalendarWeekRule;
+        DayOfWeek firstDayOfWeek = cultureInfo.DateTimeFormat.FirstDayOfWeek;
+
+        // Call GetWeekOfYear and return the int value
+        return calendar.GetWeekOfYear(date, calendarWeekRule, firstDayOfWeek);
     }
 
     /// <summary>

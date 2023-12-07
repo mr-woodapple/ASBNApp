@@ -37,7 +37,7 @@ Created 16.10.2023
 
     // Update the data we have from the data the (dummy) interface implementation returns
     // Will be called on initialization & once SelectedWeek or SelectedYear changes
-    public async void GetDataFromDates() 
+    public async void GetDataFromWeekDates() 
     {
         // TODO: Uncomment to actually load data
         rows = await dataService.GetWeek(SelectedYear, SelectedWeek);
@@ -77,7 +77,7 @@ Created 16.10.2023
             if (value != _selectedWeek)
             {
                 _selectedWeek = value;
-                GetDataFromDates();
+                GetDataFromWeekDates();
             }
         }
     }
@@ -91,7 +91,7 @@ Created 16.10.2023
             if (value != _selectedYear) 
             {
                 _selectedYear = value;
-                GetDataFromDates();
+                GetDataFromWeekDates();
             }
         }
     }

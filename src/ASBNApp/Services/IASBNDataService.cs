@@ -4,7 +4,7 @@
 interface IASBNDataService
 {
 
-    public string ReadData();
+    public JSONDataWrapper ReadData();
 
     public void WriteData(string text);
 
@@ -14,7 +14,7 @@ interface IASBNDataService
     public Task SaveWeek(IEnumerable<EntryRowModel> entries);
 
     // Retrieving / storing daily data
-    public Task<EntryRowModel> GetDay(DateTime? date);
+    public EntryRowModel GetDay(DateTime? date);
 
     public Task SaveDay(EntryRowModel entry);
 }

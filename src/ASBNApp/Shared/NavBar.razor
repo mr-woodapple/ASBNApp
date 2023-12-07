@@ -44,7 +44,7 @@
         KristofferStrube.Blazor.FileSystem.FileSystemFileHandle? fileHandle = null;
         try
         {
-            // removed options as I don't wanna start in the downloads folder every single time
+            // Removed options as I don't wanna start in the downloads folder every single time
             var fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync();
             fileHandle = fileHandles.Single();
         }
@@ -58,12 +58,9 @@
             if (fileHandle is not null)
             {
                 var file = await fileHandle.GetFileAsync();
-                Text = await file.TextAsync();
-                // TODO: hand over to the implementation of the interface
-                //LocalASBNDataService DataService = new LocalASBNDataService();
 
-                // using the injection here won't work because ReadData is not available in the Interface IASBNDataService
-                dataService.WriteData(Text);
+                // Hand the JSON string over to the interface (do to further processing)
+                dataService.WriteData(await file.TextAsync());
             }
         }
     }

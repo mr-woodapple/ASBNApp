@@ -59,7 +59,7 @@ TODO: Uses the (almost exact) same week base data/logic as the WeekSelectorLarge
     // Use onInitialized() to assign calculated values to the matching variables, avoids data not being loaded into memory
     protected override void OnInitialized()
     {
-        SelectedWeek = dateHandler.GetWeekOfYear();
+        SelectedWeek = dateHandler.GetCurrentWeekOfYear();
         SelectedYear = DateTime.Now.Year;
         TriggerAllCallbacks();
         // Set value for HTML week input
@@ -83,7 +83,7 @@ TODO: Uses the (almost exact) same week base data/logic as the WeekSelectorLarge
         // this week selected
         if (option == 0)
         {
-            SelectedWeek = dateHandler.GetWeekOfYear();
+            SelectedWeek = dateHandler.GetCurrentWeekOfYear();
             SelectedYear = DateTime.Now.Year;
         }
         // next week selected

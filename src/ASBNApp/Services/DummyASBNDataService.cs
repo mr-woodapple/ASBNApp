@@ -4,7 +4,8 @@
 class DummyASBNDataService : IASBNDataService
 {
 
-    public string ReadData() => "";
+    // Don't think that makes any sense, will be remove soon anyway
+    public JSONDataWrapper ReadData() => new JSONDataWrapper();
 
     public void WriteData(string text)
     {
@@ -78,7 +79,7 @@ class DummyASBNDataService : IASBNDataService
     }
 
 
-    public async Task<EntryRowModel> GetDay(DateTime? date)
+    public EntryRowModel GetDay(DateTime? date)
     {
         throw new NotImplementedException();
     }

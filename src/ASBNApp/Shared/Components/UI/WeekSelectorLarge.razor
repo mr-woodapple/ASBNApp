@@ -41,7 +41,7 @@ Created 16.10.2023
     // Also make sure to update the week number on the parent component
     protected override void OnInitialized()
     {
-        SelectedWeek = dateHandler.GetWeekOfYear();
+        SelectedWeek = dateHandler.GetCurrentWeekOfYear();
         SelectedYear = DateTime.Now.Year;
         TriggerAllCallbacks();
         // Set value for HTML week input

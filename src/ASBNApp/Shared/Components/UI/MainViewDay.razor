@@ -20,10 +20,6 @@ Created 13.10.2023
 
     <div class="row justify-content-end">
         <div class="col-auto">
-            <button class="btn btn-dark mt-4" type="submit" @onclick="Debug">DEBUG PRINT</button>
-        </div>
-
-        <div class="col-auto">
             <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
         </div>
     </div>
@@ -34,7 +30,6 @@ Created 13.10.2023
 
 
 @code {
-
     // Variables to bind the selected Date to:
     private DateTime _selectedDate = DateTime.Today;
     public DateTime SelectedDate 
@@ -55,24 +50,27 @@ Created 13.10.2023
     // Variable for storing the text the user put in
     public  string? Note = null;
 
+
+    // TODO: Load data after the site finished initializing
+    // good idea, but won't work as long as we don't have data loaded
+    protected override void OnInitialized()
+    {
+        // GetDataFromDate();
+    }
+
+
     // Gets data for the SelectedDate
+    // TODO: Add some note if no data is present -> or prevent the button being clicked in the first place!
     public async void GetDataFromDate() {
-        throw new NotImplementedException();
+        // Check if data present, if not create an empty EntryRowModel
+        var retrievedData = dataService.GetDay(SelectedDate);
+        // Set variables
+        Note = retrievedData.Note;
+        SelectedLocation = retrievedData.Location;
     }
 
     // Save data once I implemented it
     public async void SaveData() {
         throw new NotImplementedException();
-    }
-
-
-    public void Debug() {
-        var data = dataService.ReadData();
-        if (data == null) {
-            Console.WriteLine("empty");
-        } else {
-            Console.WriteLine(data);
-        }
-    }
-    
+    }    
 }
