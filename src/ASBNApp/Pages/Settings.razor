@@ -11,7 +11,8 @@
     <div class="row justify-content-between align-items-center">
         <div class="col-md-auto">
             @* required for the output pdf *@
-            <HeaderLarge Header="Hi {username}!" />
+            <HeaderLarge Header=@username />
+            <p></p>
         </div>
     </div>
 
@@ -84,11 +85,11 @@
     public ASBNApp.Model.Settings? settings { get; set; }
     public List<WorkLocationHours> workLocationHours = new();
     public Data.Professions Professions = new Data.Professions();
-    public string? username;
-    public string? selectedApprenticeship;
-    public string? legalRepresentitive;
-    public string? company;
-    public string? school;
+    public string? username { get; set; }
+    public string? selectedApprenticeship { get; set; }
+    public string? legalRepresentitive { get; set; }
+    public string? company { get; set; }
+    public string? school { get; set; }
 
     
 
@@ -105,7 +106,7 @@
         {
             settings = dataService.GetSettings();
             // set variables
-            username = settings.Username;
+            username = "Hi " + settings.Username + "!";
             selectedApprenticeship = settings.Profession;
             legalRepresentitive = settings.LegalRepresentitive;
             company = settings.Company;

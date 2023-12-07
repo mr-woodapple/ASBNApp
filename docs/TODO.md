@@ -55,7 +55,7 @@ Let's the user create and sign the PDFs, save them locally.
 ## Settings Page 
 
 - [ ] Overall UI
-- [ ] Load data from JSON & display it here
+- [x] Load data from JSON & display it here
 - [ ] Write user job from JSON -> select from a predefined list
 - [ ] Write user locations/hours, add new entries
 - [ ] Write user legal representitive
