@@ -13,12 +13,11 @@ public class LocalASBNDataService : IASBNDataService
 
     // Stores the string argument in the InputData variable
     // Convert to actual objects here
-    public void WriteData(string dataFromJSON) {
+    public void WriteData(string dataFromJSON)
+    {
         // convert into actual objects here (JSON deserialization)
         DataReadFromJSON = JsonSerializer.Deserialize<JSONDataWrapper>(dataFromJSON);
-        
-        // How to access this mess
-        // Console.WriteLine(DataReadFromJSON.LoggedData["2023"]["49"]["2023-12-06"].Note);
+
     }
 
     /// <summary>
@@ -35,7 +34,8 @@ public class LocalASBNDataService : IASBNDataService
         string DateToLoadAsString;
         string WeekNumberAsString;
 
-        if (date.HasValue) {
+        if (date.HasValue)
+        {
             // Need to run through this because we're using a nullable date
             // Get the parameters we need to get the LoggedData
             YearAsString = date.Value.ToString("yyyy");
@@ -47,23 +47,46 @@ public class LocalASBNDataService : IASBNDataService
             {
                 return DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateToLoadAsString];
             }
-            catch (KeyNotFoundException e)
+            catch (NullReferenceException e)
             {
-                Console.WriteLine(e.Message + " Created an empty RowModelEntry() instead.");
+                Console.WriteLine(e.Message + 
+                    " Specify a data source before trying to access data (an empty EntryRowModel has been returned in the meantime).");
                 return new EntryRowModel();
             }
-            
-        } else {
+        }
+        else
+        {
             // if there's no date handed over throw Exception
             throw new ArgumentNullException();
         }
     }
 
-    public Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week)
+    public async Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week)
     {
-        // get data for both the 
-        throw new NotImplementedException();
+        // List of entries to return as Enumerable 
+        // TODO: Does this make sense at all?
+        var result = new List<EntryRowModel>();
+        try
+        {
+            // Retrieve data for the selected week & year
+            var dataDictionary = DataReadFromJSON.LoggedData[year.ToString()][week.ToString()];
+
+            // iterate over dict & store in a list 
+            foreach (var entry in dataDictionary)
+            {
+                result.Add(entry.Value);
+            }
+        }
+        catch
+        {
+            // if an exception was catched, just return an set of 5 empty EntryRowModels
+        }
+
+
+        // return the list of entries as enumerable
+        return await Task.FromResult(result.AsEnumerable());
     }
+
 
     public Task SaveDay(EntryRowModel entry)
     {

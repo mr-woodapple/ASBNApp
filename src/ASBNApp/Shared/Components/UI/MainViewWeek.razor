@@ -1,5 +1,5 @@
-@* 
-Main view to input and edit data, displayed when the user selects the weekly view. 
+@*
+Main view to input and edit data, displayed when the user selects the weekly view.
 Created 16.10.2023
 *@
 
@@ -8,15 +8,17 @@ Created 16.10.2023
 <div class="container-fluid mt-3 p-0">
 
     @* TODO: Create connection from here downwards to have the weeks date available here as well *@
-    <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
+    <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
-    @if(SelectedYear != null && SelectedWeek != null){
-        @foreach (var entry in rowsList) {
+    @if (SelectedYear != null && SelectedWeek != null)
+    {
+        @foreach (var entry in rowsList)
+        {
             <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" />
         }
     }
-    
+
     <div class="row justify-content-end">
         <div class="col-auto">
             <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
@@ -29,20 +31,27 @@ Created 16.10.2023
 
 @code {
     // STUFF FOR EntryRows
-    
+
     // Define the IEnumerable and List variables the fill with data
     IEnumerable<EntryRowModel>? rows;
     List<EntryRowModel>? rowsList;
 
+    // Function to trigger a callback from the child component (and then do whatever is in this method)
+    public async Task Callback()
+    {
+        GetDataFromWeekDates();
+    }
+
 
     // Update the data we have from the data the (dummy) interface implementation returns
     // Will be called on initialization & once SelectedWeek or SelectedYear changes
-    public async void GetDataFromWeekDates() 
+    public async void GetDataFromWeekDates()
     {
-        // TODO: Uncomment to actually load data
+        // Call DataService to get the values for the matching week / year
         rows = await dataService.GetWeek(SelectedYear, SelectedWeek);
 
         // Convert the IEnumerable to a list -> because we need to add entries
+        // TODO: Check that this makes no sense
         rowsList = rows.ToList();
 
         // If no entries present, create 5 entries for the selected week
@@ -50,14 +59,9 @@ Created 16.10.2023
         {
             // Get first date in the week
             var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
-            for (int i = 0; i < 5; i++) 
+            for (int i = 0; i < 5; i++)
             {
-                rowsList.Add(new EntryRowModel() 
-                {
-                    Date = FirstDateInWeek.AddDays(i),
-                    Location = string.Empty,
-                    Note = string.Empty
-                });
+                rowsList.Add(new EntryRowModel());
             }
         }
     }
@@ -66,45 +70,18 @@ Created 16.10.2023
     // STUFF FOR WeekSelectorLarge
 
     // Creates DateHandler instance & variables to pass down to child component
-    // TODO: What exactly did I build here? What is it with the private and the get/set then?
     DateHandler dateHandler = new DateHandler();
-    private int? _selectedWeek = null;
-    // Custom get and set so we can call the GetDataFromDate() update function if the value changes
-    public int? SelectedWeek 
-    {
-        get => _selectedWeek;
-        set {
-            if (value != _selectedWeek)
-            {
-                _selectedWeek = value;
-                GetDataFromWeekDates();
-            }
-        }
-    }
-
-    // Custom get and set so we can call the GetDataFromDate() update function if the value changes
-    private int? _selectedYear = null;
-    public int? SelectedYear
-    {
-        get => _selectedYear;
-        set {
-            if (value != _selectedYear) 
-            {
-                _selectedYear = value;
-                GetDataFromWeekDates();
-            }
-        }
-    }
+    public int? SelectedWeek { get; set; }
+    public int? SelectedYear { get; set; }
 
 
-    
-    private void SaveData() 
+    private void SaveData()
     {
         dataService.SaveWeek(rowsList);
 
         // debug method to print what's saved in the variable rows
         Console.WriteLine("Week Nr: " + SelectedWeek + " Year " + SelectedYear);
-        foreach (var entry in rowsList) 
+        foreach (var entry in rowsList)
         {
             Console.WriteLine("Date: " + entry.Date.ToString() + "; Note: " + entry.Note + "; Location: " + entry.Location);
         }

@@ -33,6 +33,10 @@ Created 16.10.2023
     [Parameter]
     public EventCallback<int?> SelectedYearChanged { get; set; }
 
+    // Callback function
+    [Parameter]
+    public Func<Task> OnCallback { get; set; }
+
 
     DateHandler dateHandler = new DateHandler();
     private string? WeekFormatInput = null;
@@ -49,10 +53,12 @@ Created 16.10.2023
     }
 
     // Single place to trigger the callbacks
-    public void TriggerAllCallbacks() 
+    public async void TriggerAllCallbacks() 
     {
         SelectedWeekChanged.InvokeAsync(SelectedWeek);
         SelectedYearChanged.InvokeAsync(SelectedYear);
+        // Callback to the parent component
+        await OnCallback.Invoke();
     }
 
     // Required function to update the CurrentWeek number if the user selects
