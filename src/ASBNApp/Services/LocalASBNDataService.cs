@@ -1,9 +1,8 @@
 // Created 2023-12-04
 // Implements logic to load data from a local JSON file (which the user can specify)
 
-using System;
-using System.Globalization;
 using System.Text.Json;
+using ASBNApp.Model;
 
 public class LocalASBNDataService : IASBNDataService
 {
@@ -61,10 +60,16 @@ public class LocalASBNDataService : IASBNDataService
         }
     }
 
+    /// <summary>
+    /// Gets an Enumerable with the entries for a week
+    /// </summary>
+    /// <param name="year">int for the year to get data for</param>
+    /// <param name="week">int for the week to get data for</param>
+    /// <returns>Enumerable containing the 5 EntryRowModels (or none if the result is empty)</returns>
     public async Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week)
     {
         // List of entries to return as Enumerable 
-        // TODO: Does this make sense at all?
+        // TODO: Does this make sense at all? (to store the items in a list & coonvert to an enumerable)
         var result = new List<EntryRowModel>();
         try
         {
@@ -77,11 +82,10 @@ public class LocalASBNDataService : IASBNDataService
                 result.Add(entry.Value);
             }
         }
-        catch
+        catch (NullReferenceException e)
         {
-            // if an exception was catched, just return an set of 5 empty EntryRowModels
+            Console.WriteLine(e.Message + " No data loaded, please load JSON file before requesting data.");
         }
-
 
         // return the list of entries as enumerable
         return await Task.FromResult(result.AsEnumerable());
@@ -94,6 +98,32 @@ public class LocalASBNDataService : IASBNDataService
     }
 
     public Task SaveWeek(IEnumerable<EntryRowModel> entries)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public Settings? GetSettings()
+    {
+        return DataReadFromJSON.Settings;
+    }
+
+    public Task SaveSettings(Settings settings)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<WorkLocationHours> GetWorkLocationHours()
+    {
+        var workLocationHours = new List<WorkLocationHours>();
+        var workLocationHoursDictionary = DataReadFromJSON.WorkLocationHours;
+        foreach(var entry in workLocationHoursDictionary) {
+            workLocationHours.Add(entry.Value);
+        }
+        return workLocationHours;
+    }
+
+    public Task SaveWorkLocationHours(WorkLocationHours workLocationHours)
     {
         throw new NotImplementedException();
     }

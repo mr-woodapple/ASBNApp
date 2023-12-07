@@ -2,6 +2,8 @@
 // Wrapper for the data read from the JSON file, holds the top level objects 
 // such as WorkLocationHours, Settings & LoggedData
 
+using ASBNApp.Model;
+
 public class JSONDataWrapper
 {
     public Settings? Settings { get; set; }

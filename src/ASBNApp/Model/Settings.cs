@@ -1,5 +1,6 @@
 // Created 2023-12-06
 // Models what the settings are supposed to look like
+namespace ASBNApp.Model;
 
 public class Settings {
     public string? Username { get; set; }

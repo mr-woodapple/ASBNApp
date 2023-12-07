@@ -1,7 +1,8 @@
 // Created 2023-12-06
 // Models what a combination of work location and hours looks liks
 
-// TODO: use dictionarys here (instead of lists)
+
+namespace ASBNApp.Model;
 
 public class WorkLocationHours
 {

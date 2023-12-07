@@ -1,5 +1,9 @@
 @page "/settings"
 
+@inject IASBNDataService dataService;
+@using ASBNApp.Model;
+
+
 <PageTitle>Settings</PageTitle>
 
 <div class="container-fluid">
@@ -15,7 +19,7 @@
     <div class="row mt-4">
         <p>Your apprenticeship:</p>
         <div class="select-location-dropdown">
-            <select name="work-location" id="work-location" @bind="SelectedApprenticeship">
+            <select name="work-location" id="work-location" @bind="selectedApprenticeship">
                 <option value="" disabled selected>Select Apprenticeship </option>
 
                 @foreach (var entry in Data.Professions.Apprenticeships) {
@@ -28,7 +32,7 @@
     @* Specify your working locations and the hours for each location *@
     <div class="row mt-4">
         <p>Your working hours:</p>
-        @foreach (var entry in WorkLocationHours.DemoWorkLocationData) {
+        @foreach (var entry in workLocationHours) {
             <div class="row mt-1">
                 <div class="col-auto">
                     <input type="text" @bind="entry.Location" />
@@ -50,8 +54,8 @@
     <div class="row mt-4">
         <p>Your legal representative (if you're under 18!):</p>
         <div class="col-4">
-            <input type="text" placeholder="Your mama!" />
-            <span class="material-symbols-rounded">edit</span>
+            <input type="text" placeholder="Your mama!" @bind="legalRepresentitive" />
+            <span class="material-symbols-outlined">edit</span>
         </div>
     </div>
 
@@ -59,8 +63,8 @@
     <div class="row mt-4">
         <p>The company you're working at:</p>
         <div class="col-4">
-            <input type="text" placeholder="Telekom" />
-            <span class="material-symbols-rounded">edit</span>
+            <input type="text" placeholder="Telekom" @bind="company" />
+            <span class="material-symbols-outlined">edit</span>
         </div>
     </div>
 
@@ -68,14 +72,60 @@
     <div class="row mt-4">
         <p>Your school:</p>
         <div class="col-4">
-            <input type="text" placeholder="BSZ ET Dresden" />
-            <span class="material-symbols-rounded">edit</span>
+            <input type="text" placeholder="BSZ ET Dresden" @bind="school" />
+            <span class="material-symbols-outlined">edit</span>
         </div>
     </div>
 
 </div>
 
 
-@code {   
-    public string? SelectedApprenticeship = null;
+@code {
+    public ASBNApp.Model.Settings? settings { get; set; }
+    public List<WorkLocationHours> workLocationHours = new();
+    public Data.Professions Professions = new Data.Professions();
+    public string? username;
+    public string? selectedApprenticeship;
+    public string? legalRepresentitive;
+    public string? company;
+    public string? school;
+
+    
+
+    // Get settings object with JSON data on initialization
+    protected override void OnInitialized()
+    {
+        LoadSettingsData();
+        LoadWorkLocationHoursData();
+    }
+
+    // load settings data
+    public void LoadSettingsData() {
+        try 
+        {
+            settings = dataService.GetSettings();
+            // set variables
+            username = settings.Username;
+            selectedApprenticeship = settings.Profession;
+            legalRepresentitive = settings.LegalRepresentitive;
+            company = settings.Company;
+            school = settings.School;
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e.Message + " Load JSON file before trying to read values for settings.");
+        }
+    }
+
+    // load work location data
+    public void LoadWorkLocationHoursData() {
+        try 
+        {
+            workLocationHours = dataService.GetWorkLocationHours();
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e.Message + " Load JSON file before trying to read values for work location data.");
+        }
+    }
 }
