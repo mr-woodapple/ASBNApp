@@ -11,8 +11,7 @@
     <div class="row justify-content-between align-items-center">
         <div class="col-md-auto">
             @* required for the output pdf *@
-            <HeaderLarge Header=@username />
-            <p></p>
+            <HeaderLargeEditeable @bind-EditeableHeader="username" />
         </div>
     </div>
 
@@ -32,40 +31,25 @@
 
     @* Specify your working locations and the hours for each location *@
     <div class="row mt-4">
-        <p>Your working hours:</p>
-        @foreach (var entry in workLocationHours) {
-            <div class="row mt-1">
-                <div class="col-auto">
-                    <input type="text" @bind="entry.Location" />
-                    <input type="text" @bind="entry.Hours" />
-                    <span class="material-symbols-rounded">edit</span>
-                </div>
-            </div> 
-        }
-        <div class="row mt-1">
-            <div class="col">
-                <input type="text" placeholder="Add new working location"/>
-                <input type="text" placeholder="Add working hours"/>
-                <span class="material-symbols-rounded">add</span>
-            </div>
-        </div> 
+        <p>My working hours:</p>
+        <ShowEditWorkLocationHours @bind-WorkLocationHours="workLocationHours"/>
     </div>
 
     @* Specify your legal representative (if applicable) *@
     <div class="row mt-4">
-        <p class="mb-2">Your legal representative (if you're under 18!):</p>
+        <p class="mb-2">My legal representative (if you're under 18!):</p>
         <ShowEditTextInput @bind-inputValue="legalRepresentitive" Placeholder="Add your legal representitive here" />
     </div>
 
     @* Add company name here, required for the output pdf *@
     <div class="row mt-4">
-        <p class="mb-2">The company you're working at:</p>
+        <p class="mb-2">The company I'm working at:</p>
         <ShowEditTextInput @bind-inputValue="company" Placeholder="Add your company here" />
     </div>
 
     @* Add school name here, required for the output pdf *@
     <div class="row mt-4">
-        <p class="mb-2">Your school:</p>
+        <p class="mb-2">My school:</p>
         <ShowEditTextInput @bind-inputValue="School" Placeholder="Add your school here" />
     </div>
 
@@ -99,7 +83,7 @@
         {
             settings = dataService.GetSettings();
             // set variables
-            username = "Hi " + settings.Username + "!";
+            username = settings.Username;
             selectedApprenticeship = settings.Profession;
             legalRepresentitive = settings.LegalRepresentitive;
             company = settings.Company;

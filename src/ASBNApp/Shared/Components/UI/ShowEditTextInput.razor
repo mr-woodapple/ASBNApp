@@ -9,22 +9,21 @@ Simple component to show text & let's the user edit it after clicking a button
     {
         @* edit text mode *@
         <div class="row edit-text-row">
-            <div class="col-4">
-                <input type="text" class="input-underline" placeholder="@Placeholder" @bind="InputValue" />
+            <div class="col-5">
+                <input type="text" class="input-underline p-1" placeholder="@Placeholder" @bind="InputValue" />
             </div>
             <div class="col-1">
-                <span class="btn material-symbols-outlined" @onclick="@(e => { _isEdit = false; InputValueChanged.InvokeAsync(InputValue); })">check</span>
+                <span class="btn material-symbols-outlined p-0" @onclick="@(e => { _isEdit = false; InputValueChanged.InvokeAsync(InputValue); })">check</span>
             </div>
         </div>
-        
     }
     else
     {
         @* show text mode *@
         <div class="row">
-            <div class="col-4">
+            <div class="col-5">
                 <div class="show-text">
-                    <p class="m-0 p-1"> @(InputValue == null ? Placeholder : InputValue) </p>
+                    <p class="m-0 p-1 px-2"> @(InputValue == null ? Placeholder : InputValue) </p>
                 </div>
             </div>
             <div class="col-1">
