@@ -5,18 +5,18 @@ Created 16.10.2023
 
 <div class="row my-4 mx-0 justify-content-center">
 
-    <div class="col-auto week-change-button" @onclick="SelectPreviousWeek">
-        <p class="m-0 material-symbols-rounded align-self-center"> chevron_left </p>
+    <div class="col-auto week-change-button mb-2" @onclick="SelectPreviousWeek">
+        <p class="m-0 material-symbols-outlined align-self-center"> chevron_left </p>
     </div>
 
-    <div class="col-auto px-3 mx-3 text-center week-change-center">
+    <div class="col-auto px-3 mx-3 mb-2 text-center week-change-center">
         <label for="week">Select week:</label>
         @* TODO: @onfocusout might not be the best idea, there might be a better way to do this *@
         <input type="week" id="week" @bind="WeekFormatInput" @onfocusout="UpdateWeekFromSelector" />
     </div>
 
-    <div class="col-auto week-change-button" @onclick="SelectNextWeek">
-        <p class="m-0 material-symbols-rounded align-self-center"> chevron_right </p>
+    <div class="col-auto week-change-button mb-2" @onclick="SelectNextWeek">
+        <p class="m-0 material-symbols-outlined align-self-center"> chevron_right </p>
     </div>
 
 </div>

@@ -46,10 +46,11 @@ public class LocalASBNDataService : IASBNDataService
             {
                 return DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateToLoadAsString];
             }
-            catch (NullReferenceException e)
+            catch (Exception e)
             {
+                if (e is NullReferenceException || e is KeyNotFoundException)
                 Console.WriteLine(e.Message + 
-                    " Specify a data source before trying to access data (an empty EntryRowModel has been returned in the meantime).");
+                    " No data available (an empty EntryRowModel has been returned in the meantime).");
                 return new EntryRowModel();
             }
         }
@@ -88,7 +89,7 @@ public class LocalASBNDataService : IASBNDataService
         }
         catch (KeyNotFoundException e)
         {
-            Console.WriteLine(e.Message + " No data present for this week, returned empty list.");
+            Console.WriteLine(e.Message + " No data present for this week, returned empty list instead.");
         }
 
         // return the list of entries as enumerable

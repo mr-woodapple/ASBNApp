@@ -13,14 +13,14 @@
 
         @* Left half, used for options *@
         <div class="col-6">
-            <p>Select a week:</p>
+            <p>Select a week: </p>
 
             @* Create & add PillSelectorWeek here *@
             <PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
 
             <div class="row">
                 <div class="col-auto">
-                    <button class="btn btn-dark mt-4" type="submit">Export</button>
+                    <button class="btn btn-dark mt-4" type="submit" @onclick="ExportData" >Export</button>
                 </div>
             </div>
         </div>
@@ -34,9 +34,9 @@
 </div>
 
 @code {
-    public int? SelectedWeek = null;
-    public int? SelectedYear = null;
-
+    // Variables to bind to the child component
+    public int? SelectedWeek { get; set; }
+    public int? SelectedYear { get; set; }
 
 
     // Export PDF for the variables SelectedWeek & SeletedYear

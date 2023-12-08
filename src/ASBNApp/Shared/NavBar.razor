@@ -9,18 +9,18 @@
            
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <NavLink class="nav-link nav-underline" href="" Match="NavLinkMatch.All">
                     <NavbarLink Title="Start" />
                 </NavLink>
 
-                <NavLink class="nav-link" href="export">
+                <NavLink class="nav-link nav-underline" href="export">
                     <NavbarLink Title="Export" />
                 </NavLink>
             </div>
         </div>
 
         <div>
-            <button type="button" class="btn btn-secondary" @onclick="OpenAndReadFile" >Open File</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="OpenAndReadFile" >Open File</button>
         </div>
 
         <span class="profile-icon p-2 ms-3">
@@ -37,7 +37,7 @@
     // Open & Read the JSON file using the FileSystemAccess package, 
     // hand it over to our LocalASBNDataService
 
-    private string Text = "";
+    private string? Text = null;
 
     private async Task OpenAndReadFile()
     {

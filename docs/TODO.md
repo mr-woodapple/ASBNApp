@@ -47,14 +47,14 @@ Let's the user create and sign the PDFs, save them locally.
 - [ ] Generate pdf from selected week
 - [ ] Preview window (optional!)
 - [ ] Read MyCard data (get name)
-- [ ] Create signature image (close to the Telekom sisignature UI)
+- [ ] Create signature image (close to the Telekom signature UI)
 
 
 
 
 ## Settings Page 
 
-- [ ] Overall UI
+- [x] Overall UI
 - [x] Load data from JSON & display it here
 - [ ] Write user job from JSON -> select from a predefined list
 - [ ] Write user locations/hours, add new entries
@@ -64,7 +64,7 @@ Let's the user create and sign the PDFs, save them locally.
 
 ## Backend
 
-- [ ] C# Object Entry -> Date, Location?, Hours?, Notes?
+- [x] C# Object Entry -> Date, Location?, Hours?, Notes?
 - [x] C# Object User -> Name, Job, Locations/Working hours, LegalRepresentitive?, CompanyName?, SchoolName? (-> now two objects called Settings & WorkLocationHours)
 - [ ] Create .json files on the users system
 - [ ] Read/Write files on the users system using the FileSystemAccess API (helpful? https://github.com/KristofferStrube/Blazor.FileSystemAccess)

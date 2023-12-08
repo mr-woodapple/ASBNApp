@@ -7,20 +7,20 @@ TODO: Uses the (almost exact) same week base data/logic as the WeekSelectorLarge
 
 <div class="row mx-0 justify-content-start">
     
-    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "thisWeek" ? "active" : "")"
+    <div tabindex="0" class="col-auto me-2 mb-2 pill-selector-date @(Selected == "thisWeek" ? "active" : "")"
         @onclick="@(e => { Selected = "thisWeek"; UpdateFromWeekPicker(0); })">
 
         <p class="m-0">This week (KW @SelectedWeek) </p>
     </div>
 
-    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "nextWeek" ? "active" : "")"
+    <div tabindex="0" class="col-auto me-2 mb-2 pill-selector-date @(Selected == "nextWeek" ? "active" : "")"
         @onclick="@(e => { Selected = "nextWeek"; UpdateFromWeekPicker(1); })">
         
         <p class="m-0">Next week (KW @(SelectedWeek + 1))</p>
     </div>
 
-    <div class="col-auto pill-selector-date @(Selected == "customWeek" ? "active" : "")">
-            <label for="date">Pick custom </label>
+    <div class="col-auto pill-selector-date me-2 mb-2 @(Selected == "customWeek" ? "active" : "")">
+            <label for="week">Pick custom </label>
 
             @* TODO: @onfocusout might not be the best option, try to find a better working one! *@
             @* simply use bind and add the methods from onfocusout??  *@

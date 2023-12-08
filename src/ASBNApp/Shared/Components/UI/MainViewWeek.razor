@@ -56,10 +56,8 @@ Created 16.10.2023
         // If no entries present, create 5 entries for the selected week
         if (rowsList.Count() == 0 && SelectedWeek != null && SelectedYear != null)
         {
-            Console.WriteLine("rowsList = 0");
             // Get first date in the week
             var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
-            Console.WriteLine(FirstDateInWeek);
             for (int i = 0; i < 5; i++)
             {
                 rowsList.Add(new EntryRowModel()

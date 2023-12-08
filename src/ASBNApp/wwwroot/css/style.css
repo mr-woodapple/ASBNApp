@@ -1,3 +1,9 @@
+/* ################ Nav bar ################ */
+.nav-link.nav-underline.active {
+    border-bottom: 2px solid black;
+    margin-bottom: -2px;
+}
+
 /* ################ Main view switch Day / Week ################ */
 
 .view-selector {
@@ -30,7 +36,7 @@
 }
 
 
-/* ################ Pill Selector Date Daily View ################ */
+/* ################ Pill Selector Date ################ */
 
 .pill-selector-date {
     background-color: #d3d3d3;

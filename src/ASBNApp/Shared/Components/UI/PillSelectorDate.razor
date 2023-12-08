@@ -6,19 +6,19 @@ Created 13.10.2023
 
 <div class="row mx-0 justify-content-start">
     
-    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "today" ? "active" : "")" 
+    <div tabindex="0" class="col-auto me-2 mb-2 pill-selector-date @(Selected == "today" ? "active" : "")" 
         @onclick="@(e => { Selected = "today"; SelectedDate = DateTime.Today; SelectedDateChanged.InvokeAsync(SelectedDate); })" >
 
         <p class="m-0">Today (@Today.Date.ToString("dd.MM.yyyy"))</p>
     </div>
 
-    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "tomorrow" ? "active" : "")" 
+    <div tabindex="0" class="col-auto me-2 mb-2 pill-selector-date @(Selected == "tomorrow" ? "active" : "")" 
         @onclick="@(e => { Selected = "tomorrow"; SelectedDate = DateTime.Today.AddDays(1); SelectedDateChanged.InvokeAsync(SelectedDate); })">
 
         <p class="m-0">Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))</p>
     </div>
 
-    <div class="col-auto pill-selector-date @(Selected == "customdate" ? "active" : "")">
+    <div class="col-auto pill-selector-date me-2 mb-2 @(Selected == "customdate" ? "active" : "")">
             <label for="date">Pick day: </label>
 
             @* TODO: @onfocusout might not be the best option, try to find a better working one! *@
