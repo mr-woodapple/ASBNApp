@@ -55,8 +55,8 @@ Created 16.10.2023
     // Single place to trigger the callbacks
     public async void TriggerAllCallbacks() 
     {
-        SelectedWeekChanged.InvokeAsync(SelectedWeek);
-        SelectedYearChanged.InvokeAsync(SelectedYear);
+        await SelectedWeekChanged.InvokeAsync(SelectedWeek);
+        await SelectedYearChanged.InvokeAsync(SelectedYear);
         // Callback to the parent component
         await OnCallback.Invoke();
     }

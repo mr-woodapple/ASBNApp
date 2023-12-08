@@ -50,17 +50,24 @@ Created 16.10.2023
         rows = await dataService.GetWeek(SelectedYear, SelectedWeek);
 
         // Convert the IEnumerable to a list -> because we need to add entries
-        // TODO: Check that this makes no sense
+        // TODO: Check that this makes no sense (because we're converting from List to Enumerable before and then here to a List again??)
         rowsList = rows.ToList();
 
         // If no entries present, create 5 entries for the selected week
         if (rowsList.Count() == 0 && SelectedWeek != null && SelectedYear != null)
         {
+            Console.WriteLine("rowsList = 0");
             // Get first date in the week
             var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+            Console.WriteLine(FirstDateInWeek);
             for (int i = 0; i < 5; i++)
             {
-                rowsList.Add(new EntryRowModel());
+                rowsList.Add(new EntryRowModel()
+                {
+                    Date = FirstDateInWeek.AddDays(i),
+                    Location = string.Empty,
+                    Note = string.Empty
+                });
             }
         }
     }

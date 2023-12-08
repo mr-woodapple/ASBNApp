@@ -86,6 +86,10 @@ public class LocalASBNDataService : IASBNDataService
         {
             Console.WriteLine(e.Message + " No data loaded, please load JSON file before requesting data.");
         }
+        catch (KeyNotFoundException e)
+        {
+            Console.WriteLine(e.Message + " No data present for this week, returned empty list.");
+        }
 
         // return the list of entries as enumerable
         return await Task.FromResult(result.AsEnumerable());

@@ -53,30 +53,23 @@
 
     @* Specify your legal representative (if applicable) *@
     <div class="row mt-4">
-        <p>Your legal representative (if you're under 18!):</p>
-        <div class="col-4">
-            <input type="text" placeholder="Your mama!" @bind="legalRepresentitive" />
-            <span class="material-symbols-outlined">edit</span>
-        </div>
+        <p class="mb-2">Your legal representative (if you're under 18!):</p>
+        <ShowEditTextInput @bind-inputValue="legalRepresentitive" Placeholder="Add your legal representitive here" />
     </div>
 
     @* Add company name here, required for the output pdf *@
     <div class="row mt-4">
-        <p>The company you're working at:</p>
-        <div class="col-4">
-            <input type="text" placeholder="Telekom" @bind="company" />
-            <span class="material-symbols-outlined">edit</span>
-        </div>
+        <p class="mb-2">The company you're working at:</p>
+        <ShowEditTextInput @bind-inputValue="company" Placeholder="Add your company here" />
     </div>
 
     @* Add school name here, required for the output pdf *@
     <div class="row mt-4">
-        <p>Your school:</p>
-        <div class="col-4">
-            <input type="text" placeholder="BSZ ET Dresden" @bind="school" />
-            <span class="material-symbols-outlined">edit</span>
-        </div>
+        <p class="mb-2">Your school:</p>
+        <ShowEditTextInput @bind-inputValue="School" Placeholder="Add your school here" />
     </div>
+
+    
 
 </div>
 
@@ -89,7 +82,7 @@
     public string? selectedApprenticeship { get; set; }
     public string? legalRepresentitive { get; set; }
     public string? company { get; set; }
-    public string? school { get; set; }
+    public string? School { get; set; }
 
     
 
@@ -110,7 +103,7 @@
             selectedApprenticeship = settings.Profession;
             legalRepresentitive = settings.LegalRepresentitive;
             company = settings.Company;
-            school = settings.School;
+            School = settings.School;
         }
         catch (NullReferenceException e)
         {

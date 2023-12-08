@@ -1,0 +1,53 @@
+@*
+Created 2023-12-08
+Simple component to show text & let's the user edit it after clicking a button
+*@
+
+<div class="container show-edit-text">
+
+    @if (_isEdit)
+    {
+        @* edit text mode *@
+        <div class="row edit-text-row">
+            <div class="col-4">
+                <input type="text" class="input-underline" placeholder="@Placeholder" @bind="InputValue" />
+            </div>
+            <div class="col-1">
+                <span class="btn material-symbols-outlined" @onclick="@(e => { _isEdit = false; InputValueChanged.InvokeAsync(InputValue); })">check</span>
+            </div>
+        </div>
+        
+    }
+    else
+    {
+        @* show text mode *@
+        <div class="row">
+            <div class="col-4">
+                <div class="show-text">
+                    <p class="m-0 p-1"> @(InputValue == null ? Placeholder : InputValue) </p>
+                </div>
+            </div>
+            <div class="col-1">
+                @* Set focus to the input above *@
+                <span class="btn p-0 material-symbols-outlined" @onclick="@(e => { _isEdit = true; })">edit</span>
+            </div>
+        </div>
+    }
+    
+</div>
+
+
+@code {
+    // Variable to store the editing state in
+    private bool _isEdit = false;
+
+    // placeholder variable to be set in the parent component
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    // Two way binding
+    [Parameter]
+    public string? InputValue { get; set; }
+    [Parameter]
+    public EventCallback<string> InputValueChanged { get; set; }
+}
