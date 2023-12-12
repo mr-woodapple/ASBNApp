@@ -1,5 +1,8 @@
 ﻿@inject IFileSystemAccessService FileSystemAccessService;
 @inject IASBNDataService dataService;
+@inject IFileHandleManager fileHandleManager;
+
+@using KristofferStrube.Blazor.FileSystem;
 
 
 <nav class="navbar navbar-expand">
@@ -20,7 +23,7 @@
         </div>
 
         <div>
-            <button type="button" class="btn btn-outline-secondary" @onclick="OpenAndReadFile" >Open File</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="OpenAndReadFile">Open File</button>
         </div>
 
         <span class="profile-icon p-2 ms-3">
@@ -34,34 +37,34 @@
 
 
 @code {
-    // Open & Read the JSON file using the FileSystemAccess package, 
-    // hand it over to our LocalASBNDataService
+    
 
     private string? Text = null;
+    private FileSystemFileHandleInProcess? fileHandle;
 
+    // Let the user pick a file through the OS file system and then add it to our FileHandleManager
     private async Task OpenAndReadFile()
     {
-        KristofferStrube.Blazor.FileSystem.FileSystemFileHandle? fileHandle = null;
         try
         {
-            // Removed options as I don't wanna start in the downloads folder every single time
+            // TODO: maybe consider to use `using` (https://learn.microsoft.com/de-de/dotnet/csharp/language-reference/statements/using)
+            // TODO: Check if this is implemented correctly?
             var fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync();
-            fileHandle = fileHandles.Single();
+
+            // The "using" block here makes sure we don't have a memory leak, because
+            // "DisposeAsync" will be called at the end of the using scope.
+            await using (var fileHandle = fileHandles.Single()) {
+                if (fileHandle != null) {
+                    fileHandleManager.AddFileHandle(fileHandle);
+                }
+                // await and process data being converted to JSON objects, was this as intended?
+                await dataService.ReadData();
+            }
         }
         catch (JSException ex)
         {
             // Handle Exception or cancelation of File Access prompt
             Console.WriteLine(ex);
-        }
-        finally
-        {
-            if (fileHandle is not null)
-            {
-                var file = await fileHandle.GetFileAsync();
-
-                // Hand the JSON string over to the interface (do to further processing)
-                dataService.WriteData(await file.TextAsync());
-            }
         }
     }
 }

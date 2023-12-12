@@ -1,22 +1,48 @@
 // Created 2023-12-04
 // Implements logic to load data from a local JSON file (which the user can specify)
 
+
 using System.Text.Json;
 using ASBNApp.Model;
 
+
 public class LocalASBNDataService : IASBNDataService
 {
-    public JSONDataWrapper DataReadFromJSON;
-    public JSONDataWrapper ReadData() => DataReadFromJSON;
 
-
-    // Stores the string argument in the InputData variable
-    // Convert to actual objects here
-    public void WriteData(string dataFromJSON)
+    // Handling dependency injection
+    public LocalASBNDataService(IFileHandleProvider fileHandles, DateHandler dateHandler)
     {
-        // convert into actual objects here (JSON deserialization)
-        DataReadFromJSON = JsonSerializer.Deserialize<JSONDataWrapper>(dataFromJSON);
+        this.fileHandles = fileHandles;
+        this.dateHandler = dateHandler;
+    }
 
+    public JSONDataWrapper DataReadFromJSON;
+    private readonly IFileHandleProvider fileHandles;
+    private readonly DateHandler dateHandler;
+
+    /// <summary>
+    /// Load local file from the available list of file handles, then deserializes
+    /// the text into JSON objects
+    /// </summary>
+    /// <returns>Task</returns>
+    /// <exception cref="NullReferenceException">Throw exception if </exception>
+    public async Task ReadData(){
+        var fileHandle = fileHandles.GetFileHandles().Single();
+        var file = await fileHandle.GetFileAsync();
+        var text = await file.TextAsync();
+
+        // Dynamically load the names of objects and files
+        DataReadFromJSON = JsonSerializer.Deserialize<JSONDataWrapper>(text) ?? 
+            throw new NullReferenceException(
+                $"The selected file ({await fileHandle.GetNameAsync()}) cannot " +
+                $"be casted to an {nameof(JSONDataWrapper)}.");
+    }
+
+
+    // Not implemented yet, might be used to save data to a file
+    public void WriteData()
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -27,8 +53,6 @@ public class LocalASBNDataService : IASBNDataService
     /// <exception cref="ArgumentNullException">If no date is present, this is thrown</exception>
     public EntryRowModel GetDay(DateTime? date)
     {
-        DateHandler dateHandler = new DateHandler();
-
         string YearAsString;
         string DateToLoadAsString;
         string WeekNumberAsString;
@@ -67,10 +91,11 @@ public class LocalASBNDataService : IASBNDataService
     /// <param name="year">int for the year to get data for</param>
     /// <param name="week">int for the week to get data for</param>
     /// <returns>Enumerable containing the 5 EntryRowModels (or none if the result is empty)</returns>
-    public async Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week)
+    
+    // TODO: Do not use async here, as it creates an unnecessary overhead that won't be required (because the data is loaded initially
+    // and after that easily accessible with short load times)
+    public IEnumerable<EntryRowModel> GetWeek(int? year, int? week)
     {
-        // List of entries to return as Enumerable 
-        // TODO: Does this make sense at all? (to store the items in a list & coonvert to an enumerable)
         var result = new List<EntryRowModel>();
         try
         {
@@ -78,10 +103,7 @@ public class LocalASBNDataService : IASBNDataService
             var dataDictionary = DataReadFromJSON.LoggedData[year.ToString()][week.ToString()];
 
             // iterate over dict & store in a list 
-            foreach (var entry in dataDictionary)
-            {
-                result.Add(entry.Value);
-            }
+            foreach (var entry in dataDictionary) { result.Add(entry.Value); }
         }
         catch (NullReferenceException e)
         {
@@ -89,11 +111,27 @@ public class LocalASBNDataService : IASBNDataService
         }
         catch (KeyNotFoundException e)
         {
-            Console.WriteLine(e.Message + " No data present for this week, returned empty list instead.");
+            Console.WriteLine(e.Message + " No data present for this week, returned empty EntryRowModels instead.");
         }
 
-        // return the list of entries as enumerable
-        return await Task.FromResult(result.AsEnumerable());
+        // add entries if dataDictionary list is empty
+        if (result.Count == 0) {
+            if (week != null && year != null) {
+                var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)week, (int)year);
+                for (int i = 0; i < 5; i++)
+                {
+                    result.Add(new EntryRowModel()
+                    {
+                        Date = FirstDateInWeek.AddDays(i),
+                        Location = string.Empty,
+                        Note = string.Empty
+                    });
+                }
+            }
+        }
+
+        // Return the list of entries as enumerable
+        return result.AsEnumerable();
     }
 
 

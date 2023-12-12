@@ -6,16 +6,14 @@ using ASBNApp.Model;
 interface IASBNDataService
 {
 
-    public JSONDataWrapper ReadData();
+    public Task ReadData();
 
-    public void WriteData(string text);
+    public void WriteData();
 
-    // Retrieving / storing weekly data
-    public Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week);
+    public IEnumerable<EntryRowModel> GetWeek(int? year, int? week);
 
     public Task SaveWeek(IEnumerable<EntryRowModel> entries);
 
-    // Retrieving / storing daily data
     public EntryRowModel GetDay(DateTime? date);
 
     public Task SaveDay(EntryRowModel entry);

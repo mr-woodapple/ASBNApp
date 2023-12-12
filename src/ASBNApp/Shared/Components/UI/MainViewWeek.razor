@@ -13,7 +13,7 @@ Created 16.10.2023
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
     @if (SelectedYear != null && SelectedWeek != null)
     {
-        @foreach (var entry in rowsList)
+        @foreach (var entry in rows)
         {
             <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" />
         }
@@ -32,9 +32,8 @@ Created 16.10.2023
 @code {
     // STUFF FOR EntryRows
 
-    // Define the IEnumerable and List variables the fill with data
-    IEnumerable<EntryRowModel>? rows;
-    List<EntryRowModel>? rowsList;
+    // Define the IEnumerable variable the fill with data
+    IEnumerable<EntryRowModel> rows;
 
     // Function to trigger a callback from the child component (and then do whatever is in this method)
     public async Task Callback()
@@ -44,48 +43,27 @@ Created 16.10.2023
 
     // Update the data we have from the data the (dummy) interface implementation returns
     // Will be called on initialization & once SelectedWeek or SelectedYear changes
-    public async void GetDataFromWeekDates()
+    public void GetDataFromWeekDates()
     {
-        // Call DataService to get the values for the matching week / year
-        rows = await dataService.GetWeek(SelectedYear, SelectedWeek);
-
-        // Convert the IEnumerable to a list -> because we need to add entries
-        // TODO: Check that this makes no sense (because we're converting from List to Enumerable before and then here to a List again??)
-        rowsList = rows.ToList();
-
-        // If no entries present, create 5 entries for the selected week
-        if (rowsList.Count() == 0 && SelectedWeek != null && SelectedYear != null)
-        {
-            // Get first date in the week
-            var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
-            for (int i = 0; i < 5; i++)
-            {
-                rowsList.Add(new EntryRowModel()
-                {
-                    Date = FirstDateInWeek.AddDays(i),
-                    Location = string.Empty,
-                    Note = string.Empty
-                });
-            }
-        }
+        // Call DataService to get the values for the matching week / year & assign to rows
+        rows = dataService.GetWeek(SelectedYear, SelectedWeek);
     }
 
 
     // STUFF FOR WeekSelectorLarge
 
     // Creates DateHandler instance & variables to pass down to child component
-    DateHandler dateHandler = new DateHandler();
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
 
 
     private void SaveData()
     {
-        dataService.SaveWeek(rowsList);
+        // dataService.SaveWeek(rows);
 
         // debug method to print what's saved in the variable rows
         Console.WriteLine("Week Nr: " + SelectedWeek + " Year " + SelectedYear);
-        foreach (var entry in rowsList)
+        foreach (var entry in rows)
         {
             Console.WriteLine("Date: " + entry.Date.ToString() + "; Note: " + entry.Note + "; Location: " + entry.Location);
         }
