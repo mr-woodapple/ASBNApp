@@ -4,6 +4,7 @@ Created 20.10.2023
 *@
 
 @using ASBNApp.Model;
+@inject IASBNDataService dataService;
 
 <div class="row mb-3">
 
@@ -22,11 +23,18 @@ Created 20.10.2023
     <div class="col-auto entry-row entry-row-location align-items-center justify-content-center">
         <div class="select-location-dropdown">
             <select name="work-location" id="work-location" @bind="Entry.Location">
-                <option value="" disabled selected>Select location </option>
+                <option value="" disabled selected>Select location</option>
 
-                @foreach (var entry in WorkLocationHours.DemoWorkLocationData) {
-                    <option value="@entry.Location"> @entry.Location</option>
+                @if (dataService.GetWorkLocationHours().Count != 0) {
+                    @foreach (var entry in dataService.GetWorkLocationHours()) {
+                        <option value="@entry.Location"> @entry.Location</option>
+                    }
                 }
+                else
+                {
+                    <option value="" disabled>No data loaded, please select a file.</option>
+                }
+                
             </select>
         </div>
     </div>
@@ -55,7 +63,6 @@ Created 20.10.2023
     private string? _minDateValue = null;
     private string? _maxDateValue = null;
 
-    //
     protected override void OnInitialized()
     {
         if (SelectedWeek != null && SelectedYear != null)
@@ -64,7 +71,6 @@ Created 20.10.2023
             _minDateValue = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
             _maxDateValue = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
         }
-        
     }
 
 }

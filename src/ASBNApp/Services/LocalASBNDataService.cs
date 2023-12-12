@@ -16,7 +16,7 @@ public class LocalASBNDataService : IASBNDataService
         this.dateHandler = dateHandler;
     }
 
-    public JSONDataWrapper DataReadFromJSON;
+    public JSONDataWrapper? DataReadFromJSON;
     private readonly IFileHandleProvider fileHandles;
     private readonly DateHandler dateHandler;
 
@@ -26,13 +26,14 @@ public class LocalASBNDataService : IASBNDataService
     /// </summary>
     /// <returns>Task</returns>
     /// <exception cref="NullReferenceException">Throw exception if </exception>
-    public async Task ReadData(){
+    public async Task ReadData()
+    {
         var fileHandle = fileHandles.GetFileHandles().Single();
         var file = await fileHandle.GetFileAsync();
         var text = await file.TextAsync();
 
         // Dynamically load the names of objects and files
-        DataReadFromJSON = JsonSerializer.Deserialize<JSONDataWrapper>(text) ?? 
+        DataReadFromJSON = JsonSerializer.Deserialize<JSONDataWrapper>(text) ??
             throw new NullReferenceException(
                 $"The selected file ({await fileHandle.GetNameAsync()}) cannot " +
                 $"be casted to an {nameof(JSONDataWrapper)}.");
@@ -44,6 +45,7 @@ public class LocalASBNDataService : IASBNDataService
     {
         throw new NotImplementedException();
     }
+
 
     /// <summary>
     /// Function to get data from the JSON file for a certain date
@@ -73,8 +75,8 @@ public class LocalASBNDataService : IASBNDataService
             catch (Exception e)
             {
                 if (e is NullReferenceException || e is KeyNotFoundException)
-                Console.WriteLine(e.Message + 
-                    " No data available (an empty EntryRowModel has been returned in the meantime).");
+                    Console.WriteLine(e.Message +
+                        " No data available (an empty EntryRowModel has been returned in the meantime).");
                 return new EntryRowModel();
             }
         }
@@ -90,10 +92,7 @@ public class LocalASBNDataService : IASBNDataService
     /// </summary>
     /// <param name="year">int for the year to get data for</param>
     /// <param name="week">int for the week to get data for</param>
-    /// <returns>Enumerable containing the 5 EntryRowModels (or none if the result is empty)</returns>
-    
-    // TODO: Do not use async here, as it creates an unnecessary overhead that won't be required (because the data is loaded initially
-    // and after that easily accessible with short load times)
+    /// <returns>Enumerable containing the 5 EntryRowModels (filled with data / empty)</returns>
     public IEnumerable<EntryRowModel> GetWeek(int? year, int? week)
     {
         var result = new List<EntryRowModel>();
@@ -114,9 +113,11 @@ public class LocalASBNDataService : IASBNDataService
             Console.WriteLine(e.Message + " No data present for this week, returned empty EntryRowModels instead.");
         }
 
-        // add entries if dataDictionary list is empty
-        if (result.Count == 0) {
-            if (week != null && year != null) {
+        // Add 5 entries if dataDictionary list is empty (required for the UI)
+        if (result.Count == 0)
+        {
+            if (week != null && year != null)
+            {
                 var FirstDateInWeek = dateHandler.GetFirstDateOfWeek((int)week, (int)year);
                 for (int i = 0; i < 5; i++)
                 {
@@ -158,12 +159,22 @@ public class LocalASBNDataService : IASBNDataService
 
     public List<WorkLocationHours> GetWorkLocationHours()
     {
-        var workLocationHours = new List<WorkLocationHours>();
-        var workLocationHoursDictionary = DataReadFromJSON.WorkLocationHours;
-        foreach(var entry in workLocationHoursDictionary) {
-            workLocationHours.Add(entry.Value);
+        try
+        {
+            var workLocationHours = new List<WorkLocationHours>();
+            var workLocationHoursDictionary = DataReadFromJSON.WorkLocationHours;
+            foreach (var entry in workLocationHoursDictionary)
+            {
+                workLocationHours.Add(entry.Value);
+            }
+            return workLocationHours;
         }
-        return workLocationHours;
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e.Message + " No data available, please load a file first.");
+            return new List<WorkLocationHours>();
+        }
+
     }
 
     public Task SaveWorkLocationHours(WorkLocationHours workLocationHours)

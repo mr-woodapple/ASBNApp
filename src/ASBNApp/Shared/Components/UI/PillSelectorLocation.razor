@@ -4,29 +4,36 @@ Created 13.10.2023
 *@
 
 @using ASBNApp.Model;
+@inject IASBNDataService dataService;
 
 <div class="row mx-0 justify-content-start align-items-center">
-    
-    @foreach (var entry in WorkLocationHours.DemoWorkLocationData) {
-        @* Make this selectable with @onkeydown Enter *@
-        <div 
-            class="col-auto me-2 mb-2 pill-selector-date @(SelectedLocation == entry.Location ? "active" : "")" 
-            @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })"
-            tabindex="0">
-            
-            <p class="m-0"> @entry.Location </p>
-        </div>
+
+    @if(dataService.GetWorkLocationHours().Count != 0) {
+        @foreach (var entry in dataService.GetWorkLocationHours())
+        {
+            <div 
+                class="col-auto me-2 mb-2 pill-selector-date @(SelectedLocation == entry.Location ? "active" : "")" 
+                @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })"
+                tabindex="0">
+                
+                <p class="m-0"> @entry.Location </p>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="d-flex">
+            <span class="material-symbols-outlined" style="color: red;"> warning </span>
+            <i>&nbsp; No data available, please load a file first.</i>
+        </p>
     }
     
 
 </div>
 
 @code {
-
     [Parameter]
     public string? SelectedLocation { get; set; }
     [Parameter]
     public EventCallback<string?> SelectedLocationChanged { get; set; }
-
-    // TODO: Implement to dynamically load the work locations from the JSON file
 }
