@@ -19,11 +19,12 @@ Simple component to show text & let's the user edit it after clicking a button
     }
     else
     {
-        @* show text mode *@
+        @* Show text mode *@
         <div class="row">
             <div class="col-5">
                 <div class="show-text">
-                    <p class="m-0 p-1 px-2"> @(InputValue == null ? Placeholder : InputValue) </p>
+                    @if(InputValue == null) { <p class="m-0 p-1 px-2"><i> @Placeholder </i></p> } 
+                    else { <p class="m-0 p-1 px-2"> @InputValue </p> }
                 </div>
             </div>
             <div class="col-1">
@@ -40,11 +41,11 @@ Simple component to show text & let's the user edit it after clicking a button
     // Variable to store the editing state in
     private bool _isEdit = false;
 
-    // placeholder variable to be set in the parent component
+    // Placeholder variable to be set in the parent component
     [Parameter]
     public string? Placeholder { get; set; }
 
-    // Two way binding
+    // Two way binding parameters
     [Parameter]
     public string? InputValue { get; set; }
     [Parameter]

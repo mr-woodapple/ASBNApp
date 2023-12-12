@@ -69,8 +69,8 @@ Created 13.10.2023
         SelectedLocation = retrievedData.Location;
     }
 
-    // Save data once I implemented it
-    public async void SaveData() {
-        throw new NotImplementedException();
+    // Save data
+    public void SaveData() {
+        dataService.SaveDay(SelectedDate, SelectedLocation, Note);
     }    
 }

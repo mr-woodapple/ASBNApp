@@ -2,14 +2,16 @@
 // Implements logic to load data from a local JSON file (which the user can specify)
 
 
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using ASBNApp.Model;
+using Microsoft.AspNetCore.Components;
 
 
 public class LocalASBNDataService : IASBNDataService
 {
 
-    // Handling dependency injection
+    // Handling dependency injection in the constructor
     public LocalASBNDataService(IFileHandleProvider fileHandles, DateHandler dateHandler)
     {
         this.fileHandles = fileHandles;
@@ -40,10 +42,21 @@ public class LocalASBNDataService : IASBNDataService
     }
 
 
-    // Not implemented yet, might be used to save data to a file
-    public void WriteData()
+    /// <summary>
+    /// Serializes the DataReadFromJSON object into a string with given options,
+    /// saves that to disk
+    /// </summary>
+    /// <returns></returns>
+    public async Task WriteData()
     {
-        throw new NotImplementedException();
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        string serializedData = JsonSerializer.Serialize(DataReadFromJSON, options);
+
+        var writeable = await fileHandles.GetFileHandles().Single().CreateWritableAsync();
+        await writeable.WriteAsync(serializedData);
+        await writeable.CloseAsync();
+
+        // TODO: Check what happens if we lost writing privileges (if that's possible after all)
     }
 
 
@@ -86,6 +99,48 @@ public class LocalASBNDataService : IASBNDataService
             throw new ArgumentNullException();
         }
     }
+
+    // make this an object first, then add the object into the large DataReadFromJSON object, then call "WriteData"
+    public async Task SaveDay(DateTime date, string location, string note)
+    {
+        // Create new object from variables
+        EntryRowModel entry = new EntryRowModel()
+        {
+            Date = date,
+            Location = location,
+            Note = note
+        };
+
+        // Add entry back into the DataReadFromJSON
+
+        // prepare getting values for inserting into the main dictionary
+        string YearAsString;
+        string DateAsString;
+        string WeekNumberAsString;
+
+        YearAsString = date.ToString("yyyy");
+        DateAsString = date.ToString("yyyy-MM-dd");
+        WeekNumberAsString = dateHandler.GetWeekOfYear(date).ToString();
+
+        // check if key is present
+        bool keyInDict = DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString].ContainsKey(DateAsString);
+
+        // Overwrite current entry or create new one
+        try{
+            DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
+        } catch (KeyNotFoundException e) {
+            // TODO: Make sure to create new entry if a KeyNotFoundException is thrown
+            Console.WriteLine(e.Message);
+            // bool weekInDict = DataReadFromJSON.LoggedData[YearAsString].Contains(WeekNumberAsString);
+        }
+
+        // if new entry, we need to add the 5 other entries for the week as well
+
+        // actually write the data
+        WriteData();
+
+    }
+
 
     /// <summary>
     /// Gets an Enumerable with the entries for a week
@@ -135,11 +190,6 @@ public class LocalASBNDataService : IASBNDataService
         return result.AsEnumerable();
     }
 
-
-    public Task SaveDay(EntryRowModel entry)
-    {
-        throw new NotImplementedException();
-    }
 
     public Task SaveWeek(IEnumerable<EntryRowModel> entries)
     {

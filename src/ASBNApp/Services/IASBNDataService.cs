@@ -8,7 +8,7 @@ interface IASBNDataService
 
     public Task ReadData();
 
-    public void WriteData();
+    public Task WriteData();
 
     public IEnumerable<EntryRowModel> GetWeek(int? year, int? week);
 
@@ -16,7 +16,7 @@ interface IASBNDataService
 
     public EntryRowModel GetDay(DateTime? date);
 
-    public Task SaveDay(EntryRowModel entry);
+    public Task SaveDay(DateTime Date, string Location, string Note);
 
     public Settings? GetSettings();
 

@@ -37,6 +37,8 @@
 
 
 @code {
+    PermissionState writePermissionState;
+
     // Let the user pick a file through the OS file system and then add it to our FileHandleManager
     private async Task OpenAndReadFile()
     {
@@ -54,6 +56,11 @@
                 }
                 // await and process data being converted to JSON objects, was this as intended?
                 await dataService.ReadData();
+
+                // make sure we have write access
+                writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
+                Console.WriteLine("WritePermissionState = " + writePermissionState);
+                // TODO: Handle what happens when the user denies write access -> show info button to retrigger the popup
             }
         }
         catch (JSException ex)
