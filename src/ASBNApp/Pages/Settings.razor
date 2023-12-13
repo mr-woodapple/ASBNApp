@@ -17,9 +17,9 @@
 
     @* Choose your apprenticeship from a pre-defined list *@
     <div class="row mt-4">
-        <p>Your apprenticeship:</p>
+        <label for="profession-selector"><p>Your apprenticeship:</p></label>
         <div class="select-location-dropdown">
-            <select name="work-location" id="work-location" @bind="selectedApprenticeship">
+            <select name="profession-selector" id="profession-selector" @bind="selectedApprenticeship">
                 <option value="" disabled selected>Select Apprenticeship </option>
 
                 @foreach (var entry in Data.Professions.Apprenticeships) {

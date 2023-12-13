@@ -7,21 +7,19 @@ Same as the HeaderLarge component, but allows to edit the text in it *@
         @if (_isEditing)
         {
             <input @bind="EditeableHeader" class="input-underline input-bold short-underline" placeholder="First- and Lastname"/>
-            <span class="btn p-0 material-symbols-outlined" @onclick="@(e => { _isEditing = false; EditeableHeaderChanged.InvokeAsync(EditeableHeader); })"> check </span>
+            <span tabindex="0" class="btn p-0 material-symbols-outlined" @onclick="@(e => { _isEditing = false; EditeableHeaderChanged.InvokeAsync(EditeableHeader); })"> check </span>
         }
         else
         {
             @if (EditeableHeader == null)
             {
-                <h2>
-                    <strong>Please add your name here!</strong>
-                </h2>
+                <strong>Please add your name here! </strong>
             }
             else
             {
                 <strong>Hi, @EditeableHeader! </strong>
             }
-            <span class="btn p-0 material-symbols-outlined" @onclick="@(e => { _isEditing = true; })"> edit </span>
+            <span tabindex="0" class="btn p-0 material-symbols-outlined" @onclick="@(e => { _isEditing = true; })"> edit </span>
         }
     </h2>
 </div>

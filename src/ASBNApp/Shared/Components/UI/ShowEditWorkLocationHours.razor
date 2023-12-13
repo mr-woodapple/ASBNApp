@@ -45,9 +45,9 @@ also manage editing states & update parent component if necessary
                 </div>
                 <div class="col-1">
                     @* Set focus to the input above *@
-                    <span class="btn p-0 material-symbols-outlined"
+                    <span tabindex="0" class="btn p-0 material-symbols-outlined"
                         @onclick="@(e => { _isEditingList[entry.Location] = true; })"> edit </span>
-                    <span class="btn p-0 material-symbols-outlined"
+                    <span tabindex="0" class="btn p-0 material-symbols-outlined"
                         @onclick="@(e => { DeleteWorkLocationHoursEntry(entry); })"> delete </span>
                 </div>
             }
@@ -64,7 +64,7 @@ also manage editing states & update parent component if necessary
             <input @bind="_newWorkHours" class="input-underline" placeholder="Add hours" />
         </div>
         <div class="col-1">
-            <span class="btn p-0 material-symbols-outlined"
+            <span tabindex="0" class="btn p-0 material-symbols-outlined"
                 @onclick="@(e => { AddNewWorkLocationHoursEntry(); })">add</span>
         </div>
     </div>

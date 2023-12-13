@@ -30,9 +30,7 @@ Created 16.10.2023
 
 
 @code {
-    // STUFF FOR EntryRows
-
-    // Define the IEnumerable variable the fill with data
+    // Define the IEnumerable variable the fill with data from the JSON
     IEnumerable<EntryRowModel> rows;
 
     // Function to trigger a callback from the child component (and then do whatever is in this method)
@@ -50,11 +48,10 @@ Created 16.10.2023
     }
 
 
-    // STUFF FOR WeekSelectorLarge
-
     // Creates DateHandler instance & variables to pass down to child component
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
+
 
     // Save data
     private async void SaveData()

@@ -13,7 +13,7 @@ Simple component to show text & let's the user edit it after clicking a button
                 <input type="text" class="input-underline p-1" placeholder="@Placeholder" @bind="InputValue" />
             </div>
             <div class="col-1">
-                <span class="btn material-symbols-outlined p-0" @onclick="@(e => { _isEdit = false; InputValueChanged.InvokeAsync(InputValue); })">check</span>
+                <span tabindex="0" class="btn material-symbols-outlined p-0" @onclick="@(e => { _isEdit = false; InputValueChanged.InvokeAsync(InputValue); })">check</span>
             </div>
         </div>
     }
@@ -29,7 +29,7 @@ Simple component to show text & let's the user edit it after clicking a button
             </div>
             <div class="col-1">
                 @* Set focus to the input above *@
-                <span class="btn p-0 material-symbols-outlined" @onclick="@(e => { _isEdit = true; })">edit</span>
+                <span tabindex="0" class="btn p-0 material-symbols-outlined" @onclick="@(e => { _isEdit = true; })">edit</span>
             </div>
         </div>
     }
