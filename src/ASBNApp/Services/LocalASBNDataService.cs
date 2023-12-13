@@ -129,51 +129,26 @@ public class LocalASBNDataService : IASBNDataService
         {
             Console.WriteLine(e.Message + " Current entry week/year isn't available as of right now, creating now.");
 
-            // Check if the year is available in our dict -> if not create it
             if (!DataReadFromJSON.LoggedData.ContainsKey(YearAsString))
-            {
-                // TODO: Make this use one function (remove duplicate code)
-                
+            {                
                 // Add new year
                 DataReadFromJSON.LoggedData.Add(YearAsString, new Dictionary<string, Dictionary<string, EntryRowModel>>());
-
-                // Add new week
-                DataReadFromJSON.LoggedData[YearAsString].Add(WeekNumberAsString, new Dictionary<string, EntryRowModel>());
-
-                // Add 5 new days
-                for (var i = 0; i < 5; i++)
-                {
-                    var firstDateOfWeek = dateHandler.GetFirstDateOfWeek(int.Parse(WeekNumberAsString), date.Year);
-                    DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][firstDateOfWeek.AddDays(i).ToString("yyyy-MM-dd")] = new EntryRowModel(){
-                        Date = firstDateOfWeek.AddDays(i)
-                    };
-                }
-
-                // Replace the empty data for the entry we are about to save
-                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
             }
-            // Check if the week is available in our dict -> if not create it and add 5 empty entries
-            else if (!DataReadFromJSON.LoggedData[YearAsString].ContainsKey(WeekNumberAsString))
+
+            // Add new week 
+            DataReadFromJSON.LoggedData[YearAsString].Add(WeekNumberAsString, new Dictionary<string, EntryRowModel>());
+
+            // Add 5 new days
+            for (var i = 0; i < 5; i++)
             {
-                // Add new week 
-                DataReadFromJSON.LoggedData[YearAsString].Add(WeekNumberAsString, new Dictionary<string, EntryRowModel>());
-
-                // Add 5 new days
-                for (var i = 0; i < 5; i++)
-                {
-                    var firstDateOfWeek = dateHandler.GetFirstDateOfWeek(int.Parse(WeekNumberAsString), date.Year);
-                    DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][firstDateOfWeek.AddDays(i).ToString("yyyy-MM-dd")] = new EntryRowModel(){
-                        Date = firstDateOfWeek.AddDays(i)
-                    };
-                }
-
-                // Replace the empty data for the entry we are about to save
-                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
+                var firstDateOfWeek = dateHandler.GetFirstDateOfWeek(int.Parse(WeekNumberAsString), date.Year);
+                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][firstDateOfWeek.AddDays(i).ToString("yyyy-MM-dd")] = new EntryRowModel(){
+                    Date = firstDateOfWeek.AddDays(i)
+                };
             }
-            else
-            {
-                Console.WriteLine("Throw some kind of exception, as something is horribly wrong by now.");
-            }
+
+            // Replace the empty data for the entry we are about to save
+            DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
         }
 
         // Actually write the data
