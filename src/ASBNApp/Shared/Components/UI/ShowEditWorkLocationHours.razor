@@ -47,6 +47,8 @@ also manage editing states & update parent component if necessary
                     @* Set focus to the input above *@
                     <span class="btn p-0 material-symbols-outlined"
                         @onclick="@(e => { _isEditingList[entry.Location] = true; })"> edit </span>
+                    <span class="btn p-0 material-symbols-outlined"
+                        @onclick="@(e => { DeleteWorkLocationHoursEntry(entry); })"> delete </span>
                 </div>
             }
 
@@ -118,6 +120,12 @@ also manage editing states & update parent component if necessary
         {
             Console.WriteLine("Add something to both inputs before trying to add the entry!");
         }
+    }
+
+    private void DeleteWorkLocationHoursEntry(WorkLocationHours entry)
+    {
+        WorkLocationHours.Remove(entry);
+        WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
     }
 
     // Rebuild the isEditing dict, required after changing the key on one an entry

@@ -1,5 +1,6 @@
 // Created 2023-12-06
 // Models what the settings are supposed to look like
+
 namespace ASBNApp.Model;
 
 public class Settings {
@@ -9,6 +10,4 @@ public class Settings {
     public string? Company { get; set; }
     public string? School { get; set; }
 
-
-    // could add some demo values here as well
 }

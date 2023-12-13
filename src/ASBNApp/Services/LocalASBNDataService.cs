@@ -209,13 +209,17 @@ public class LocalASBNDataService : IASBNDataService
         return result.AsEnumerable();
     }
 
-
+    /// <summary>
+    /// Adds the IEnumerable argument back into the DataReadFromJSON dict,
+    /// create new year / week dict if they're not existing
+    /// </summary>
+    /// <param name="entries"></param>
+    /// <returns></returns>
     public async Task SaveWeek(IEnumerable<EntryRowModel> entries)
     {
         // Prepare getting values for inserting into the main dictionary
         var date = entries.ElementAt(0).Date;
         string YearAsString = date.ToString("yyyy");
-        string DateAsString = date.ToString("yyyy-MM-dd");
         string WeekNumberAsString = dateHandler.GetWeekOfYear(date).ToString();
 
         try
@@ -246,7 +250,8 @@ public class LocalASBNDataService : IASBNDataService
             }
         }
 
-        WriteData();
+        // Call the function that actually saves data to our file
+        await WriteData();
     }
 
 
@@ -255,9 +260,17 @@ public class LocalASBNDataService : IASBNDataService
         return DataReadFromJSON.Settings;
     }
 
-    public Task SaveSettings(Settings settings)
+    public async Task SaveSettings(Settings settings)
     {
-        throw new NotImplementedException();
+        try
+        {
+            DataReadFromJSON.Settings = settings;
+            WriteData();
+        }
+        catch (KeyNotFoundException e)
+        {
+            Console.WriteLine(e.Message + " No 'Settings' object available, cannot write settings.");
+        }
     }
 
     public List<WorkLocationHours> GetWorkLocationHours()
@@ -274,14 +287,27 @@ public class LocalASBNDataService : IASBNDataService
         }
         catch (NullReferenceException e)
         {
-            Console.WriteLine(e.Message + " No data available, please load a file first.");
+            Console.WriteLine(e.Message +
+                " No data available, please load a file first (returning an empty list in the meantime).");
             return new List<WorkLocationHours>();
         }
 
     }
 
-    public Task SaveWorkLocationHours(WorkLocationHours workLocationHours)
+    public async Task SaveWorkLocationHours(List<WorkLocationHours> workLocationHours)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // Clear the dict (otherwise deleted entries will persist foever)
+            DataReadFromJSON.WorkLocationHours.Clear();
+            foreach(var entry in workLocationHours) {
+                DataReadFromJSON.WorkLocationHours[entry.Location] = entry;
+            }
+            WriteData();
+        }
+        catch (KeyNotFoundException e)
+        {
+            Console.WriteLine(e.Message + " No WorkLocationHours object found, please create one first.");
+        }
     }
 }

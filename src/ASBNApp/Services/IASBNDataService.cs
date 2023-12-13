@@ -24,5 +24,5 @@ interface IASBNDataService
 
     public List<WorkLocationHours> GetWorkLocationHours();
 
-    public Task SaveWorkLocationHours(WorkLocationHours workLocationHours);
+    public Task SaveWorkLocationHours(List<WorkLocationHours> workLocationHours);
 }

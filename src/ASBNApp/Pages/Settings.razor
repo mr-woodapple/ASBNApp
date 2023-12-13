@@ -50,23 +50,28 @@
     @* Add school name here, required for the output pdf *@
     <div class="row mt-4">
         <p class="mb-2">My school:</p>
-        <ShowEditTextInput @bind-inputValue="School" Placeholder="Add your school here" />
+        <ShowEditTextInput @bind-inputValue="school" Placeholder="Add your school here" />
     </div>
 
-    
+    <div class="row justify-content-end">
+        <div class="col-auto">
+            <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
+        </div>
+    </div>
+
 
 </div>
 
 
 @code {
     public ASBNApp.Model.Settings? settings { get; set; }
-    public List<WorkLocationHours> workLocationHours = new();
+    public List<WorkLocationHours> workLocationHours { get; set; } = new();
     public Data.Professions Professions = new Data.Professions();
     public string? username { get; set; }
     public string? selectedApprenticeship { get; set; }
     public string? legalRepresentitive { get; set; }
     public string? company { get; set; }
-    public string? School { get; set; }
+    public string? school { get; set; }
 
     
 
@@ -87,7 +92,7 @@
             selectedApprenticeship = settings.Profession;
             legalRepresentitive = settings.LegalRepresentitive;
             company = settings.Company;
-            School = settings.School;
+            school = settings.School;
         }
         catch (NullReferenceException e)
         {
@@ -95,7 +100,7 @@
         }
     }
 
-    // load work location data
+    // Load work location data
     public void LoadWorkLocationHoursData() {
         try 
         {
@@ -105,5 +110,17 @@
         {
             Console.WriteLine(e.Message + " Load JSON file before trying to read values for work location data.");
         }
+    }
+
+    public void SaveData() {
+        // Assign variables
+        settings.Username = username;
+        settings.Profession = selectedApprenticeship;
+        settings.LegalRepresentitive = legalRepresentitive;
+        settings.Company = company;
+        settings.School = school;
+
+        dataService.SaveSettings(settings);
+        dataService.SaveWorkLocationHours(workLocationHours);
     }
 }
