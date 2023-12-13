@@ -45,7 +45,7 @@ public class LocalASBNDataService : IASBNDataService
     /// Serializes the DataReadFromJSON object into a string with given options,
     /// saves that to disk
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Task</returns>
     public async Task WriteData()
     {
         var options = new JsonSerializerOptions { WriteIndented = true };
@@ -99,7 +99,16 @@ public class LocalASBNDataService : IASBNDataService
         }
     }
 
-    // make this an object first, then add the object into the large DataReadFromJSON object, then call "WriteData"
+
+    /// <summary>
+    /// Creates EntryRowModel object from the arguments, then handles inserting into
+    /// the DataReadFromJSON object, also adds new year / week objects if required
+    /// and fills them with 5 empty EntryRowModel entries per default
+    /// </summary>
+    /// <param name="date">DateTime object holding the date to save the entry for</param>
+    /// <param name="location">string with user input</param>
+    /// <param name="note">string with user input</param>
+    /// <returns>Task</returns>
     public async Task SaveDay(DateTime date, string location, string note)
     {
         // Create new object from variables to be added into the main dictionary
@@ -111,14 +120,9 @@ public class LocalASBNDataService : IASBNDataService
         };
 
         // Prepare getting values for inserting into the main dictionary
-        string YearAsString;
-        string DateAsString;
-        string WeekNumberAsString;
-
-        YearAsString = date.ToString("yyyy");
-        DateAsString = date.ToString("yyyy-MM-dd");
-        WeekNumberAsString = dateHandler.GetWeekOfYear(date).ToString();
-
+        string YearAsString = date.ToString("yyyy");
+        string DateAsString = date.ToString("yyyy-MM-dd");
+        string WeekNumberAsString = dateHandler.GetWeekOfYear(date).ToString();
 
         try
         {
@@ -127,31 +131,32 @@ public class LocalASBNDataService : IASBNDataService
         }
         catch (KeyNotFoundException e)
         {
-            Console.WriteLine(e.Message + " Current entry week/year isn't available as of right now, creating now.");
+            Console.WriteLine(e.Message + " No dict entry for this week/year available, creating missing entries now.");
 
             if (!DataReadFromJSON.LoggedData.ContainsKey(YearAsString))
-            {                
-                // Add new year
+            {
+                // Add new year to the dictionary
                 DataReadFromJSON.LoggedData.Add(YearAsString, new Dictionary<string, Dictionary<string, EntryRowModel>>());
             }
 
-            // Add new week 
+            // Add new week to the dictionary
             DataReadFromJSON.LoggedData[YearAsString].Add(WeekNumberAsString, new Dictionary<string, EntryRowModel>());
 
             // Add 5 new days
             for (var i = 0; i < 5; i++)
             {
                 var firstDateOfWeek = dateHandler.GetFirstDateOfWeek(int.Parse(WeekNumberAsString), date.Year);
-                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][firstDateOfWeek.AddDays(i).ToString("yyyy-MM-dd")] = new EntryRowModel(){
+                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][firstDateOfWeek.AddDays(i).ToString("yyyy-MM-dd")] = new EntryRowModel()
+                {
                     Date = firstDateOfWeek.AddDays(i)
                 };
             }
 
-            // Replace the empty data for the entry we are about to save
+            // Replace the empty data with the entry we are about to save
             DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
         }
 
-        // Actually write the data
+        // Call the function that actually saves data to our file
         WriteData();
     }
 
@@ -205,9 +210,43 @@ public class LocalASBNDataService : IASBNDataService
     }
 
 
-    public Task SaveWeek(IEnumerable<EntryRowModel> entries)
+    public async Task SaveWeek(IEnumerable<EntryRowModel> entries)
     {
-        throw new NotImplementedException();
+        // Prepare getting values for inserting into the main dictionary
+        var date = entries.ElementAt(0).Date;
+        string YearAsString = date.ToString("yyyy");
+        string DateAsString = date.ToString("yyyy-MM-dd");
+        string WeekNumberAsString = dateHandler.GetWeekOfYear(date).ToString();
+
+        try
+        {
+            // Try updating the entries as they are
+            foreach (var entry in entries)
+            {
+                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][entry.Date.ToString("yyyy-MM-dd")] = entry;
+            }
+        }
+        catch (KeyNotFoundException e)
+        {
+            Console.WriteLine(e.Message + " No dict entries for the selected year / week available, creating missing entries now.");
+
+            if (!DataReadFromJSON.LoggedData.ContainsKey(YearAsString))
+            {
+                // Add new year to the dictionary
+                DataReadFromJSON.LoggedData.Add(YearAsString, new Dictionary<string, Dictionary<string, EntryRowModel>>());
+            }
+
+            // Add new week to the dictionary
+            DataReadFromJSON.LoggedData[YearAsString].Add(WeekNumberAsString, new Dictionary<string, EntryRowModel>());
+
+            // Add entries from the IEnumerable
+            foreach (var entry in entries)
+            {
+                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][entry.Date.ToString("yyyy-MM-dd")] = entry;
+            }
+        }
+
+        WriteData();
     }
 
 

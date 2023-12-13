@@ -56,16 +56,9 @@ Created 16.10.2023
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
 
-
-    private void SaveData()
+    // Save data
+    private async void SaveData()
     {
-        // dataService.SaveWeek(rows);
-
-        // debug method to print what's saved in the variable rows
-        Console.WriteLine("Week Nr: " + SelectedWeek + " Year " + SelectedYear);
-        foreach (var entry in rows)
-        {
-            Console.WriteLine("Date: " + entry.Date.ToString() + "; Note: " + entry.Note + "; Location: " + entry.Location);
-        }
+        await dataService.SaveWeek(rows);
     }
 }
