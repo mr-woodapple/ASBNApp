@@ -48,6 +48,7 @@ Let's the user create and sign the PDFs, save them locally.
 - [ ] Preview window (optional!)
 - [ ] Read MyCard data (get name)
 - [ ] Create signature image (close to the Telekom signature UI)
+- [ ] Check if there are more than 5 entries available, if so warn the user (as we only have 5 columns in the PDF to fill)
 
 
 

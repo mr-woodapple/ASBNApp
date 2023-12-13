@@ -2,10 +2,9 @@
 // Implements logic to load data from a local JSON file (which the user can specify)
 
 
-using System.Runtime.InteropServices;
 using System.Text.Json;
 using ASBNApp.Model;
-using Microsoft.AspNetCore.Components;
+using ASBNApp.Shared.Components.UI;
 
 
 public class LocalASBNDataService : IASBNDataService
@@ -103,7 +102,7 @@ public class LocalASBNDataService : IASBNDataService
     // make this an object first, then add the object into the large DataReadFromJSON object, then call "WriteData"
     public async Task SaveDay(DateTime date, string location, string note)
     {
-        // Create new object from variables
+        // Create new object from variables to be added into the main dictionary
         EntryRowModel entry = new EntryRowModel()
         {
             Date = date,
@@ -111,9 +110,7 @@ public class LocalASBNDataService : IASBNDataService
             Note = note
         };
 
-        // Add entry back into the DataReadFromJSON
-
-        // prepare getting values for inserting into the main dictionary
+        // Prepare getting values for inserting into the main dictionary
         string YearAsString;
         string DateAsString;
         string WeekNumberAsString;
@@ -122,23 +119,65 @@ public class LocalASBNDataService : IASBNDataService
         DateAsString = date.ToString("yyyy-MM-dd");
         WeekNumberAsString = dateHandler.GetWeekOfYear(date).ToString();
 
-        // check if key is present
-        bool keyInDict = DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString].ContainsKey(DateAsString);
 
-        // Overwrite current entry or create new one
-        try{
+        try
+        {
+            // Overwrite the current entry or create a new one
             DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
-        } catch (KeyNotFoundException e) {
-            // TODO: Make sure to create new entry if a KeyNotFoundException is thrown
-            Console.WriteLine(e.Message);
-            // bool weekInDict = DataReadFromJSON.LoggedData[YearAsString].Contains(WeekNumberAsString);
+        }
+        catch (KeyNotFoundException e)
+        {
+            Console.WriteLine(e.Message + " Current entry week/year isn't available as of right now, creating now.");
+
+            // Check if the year is available in our dict -> if not create it
+            if (!DataReadFromJSON.LoggedData.ContainsKey(YearAsString))
+            {
+                // TODO: Make this use one function (remove duplicate code)
+                
+                // Add new year
+                DataReadFromJSON.LoggedData.Add(YearAsString, new Dictionary<string, Dictionary<string, EntryRowModel>>());
+
+                // Add new week
+                DataReadFromJSON.LoggedData[YearAsString].Add(WeekNumberAsString, new Dictionary<string, EntryRowModel>());
+
+                // Add 5 new days
+                for (var i = 0; i < 5; i++)
+                {
+                    var firstDateOfWeek = dateHandler.GetFirstDateOfWeek(int.Parse(WeekNumberAsString), date.Year);
+                    DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][firstDateOfWeek.AddDays(i).ToString("yyyy-MM-dd")] = new EntryRowModel(){
+                        Date = firstDateOfWeek.AddDays(i)
+                    };
+                }
+
+                // Replace the empty data for the entry we are about to save
+                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
+            }
+            // Check if the week is available in our dict -> if not create it and add 5 empty entries
+            else if (!DataReadFromJSON.LoggedData[YearAsString].ContainsKey(WeekNumberAsString))
+            {
+                // Add new week 
+                DataReadFromJSON.LoggedData[YearAsString].Add(WeekNumberAsString, new Dictionary<string, EntryRowModel>());
+
+                // Add 5 new days
+                for (var i = 0; i < 5; i++)
+                {
+                    var firstDateOfWeek = dateHandler.GetFirstDateOfWeek(int.Parse(WeekNumberAsString), date.Year);
+                    DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][firstDateOfWeek.AddDays(i).ToString("yyyy-MM-dd")] = new EntryRowModel(){
+                        Date = firstDateOfWeek.AddDays(i)
+                    };
+                }
+
+                // Replace the empty data for the entry we are about to save
+                DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][DateAsString] = entry;
+            }
+            else
+            {
+                Console.WriteLine("Throw some kind of exception, as something is horribly wrong by now.");
+            }
         }
 
-        // if new entry, we need to add the 5 other entries for the week as well
-
-        // actually write the data
+        // Actually write the data
         WriteData();
-
     }
 
 
