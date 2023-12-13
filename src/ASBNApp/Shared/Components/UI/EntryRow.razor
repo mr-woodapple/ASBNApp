@@ -1,4 +1,4 @@
-@* 
+@*
 UI bit that represents a single entry, supposed to be used in MainViewWeek.
 Created 20.10.2023
 *@
@@ -8,7 +8,7 @@ Created 20.10.2023
 
 <div class="row mb-3">
 
-    
+
     <div class="col-2 entry-row entry-row-date align-items-center justify-content-between">
         <p class="m-0"> @Entry.Date.DayOfWeek,</p>
         <input type="date" id="date" @bind="Entry.Date" min="@_minDateValue" max="@_maxDateValue" />
@@ -16,7 +16,8 @@ Created 20.10.2023
 
     <div class="col mx-4 p-0 entry-row entry-row-note">
         <div class="form-group">
-            <textarea class="form-control" rows="2" id="notes" placeholder="I did learn something... Forget what though." @bind="Entry.Note"></textarea>
+            <textarea class="form-control" rows="2" id="notes"
+                placeholder="I did learn something... Forget what though." @bind="Entry.Note"></textarea>
         </div>
     </div>
 
@@ -25,8 +26,10 @@ Created 20.10.2023
             <select name="work-location" id="work-location" @bind="Entry.Location">
                 <option value="" disabled selected>Select location</option>
 
-                @if (dataService.GetWorkLocationHours().Count != 0) {
-                    @foreach (var entry in dataService.GetWorkLocationHours()) {
+                @if (dataService.GetWorkLocationHours().Count != 0)
+                {
+                    @foreach (var entry in dataService.GetWorkLocationHours())
+                    {
                         <option value="@entry.Location"> @entry.Location</option>
                     }
                 }
@@ -34,7 +37,7 @@ Created 20.10.2023
                 {
                     <option value="" disabled>No data loaded, please select a file.</option>
                 }
-                
+
             </select>
         </div>
     </div>
@@ -51,11 +54,31 @@ Created 20.10.2023
     [Parameter]
     public EventCallback<EntryRowModel> OnUpdate { get; set; }
 
-    // Week & year variables to set min and max values for 
+    // Week & year variables to set min and max values for
+    private int? _selectedWeek;
     [Parameter]
-    public int? SelectedWeek { get; set; }
+    public int? SelectedWeek
+    {
+        get => _selectedWeek;
+        set
+        {
+            _selectedWeek = value;
+            UpdateMinMaxDates();
+        }
+    }
+
+    private int? _selectedYear;
     [Parameter]
-    public int? SelectedYear { get; set; }
+    public int? SelectedYear
+    {
+        get => _selectedYear;
+        set
+        {
+            _selectedYear = value;
+            UpdateMinMaxDates();
+        }
+    }
+
 
     DateHandler dateHandler = new DateHandler();
 
@@ -65,6 +88,11 @@ Created 20.10.2023
 
     protected override void OnInitialized()
     {
+        UpdateMinMaxDates();
+    }
+
+    private void UpdateMinMaxDates()
+    {
         if (SelectedWeek != null && SelectedYear != null)
         {
             // set values for min and max in the date picker
@@ -72,5 +100,4 @@ Created 20.10.2023
             _maxDateValue = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
         }
     }
-
 }

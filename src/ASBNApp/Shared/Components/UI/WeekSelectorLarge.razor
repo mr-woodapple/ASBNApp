@@ -12,7 +12,7 @@ Created 16.10.2023
     <div class="col-auto px-3 mx-3 mb-2 text-center week-change-center">
         <label for="week">Select week:</label>
         @* TODO: @onfocusout might not be the best idea, there might be a better way to do this *@
-        <input type="week" id="week" @bind="WeekFormatInput" @onfocusout="UpdateWeekFromSelector" />
+        <input type="week" id="week" @bind="_weekFormatInput" @onfocusout="UpdateWeekFromSelector" />
     </div>
 
     <div class="col-auto week-change-button mb-2" @onclick="SelectNextWeek">
@@ -39,7 +39,7 @@ Created 16.10.2023
 
 
     DateHandler dateHandler = new DateHandler();
-    private string? WeekFormatInput = null;
+    private string? _weekFormatInput = null;
     
     // Use onInitialized() to assign calculated values to the matching variables, avoids data not being loaded into memory
     // Also make sure to update the week number on the parent component
@@ -49,7 +49,7 @@ Created 16.10.2023
         SelectedYear = DateTime.Now.Year;
         TriggerAllCallbacks();
         // Set value for HTML week input
-        WeekFormatInput = SelectedYear + "-W" + SelectedWeek;
+        _weekFormatInput = SelectedYear + "-W" + SelectedWeek;
     }
 
     // Single place to trigger the callbacks
@@ -66,8 +66,8 @@ Created 16.10.2023
     public void UpdateWeekFromSelector() 
     {
         // Extract year and week from the WeekFormatInput string
-        SelectedWeek = int.Parse(WeekFormatInput.Substring(6));
-        SelectedYear = int.Parse(WeekFormatInput.Substring(0, 4));
+        SelectedWeek = int.Parse(_weekFormatInput.Substring(6));
+        SelectedYear = int.Parse(_weekFormatInput.Substring(0, 4));
         TriggerAllCallbacks();
     }
 
@@ -92,11 +92,11 @@ Created 16.10.2023
         // Add a 0 to the string if SelectedWeek is one digit
         if(SelectedWeek < 10) 
         {
-            WeekFormatInput = SelectedYear + "-W0" + SelectedWeek;
+            _weekFormatInput = SelectedYear + "-W0" + SelectedWeek;
         } 
         else
         {
-            WeekFormatInput = SelectedYear + "-W" + SelectedWeek;
+            _weekFormatInput = SelectedYear + "-W" + SelectedWeek;
         }
     }
 
@@ -117,11 +117,11 @@ Created 16.10.2023
         // Add a 0 to the string if SelectedWeek is one digit
         if(SelectedWeek < 10)
         {
-            WeekFormatInput = SelectedYear + "-W0" + SelectedWeek;
+            _weekFormatInput = SelectedYear + "-W0" + SelectedWeek;
         }
         else
         {
-            WeekFormatInput = SelectedYear + "-W" + SelectedWeek;
+            _weekFormatInput = SelectedYear + "-W" + SelectedWeek;
         }
     }
 }
