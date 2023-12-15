@@ -1,25 +1,27 @@
 // Created 2023-12-04
 // Implements logic to load data from a local JSON file (which the user can specify)
 
-
 using System.Text.Json;
 using ASBNApp.Model;
-using ASBNApp.Shared.Components.UI;
-
+using KristofferStrube.Blazor.FileSystemAccess;
+using Microsoft.JSInterop;
 
 public class LocalASBNDataService : IASBNDataService
 {
-
     // Handling dependency injection in the constructor
-    public LocalASBNDataService(IFileHandleProvider fileHandles, DateHandler dateHandler)
+    public LocalASBNDataService(IFileHandleProvider fileHandles, DateHandler dateHandler, IFileSystemAccessService fileSystemAccessService)
     {
         this.fileHandles = fileHandles;
         this.dateHandler = dateHandler;
+        this.fileSystemAccessService = fileSystemAccessService;
     }
 
     public JSONDataWrapper? DataReadFromJSON;
     private readonly IFileHandleProvider fileHandles;
     private readonly DateHandler dateHandler;
+    private readonly IFileSystemAccessService fileSystemAccessService;
+
+    public JSONDataWrapper GetData() => DataReadFromJSON;
 
     /// <summary>
     /// Load local file from the available list of file handles, then deserializes
@@ -54,8 +56,6 @@ public class LocalASBNDataService : IASBNDataService
         var writeable = await fileHandles.GetFileHandles().Single().CreateWritableAsync();
         await writeable.WriteAsync(serializedData);
         await writeable.CloseAsync();
-
-        // TODO: Check what happens if we lost writing privileges (if that's possible after all)
     }
 
 
@@ -254,12 +254,20 @@ public class LocalASBNDataService : IASBNDataService
         await WriteData();
     }
 
-
+    /// <summary>
+    /// Get the "Settings" object from the JSON object
+    /// </summary>
+    /// <returns>Settings object</returns>
     public Settings? GetSettings()
     {
         return DataReadFromJSON.Settings;
     }
 
+    /// <summary>
+    /// Updates the "Settings" object
+    /// </summary>
+    /// <param name="settings">Settings object</param>
+    /// <returns>Task</returns>
     public async Task SaveSettings(Settings settings)
     {
         try
@@ -273,6 +281,10 @@ public class LocalASBNDataService : IASBNDataService
         }
     }
 
+    /// <summary>
+    /// Get WorkLocationHours from storage 
+    /// </summary>
+    /// <returns>List of WorkLocationHour objects</returns>
     public List<WorkLocationHours> GetWorkLocationHours()
     {
         try
@@ -288,12 +300,17 @@ public class LocalASBNDataService : IASBNDataService
         catch (NullReferenceException e)
         {
             Console.WriteLine(e.Message +
-                " No data available, please load a file first (returning an empty list in the meantime).");
+                " No data available, please load a file first (returning an empty list of WorkLocationHours in the meantime).");
             return new List<WorkLocationHours>();
         }
 
     }
 
+    /// <summary>
+    /// Update the WorkLocationHours object
+    /// </summary>
+    /// <param name="workLocationHours"></param>
+    /// <returns></returns>
     public async Task SaveWorkLocationHours(List<WorkLocationHours> workLocationHours)
     {
         try
@@ -309,5 +326,12 @@ public class LocalASBNDataService : IASBNDataService
         {
             Console.WriteLine(e.Message + " No WorkLocationHours object found, please create one first.");
         }
+    }
+
+    // Create an empty JSON file, save that to disk
+    public async Task CreateEmptyJSON() {
+        var fileHandle = fileHandles.GetFileHandles().Single();
+        var writePermissionState = await fileHandle.RequestPermissionAsync(new() { Mode = FileSystemPermissionMode.ReadWrite });
+
     }
 }

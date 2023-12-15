@@ -5,7 +5,8 @@ using ASBNApp.Model;
 
 interface IASBNDataService
 {
-
+    public JSONDataWrapper GetData();
+    
     public Task ReadData();
 
     public Task WriteData();

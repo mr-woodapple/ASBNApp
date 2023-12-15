@@ -1,6 +1,7 @@
 ﻿@inject IFileSystemAccessService FileSystemAccessService;
 @inject IASBNDataService dataService;
 @inject IFileHandleManager fileHandleManager;
+@inject IFileHandleProvider fileHandleProvider;
 
 @using KristofferStrube.Blazor.FileSystem;
 
@@ -37,6 +38,23 @@
 
 
 @code {
+    // Checks if the object holding all data is empty but we have a fileHandle,
+    // in that case reload the file
+    // Not ideal, if this can be solved, that'd be great
+    override protected void OnInitialized(){
+        try 
+        {
+            if(dataService.GetData() == null && fileHandleProvider.GetFileHandles().Count() != 0) {
+                Console.WriteLine("ReadData called");
+                dataService.ReadData();
+            }
+        } catch (NotSupportedException e) {
+            Console.WriteLine(e.Message + " No file handle available, won't reload data.");
+            Console.Write("No data restored.");
+        }
+    }
+
+
     PermissionState writePermissionState;
 
     // Let the user pick a file through the OS file system and then add it to our FileHandleManager

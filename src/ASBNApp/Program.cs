@@ -10,10 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 // ASBNDataService dependency injection
-builder.Services.AddSingleton<IASBNDataService, LocalASBNDataService>();
+builder.Services.AddScoped<IASBNDataService, LocalASBNDataService>();
 // This registers the FileHandleCollection as a DI service, we then limit
 // the available classes to the ones listed here (in this case the same ones the interface implements)
 builder.Services.AddSingleton<FileHandleCollection>();
+
 builder.Services.AddSingleton<IFileHandleManager>(s => s.GetRequiredService<FileHandleCollection>());
 builder.Services.AddSingleton<IFileHandleProvider>(s => s.GetRequiredService<FileHandleCollection>());
 // DateHandler service
