@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using KristofferStrube.Blazor.FileSystemAccess;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using ASBNApp;
 
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 // ASBNDataService dependency injection
 builder.Services.AddScoped<IASBNDataService, LocalASBNDataService>();
 // This registers the FileHandleCollection as a DI service, we then limit
@@ -23,23 +23,11 @@ builder.Services.AddSingleton<DateHandler>();
 builder.Services.AddFileSystemAccessService();
 
 
-var app = builder.Build();
+await builder.Build().RunAsync();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
 
-app.UseHttpsRedirection();
 
-app.UseStaticFiles();
 
-app.UseRouting();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
 
-app.Run();
+
