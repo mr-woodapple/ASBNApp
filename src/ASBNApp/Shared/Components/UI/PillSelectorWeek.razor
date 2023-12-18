@@ -1,0 +1,100 @@
+@* 
+Simple selector component for weeks
+Created 04.12.2023
+
+TODO: Uses the (almost exact) same week base data/logic as the WeekSelectorLarge.razor, might wanna combine the logic?
+*@
+
+<div class="row mx-0 justify-content-start">
+    
+    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "thisWeek" ? "active" : "")"
+        @onclick="@(e => { Selected = "thisWeek"; UpdateFromWeekPicker(0); })">
+
+        <p class="m-0">This week (KW @SelectedWeek) </p>
+    </div>
+
+    <div tabindex="0" class="col-auto me-2 pill-selector-date @(Selected == "nextWeek" ? "active" : "")"
+        @onclick="@(e => { Selected = "nextWeek"; UpdateFromWeekPicker(1); })">
+        
+        <p class="m-0">Next week (KW @(SelectedWeek + 1))</p>
+    </div>
+
+    <div class="col-auto pill-selector-date @(Selected == "customWeek" ? "active" : "")">
+            <label for="date">Pick custom </label>
+
+            @* TODO: @onfocusout might not be the best option, try to find a better working one! *@
+            @* simply use bind and add the methods from onfocusout??  *@
+            <input type="week" id="week" @bind="WeekFormatInput" @onfocusout="@(e => { Selected = "customWeek"; UpdateWeekFromSelector(); })" />
+    </div>
+
+</div>
+
+@code {
+    // String used for applying css class (for styling)
+    private string Selected = "thisWeek";
+
+    // Two way binding parameters
+    [Parameter]
+    public int? SelectedWeek { get; set; }
+    [Parameter]
+    public EventCallback<int?> SelectedWeekChanged { get; set; }
+    [Parameter]
+    public int? SelectedYear { get; set; }
+    [Parameter]
+    public EventCallback<int?> SelectedYearChanged { get; set; }
+
+    // Single place to trigger the callbacks
+    public void TriggerAllCallbacks() 
+    {
+        SelectedWeekChanged.InvokeAsync(SelectedWeek);
+        SelectedYearChanged.InvokeAsync(SelectedYear);
+    }
+
+    // string used to set the week picker value
+    private string WeekFormatInput = "0001-W01";
+
+    DateHandler dateHandler = new DateHandler();
+
+
+    // Use onInitialized() to assign calculated values to the matching variables, avoids data not being loaded into memory
+    protected override void OnInitialized()
+    {
+        SelectedWeek = dateHandler.GetWeekOfYear();
+        SelectedYear = DateTime.Now.Year;
+        TriggerAllCallbacks();
+        // Set value for HTML week input
+        WeekFormatInput = SelectedYear + "-W" + SelectedWeek;
+    }
+
+
+    // Required to update the CurrentWeek variable if the user selects
+    // a week through the HTML input (which returns a string "yyyy-Www")
+    public void UpdateWeekFromSelector()
+    {
+        // Update variables with extracted year and week from the WeekFormatInput string
+        SelectedWeek = int.Parse(WeekFormatInput.Substring(6));
+        SelectedYear = int.Parse(WeekFormatInput.Substring(0, 4));
+        TriggerAllCallbacks();
+    }
+
+    // Updated SelectedYear & Selected Week from the pill selector
+    public void UpdateFromWeekPicker(int option) 
+    {
+        // this week selected
+        if (option == 0)
+        {
+            SelectedWeek = dateHandler.GetWeekOfYear();
+            SelectedYear = DateTime.Now.Year;
+        }
+        // next week selected
+        else 
+        {
+            if(SelectedWeek == 52) 
+            {
+                SelectedWeek = 1;
+                SelectedYear++;
+            }
+        }
+        TriggerAllCallbacks();
+    }
+}

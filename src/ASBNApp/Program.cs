@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<IASBNDataService, DummyASBNDataService>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 

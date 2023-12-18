@@ -1,21 +1,30 @@
-<div class="row align-items-center wrapper-switch-day-week">
+@* Component to switch between the daily & weekly view. *@
+
+<div class="row align-items-center">
     <p class="col m-0">Choose view:</p>
 
     <div class="col d-flex wrapper-selector-pill">
-        <div class="view-selector @(IsDay ? "active" : "")" @onclick="@(e => IsDay = true)">
+      
+        <div class="view-selector @(IsDay ? "active" : "")" @onclick="@(() => { IsDay = true; IsDayChanged.InvokeAsync(true); })" tabindex="0">
             <p class="m-1 px-2">Day</p>
         </div>
-        <div class="view-selector @(!IsDay ? "active" : "")" @onclick="@(e => IsDay = false)">
+      
+        <div class="view-selector @(!IsDay ? "active" : "")" @onclick="@(() => { IsDay = false; IsDayChanged.InvokeAsync(false); })" tabindex="0">
             <p class="m-1 px-2">Week</p>
         </div>
     </div>
     
-
 </div>
 
 
 
 
 @code {
-    public bool IsDay { get; set; } = true;
+    // Bool that is linked through the IsDayChanged.InvokeAsync(bool) method to the IsDayBool in Index.razor.
+    [Parameter]
+    public bool IsDay { get; set; }
+
+    // Necessary for firing the changed bool upwards to the Index.razor page in this case.
+    [Parameter]
+    public EventCallback<bool> IsDayChanged { get; set; }
 }
