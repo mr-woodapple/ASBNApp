@@ -14,7 +14,6 @@ public class DateHandler {
     public int GetWeekOfYear() {
         // get culture info & current date/time from thread
         var CultureInfo = Thread.CurrentThread.CurrentCulture;
-        // DateTime Date = new DateTime(2023, 10, 16);
         DateTime Date = DateTime.Now;
 
         DayOfWeek FirstDay = CultureInfo.DateTimeFormat.FirstDayOfWeek;
@@ -31,7 +30,7 @@ public class DateHandler {
     /// <returns>Day with day & month as a string</returns>
     public string GetFirstDayOfWeekAsString() {
         // (int)Date.DayOfWeek returns from a 0 for Sunday up to a 6 for Saturday -> + Monday makes the start of the week Monday
-        var FirstDay = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+        var FirstDay = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday));
         
         return FirstDay.Date.ToString("dd.MM.");
     }

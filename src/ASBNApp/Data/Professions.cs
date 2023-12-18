@@ -1,9 +1,9 @@
 namespace ASBNApp.Data;
 
-public class Professions {
+public static class Professions {
 
     // Include all available job titles here
-    public List<string> Apprenticeships = new()
+    public static List<string> Apprenticeships = new()
     {
         "IT-System-Kaufmann/-frau",
         "Kaufmann/-frau für IT-System-Management",

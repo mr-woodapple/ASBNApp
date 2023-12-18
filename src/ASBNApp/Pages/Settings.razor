@@ -18,7 +18,7 @@
             <select name="work-location" id="work-location" @bind="SelectedApprenticeship">
                 <option value="" disabled selected>Select Apprenticeship </option>
 
-                @foreach (var entry in Professions.Apprenticeships) {
+                @foreach (var entry in Data.Professions.Apprenticeships) {
                     <option value="@entry"> @entry </option>
                 }
             </select>
@@ -33,7 +33,7 @@
                 <div class="col-auto">
                     <input type="text" @bind="entry.Location" />
                     <input type="text" @bind="entry.Hours" />
-                    <span class="material-symbols-outlined">edit</span>
+                    <span class="material-symbols-rounded">edit</span>
                 </div>
             </div> 
         }
@@ -41,7 +41,7 @@
             <div class="col">
                 <input type="text" placeholder="Add new working location"/>
                 <input type="text" placeholder="Add working hours"/>
-                <span class="material-symbols-outlined">add</span>
+                <span class="material-symbols-rounded">add</span>
             </div>
         </div> 
     </div>
@@ -51,7 +51,7 @@
         <p>Your legal representative (if you're under 18!):</p>
         <div class="col-4">
             <input type="text" placeholder="Your mama!" />
-            <span class="material-symbols-outlined">edit</span>
+            <span class="material-symbols-rounded">edit</span>
         </div>
     </div>
 
@@ -60,7 +60,7 @@
         <p>The company you're working at:</p>
         <div class="col-4">
             <input type="text" placeholder="Telekom" />
-            <span class="material-symbols-outlined">edit</span>
+            <span class="material-symbols-rounded">edit</span>
         </div>
     </div>
 
@@ -69,15 +69,13 @@
         <p>Your school:</p>
         <div class="col-4">
             <input type="text" placeholder="BSZ ET Dresden" />
-            <span class="material-symbols-outlined">edit</span>
+            <span class="material-symbols-rounded">edit</span>
         </div>
     </div>
 
 </div>
 
 
-@code {
-    public Data.Professions Professions = new Data.Professions();
-    
+@code {   
     public string? SelectedApprenticeship = null;
 }
