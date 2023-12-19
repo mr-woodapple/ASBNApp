@@ -1,0 +1,68 @@
+﻿@page "/help"
+
+<PageTitle>Help</PageTitle>
+
+<div class="container-fluid">
+
+    <div class="row justify-content-between align-items-center">
+        <div class="col-md-auto">
+            <HeaderLarge Header="Help" />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <p>
+            <b>Why is my browser not supported?</b><br />
+
+            This app is using KristofferStrubes <a href="https://github.com/KristofferStrube/Blazor.FileSystemAccess">Blazor File System Access</a>.
+            Unfortunately, this API is only supported on a limited set of browsers. If the app isn't supported on your system, you'll see the red warning
+            in the navigation bar.
+        </p>
+    </div>
+
+    <div class="row mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Browser</th>
+                    <th>Supported</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-success">
+                    <td>Chrome (Desktop)</td>
+                    <td>Yes</td>
+                </tr>
+                <tr class="table-success">
+                    <td>Edge</td>
+                    <td>Yes</td>
+                </tr>
+
+                <tr class="table-danger">
+                    <td>Mozilla Firefox</td>
+                    <td>No</td>
+                </tr>
+                <tr class="table-danger">
+                    <td>Chrome for Android</td>
+                    <td>No</td>
+                </tr>
+                <tr class="table-danger">
+                    <td>iOS Safari</td>
+                    <td>No</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row mt-4">
+        <p>
+            For more details please visit <a href="https://caniuse.com">caniuse.com</a>.
+            <b>Add direct link to the package on caniuse if possible, can't do this right now because caniuse.com is down.</b>
+        </p>
+    </div>
+
+</div>
+
+@code {
+
+}

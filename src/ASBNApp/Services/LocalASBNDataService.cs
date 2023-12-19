@@ -50,8 +50,7 @@ public class LocalASBNDataService : IASBNDataService
     /// <returns>Task</returns>
     public async Task WriteData()
     {
-        // if DataReadFromJSON == empty -> creating new file, adding empty data
-        // then write to disk
+        // Creating new file, adding empty data before saving it to disk the step after
         if ( DataReadFromJSON == null ) 
         {
             DataReadFromJSON = new JSONDataWrapper() {
@@ -61,7 +60,7 @@ public class LocalASBNDataService : IASBNDataService
             };
         }
 
-        // if not, just serialize and write to disk
+        // Serialize and write "DataReadFromJSON" to disk
         var options = new JsonSerializerOptions { WriteIndented = true };
         string serializedData = JsonSerializer.Serialize(DataReadFromJSON, options);
 

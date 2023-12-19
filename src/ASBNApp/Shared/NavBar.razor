@@ -23,10 +23,23 @@
             </div>
         </div>
 
-        <div>
-            <button type="button" class="btn btn-outline-secondary" @onclick="CreateNewFile">Create new</button>
-            <button type="button" class="btn btn-outline-dark" @onclick="OpenAndReadFile">Open File</button>
-        </div>
+        @* Hide the load file buttons & display a warning if the browser is not supported *@
+        @if (!_isSupported)
+        {
+            <div class="alert alert-danger p-2 m-0 me-2" role="alert">
+                This browser is not supported.
+                <NavLink class="" href="help" Match="NavLinkMatch.All">
+                    Learn more!
+                </NavLink>
+            </div>
+        }
+        else
+        {
+            <div>
+                <button type="button" class="btn btn-outline-secondary" @onclick="CreateNewFile">Create new</button>
+                <button type="button" class="btn btn-outline-dark" @onclick="OpenAndReadFile">Open File</button>
+            </div>
+        }
 
         <span class="profile-icon p-2 ms-3">
             <NavLink class="nav-link" href="settings">
@@ -40,6 +53,18 @@
 
 @code {
     PermissionState writePermissionState;
+    private bool _isSupported;
+
+    // Figure out wether the used browser is supported or not!
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isSupported = await FileSystemAccessService.IsSupportedAsync();
+            StateHasChanged();
+        }
+    }
+
 
     // Let the user pick a file through the OS file system and then add it to our FileHandleManager
     private async Task OpenAndReadFile()
