@@ -3,7 +3,7 @@
 <div class="row align-items-center">
     <p class="col m-0">Choose view:</p>
 
-    <div class="col d-flex wrapper-selector-pill">
+    <div class="col-auto d-flex wrapper-selector-pill">
       
         <div class="view-selector @(IsDay ? "active" : "")" @onclick="@(() => { IsDay = true; IsDayChanged.InvokeAsync(true); })" tabindex="0">
             <p class="m-1 px-2">Day</p>
