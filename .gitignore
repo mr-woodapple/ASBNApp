@@ -397,5 +397,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Custom files
-docs/sampleJSON/Sample.json
+
+# Test files
+docs/sampleJSON/*

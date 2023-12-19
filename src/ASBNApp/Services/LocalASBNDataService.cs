@@ -50,6 +50,18 @@ public class LocalASBNDataService : IASBNDataService
     /// <returns>Task</returns>
     public async Task WriteData()
     {
+        // if DataReadFromJSON == empty -> creating new file, adding empty data
+        // then write to disk
+        if ( DataReadFromJSON == null ) 
+        {
+            DataReadFromJSON = new JSONDataWrapper() {
+                Settings = new Settings(),
+                WorkLocationHours = new Dictionary<string, WorkLocationHours>(),
+                LoggedData = new Dictionary<string, Dictionary<string, Dictionary<string, EntryRowModel>>>()
+            };
+        }
+
+        // if not, just serialize and write to disk
         var options = new JsonSerializerOptions { WriteIndented = true };
         string serializedData = JsonSerializer.Serialize(DataReadFromJSON, options);
 
@@ -326,15 +338,5 @@ public class LocalASBNDataService : IASBNDataService
         {
             Console.WriteLine(e.Message + " No WorkLocationHours object found, please create one first.");
         }
-    }
-
-
-    // Create an empty JSON file, save that to disk
-    public async Task CreateEmptyJSON() {
-        var fileHandle = fileHandles.GetFileHandles().Single();
-
-        var writeable = await fileHandle.CreateWritableAsync();
-        await writeable.WriteAsync("testfile");
-        await writeable.CloseAsync();
     }
 }

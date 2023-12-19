@@ -24,7 +24,7 @@
         </div>
 
         <div>
-            <button type="button" class="btn btn-outline-secondary" @onclick="dataService.CreateEmptyJSON">Create new</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="CreateNewFile">Create new</button>
             <button type="button" class="btn btn-outline-dark" @onclick="OpenAndReadFile">Open File</button>
         </div>
 
@@ -89,7 +89,7 @@
                     fileHandleManager.AddFileHandle(fileHandle);
                 }
                 // await and process data being converted to JSON objects, was this as intended?
-                await dataService.CreateEmptyJSON();
+                await dataService.WriteData();
 
                 // make sure we have write access
                 writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
