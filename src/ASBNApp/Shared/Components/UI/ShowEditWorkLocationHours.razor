@@ -20,7 +20,7 @@ also manage editing states & update parent component if necessary
                     <input @bind="@entry.Hours" class="input-underline p-1" placeholder="Hours" />
                 </div>
                 <div class="col-1">
-                    <span class="btn p-0 material-symbols-outlined"
+                    <span class="btn p-0 material-symbols-rounded"
                         @onclick="@(async e => { 
                             // TODO: How to make editing an entry work? Seems to refresh before updating my dict
                             // See issue #28 for more info
@@ -45,9 +45,9 @@ also manage editing states & update parent component if necessary
                 </div>
                 <div class="col-1">
                     @* Set focus to the input above *@
-                    <span tabindex="0" class="btn p-0 material-symbols-outlined"
+                    <span tabindex="0" class="btn p-0 material-symbols-rounded"
                         @onclick="@(e => { _isEditingList[entry.Location] = true; })"> edit </span>
-                    <span tabindex="0" class="btn p-0 material-symbols-outlined"
+                    <span tabindex="0" class="btn p-0 material-symbols-rounded"
                         @onclick="@(e => { DeleteWorkLocationHoursEntry(entry); })"> delete </span>
                 </div>
             }
@@ -64,7 +64,7 @@ also manage editing states & update parent component if necessary
             <input @bind="_newWorkHours" class="input-underline" placeholder="Add hours" />
         </div>
         <div class="col-1">
-            <span tabindex="0" class="btn p-0 material-symbols-outlined"
+            <span tabindex="0" class="btn p-0 material-symbols-rounded"
                 @onclick="@(e => { AddNewWorkLocationHoursEntry(); })">add</span>
         </div>
     </div>
