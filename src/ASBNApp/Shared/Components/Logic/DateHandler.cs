@@ -11,7 +11,7 @@ public class DateHandler {
 
     /// <summary>
     /// Function to get the current week number
-    /// </summary>
+    /// </summary>DateTime date
     /// <returns>Week number as an int</returns>
     public int GetCurrentWeekOfYear() {
         // get culture info & current date/time from thread

@@ -4,7 +4,7 @@
 using System.Text.Json;
 using ASBNApp.Model;
 using KristofferStrube.Blazor.FileSystemAccess;
-using Microsoft.JSInterop;
+
 
 public class LocalASBNDataService : IASBNDataService
 {
@@ -328,10 +328,13 @@ public class LocalASBNDataService : IASBNDataService
         }
     }
 
+
     // Create an empty JSON file, save that to disk
     public async Task CreateEmptyJSON() {
         var fileHandle = fileHandles.GetFileHandles().Single();
-        var writePermissionState = await fileHandle.RequestPermissionAsync(new() { Mode = FileSystemPermissionMode.ReadWrite });
 
+        var writeable = await fileHandle.CreateWritableAsync();
+        await writeable.WriteAsync("testfile");
+        await writeable.CloseAsync();
     }
 }

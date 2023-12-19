@@ -24,6 +24,7 @@
         </div>
 
         <div>
+            <button type="button" class="btn btn-outline-secondary" @onclick="dataService.CreateEmptyJSON">Create new</button>
             <button type="button" class="btn btn-outline-dark" @onclick="OpenAndReadFile">Open File</button>
         </div>
 
@@ -62,6 +63,36 @@
                 writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
                 Console.WriteLine("WritePermissionState = " + writePermissionState);
                 // TODO: Handle what happens when the user denies write access -> show info button to retrigger the popup
+            }
+        }
+        catch (JSException ex)
+        {
+            // Handle Exception or cancelation of File Access prompt
+            Console.WriteLine(ex);
+        }
+    }
+
+    public async Task CreateNewFile() 
+    {
+        try
+        {
+            // TODO: maybe consider to use `using` (https://learn.microsoft.com/de-de/dotnet/csharp/language-reference/statements/using)
+            // TODO: Check if this is implemented correctly?
+            FileSystemFileHandle fileHandles = await FileSystemAccessService.ShowSaveFilePickerAsync();
+
+            // The "using" block here makes sure we don't have a memory leak, because
+            // "DisposeAsync" will be called at the end of the using scope.
+            await using (var fileHandle = fileHandles) 
+            {
+                if (fileHandle != null) 
+                {
+                    fileHandleManager.AddFileHandle(fileHandle);
+                }
+                // await and process data being converted to JSON objects, was this as intended?
+                await dataService.CreateEmptyJSON();
+
+                // make sure we have write access
+                writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
             }
         }
         catch (JSException ex)

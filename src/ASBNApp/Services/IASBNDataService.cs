@@ -26,4 +26,7 @@ interface IASBNDataService
     public List<WorkLocationHours> GetWorkLocationHours();
 
     public Task SaveWorkLocationHours(List<WorkLocationHours> workLocationHours);
+
+    // to be removed??
+    public Task CreateEmptyJSON();
 }
