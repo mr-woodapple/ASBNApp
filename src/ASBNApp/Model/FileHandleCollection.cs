@@ -6,10 +6,13 @@ using KristofferStrube.Blazor.FileSystem;
 public class FileHandleCollection : IFileHandleManager, IFileHandleProvider, IAsyncDisposable{
     private List<FileSystemFileHandle> fileHandles = new List<FileSystemFileHandle>();
 
-    // TODO: Check if:
-    // Might wanna change that to AddReplaceFileHandle, because we can only have one at a time??
-    // Otherwise add a check to ensure a file isn't in the list already?
-    public void AddFileHandle(FileSystemFileHandle fileHandle){
+    /// <summary>
+    /// Adds or replaces the fileHandle available, because we can only have one at a time
+    /// </summary>
+    /// <param name="fileHandle">fileHandle from the loaded file</param>
+    public void AddReplaceFileHandle(FileSystemFileHandle fileHandle){
+        // if fileHandles == null, call Clear() on the fileHandles list
+        fileHandles?.Clear();
         fileHandles.Add(fileHandle);
     }
 

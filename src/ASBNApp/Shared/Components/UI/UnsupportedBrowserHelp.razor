@@ -1,0 +1,72 @@
+@* 
+Small component to keep the main code clean from information provided here
+*@
+
+<div class="container p-5">
+
+            <div class="row mt-4">
+                <div class="alert alert-danger p-2 m-0" role="alert">
+
+                    
+                    <h4 class="d-flex align-items-center px-2 pt-2">
+                        <span class="material-symbols-rounded">warning</span> 
+                        <b>&nbsp; Sorry, this browser is not supported.</b>
+                    </h4>
+
+                    <hr class="" />
+
+                    Please see the list below for supported browsers.
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <p>
+                    <b>Why is my browser not supported?</b><br />
+
+                    This app is using KristofferStrubes 
+                    <a href="https://github.com/KristofferStrube/Blazor.FileSystemAccess">Blazor File System Access</a>.
+                    Unfortunately, this API is only supported on a limited set of browsers. 
+                    If the app isn't supported on your system, you'll see the red warning
+                    in the navigation bar.
+                </p>
+
+                <p>
+                    See the table below for more information about which Browsers are supported:
+                </p>
+            </div>
+
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Browser</th>
+                            <th>Supported</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-success">
+                            <td>Chrome (Desktop)</td>
+                            <td>Yes</td>
+                        </tr>
+                        <tr class="table-success">
+                            <td>Edge</td>
+                            <td>Yes</td>
+                        </tr>
+
+                        <tr class="table-danger">
+                            <td>Mozilla Firefox</td>
+                            <td>No</td>
+                        </tr>
+                        <tr class="table-danger">
+                            <td>Chrome for Android</td>
+                            <td>No</td>
+                        </tr>
+                        <tr class="table-danger">
+                            <td>iOS Safari</td>
+                            <td>No</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>

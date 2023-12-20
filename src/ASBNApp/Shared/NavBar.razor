@@ -1,13 +1,6 @@
-﻿@inject IFileSystemAccessService FileSystemAccessService;
-@inject IASBNDataService dataService;
-@inject IFileHandleManager fileHandleManager;
-@inject IFileHandleProvider fileHandleProvider;
-
-@* keep the eckige klammern to add info where the log originated from -> generics C# *@
-@inject ILogger<NavBar> Logger;
-
-@using KristofferStrube.Blazor.FileSystem;
-
+﻿@* 
+Nav Bar item, nothing fancy in here
+*@
 
 <nav class="navbar navbar-expand">
     <div class="container-fluid">
@@ -26,24 +19,6 @@
             </div>
         </div>
 
-        @* Hide the load file buttons & display a warning if the browser is not supported *@
-        @if (!_isSupported)
-        {
-            <div class="alert alert-danger p-2 m-0 me-2" role="alert">
-                This browser is not supported.
-                <NavLink class="" href="help" Match="NavLinkMatch.All">
-                    Learn more!
-                </NavLink>
-            </div>
-        }
-        else
-        {
-            <div>
-                <button type="button" class="btn btn-outline-secondary" @onclick="CreateNewFile">Create New</button>
-                <button type="button" class="btn btn-outline-dark" @onclick="OpenAndReadFile">Open File</button>
-            </div>
-        }
-
         <span class="profile-icon p-2 ms-3">
             <NavLink class="nav-link" href="settings">
                 <span class="material-symbols-rounded"> settings </span>
@@ -51,90 +26,3 @@
         </span>
     </div>
 </nav>
-
-
-
-@code {
-    PermissionState writePermissionState;
-    private bool _isSupported;
-
-    // Figure out wether the used browser is supported or not!
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _isSupported = await FileSystemAccessService.IsSupportedAsync();
-            StateHasChanged();
-        }
-    }
-
-
-    // Let the user pick a file through the OS file system and then add it to our FileHandleManager
-    private async Task OpenAndReadFile()
-    {
-        FileSystemFileHandle[]? fileHandles; 
-        try
-        {
-            // Maybe consider to use `using` (https://learn.microsoft.com/de-de/dotnet/csharp/language-reference/statements/using)
-            // Can only open one file at a time
-            fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync();
-        }
-        catch (JSException ex)
-        {
-            // Handle Exception or cancelation of File Access prompt
-            Console.WriteLine(ex);
-            // Ends the function, returns empty Task
-            return;
-        }
-
-        // The "using" block here makes sure we don't have a memory leak, because
-        // "DisposeAsync" will be called at the end of the using scope.
-        await using (var fileHandle = fileHandles.Single()) {
-            if (fileHandle == null) {
-                // TODO: throw new exception here
-                Logger.LogWarning("Opened file, but never received fileHandle.");
-                return;
-            }
-            fileHandleManager.AddFileHandle(fileHandle);
-
-            // await and process data being converted to JSON objects, was this as intended?
-            await dataService.ReadData();
-
-            // make sure we have write access
-            writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
-            Console.WriteLine("WritePermissionState = " + writePermissionState);
-
-            // TODO: Handle what happens when the user denies write access -> show info button to retrigger the popup
-        }
-    }
-
-    public async Task CreateNewFile() 
-    {
-        try
-        {
-            // TODO: maybe consider to use `using` (https://learn.microsoft.com/de-de/dotnet/csharp/language-reference/statements/using)
-            // TODO: Check if this is implemented correctly?
-            FileSystemFileHandle fileHandles = await FileSystemAccessService.ShowSaveFilePickerAsync();
-
-            // The "using" block here makes sure we don't have a memory leak, because
-            // "DisposeAsync" will be called at the end of the using scope.
-            await using (var fileHandle = fileHandles) 
-            {
-                if (fileHandle != null) 
-                {
-                    fileHandleManager.AddFileHandle(fileHandle);
-                }
-                // await and process data being converted to JSON objects, was this as intended?
-                await dataService.WriteData();
-
-                // make sure we have write access
-                writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
-            }
-        }
-        catch (JSException ex)
-        {
-            // Handle Exception or cancelation of File Access prompt
-            Console.WriteLine(ex);
-        }
-    }
-}
