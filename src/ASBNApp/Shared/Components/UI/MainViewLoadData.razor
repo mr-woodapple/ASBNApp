@@ -3,7 +3,7 @@ Main view to load if no data is present.
 The user then can select a file he already has or create a new one
 *@
 
-@* keep the eckige klammern to add info where the log originated from -> generics C# *@
+@* Keep the square brackets to add info where the log originated from *@
 @inject ILogger<NavBar> Logger;
 @inject IFileSystemAccessService FileSystemAccessService;
 @inject IASBNDataService dataService;
@@ -13,10 +13,12 @@ The user then can select a file he already has or create a new one
 @using KristofferStrube.Blazor.FileSystem;
 
 
-
 <div class="container-fluid mt-3 p-0">
 
-    @* Hide the load file buttons & display a warning if the browser is not supported *@
+    @* 
+        Hide the load file buttons & display a warning if the browser is not supported 
+        Otherwise show a brief welcome & steps on how to continue (lot's of room for improvement here)
+    *@
     @if (!_isSupported)
     {
         <UnsupportedBrowserHelp />
@@ -31,16 +33,22 @@ The user then can select a file he already has or create a new one
 
             <div class="row justify-content-center">
                 <p class="col-auto">
-                    Please select an exisiting file or create a new one to continue.
+                    Please select an exisiting file or create a new one to continue.<br />
                 </p>
             </div>
 
             <div class="row justify-content-center">
-                <button type="button" class="col-auto btn btn-primary me-2" @onclick="OpenAndReadFile">Open File</button>
-                <button type="button" class="col-auto btn btn-outline-dark" @onclick="CreateNewFile">Create New</button>
+                <button type="button" class="col-auto btn btn-outline-dark me-2" @onclick="CreateNewFile">Create New</button>
+                <button type="button" class="col-auto btn btn-primary" @onclick="OpenAndReadFile">Open File</button>   
+            </div>
+
+            <div class="row justify-content-center mt-2">
+                <p class="col-auto">
+                    <b>Important:</b> Please allow the website to save changes 
+                    to your file, this is crucial for the application to work.
+                </p>
             </div>
         </div>
-        
     }
     
 </div>
@@ -53,6 +61,7 @@ The user then can select a file he already has or create a new one
     // Callback function
     [Parameter]
     public Func<Task> OnCallback { get; set; }
+
 
     // Figure out wether the used browser is supported or not!
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -90,7 +99,7 @@ The user then can select a file he already has or create a new one
             }
             fileHandleManager.AddReplaceFileHandle(fileHandle);
 
-            // await and process data being converted to JSON objects, was this as intended?
+            // process data into C# objects to work with
             await dataService.ReadData();
 
             // make sure we have write access
@@ -117,8 +126,6 @@ The user then can select a file he already has or create a new one
             return;
         }
 
-        // The "using" block here makes sure we don't have a memory leak, because
-        // "DisposeAsync" will be called at the end of the using scope.
         await using (var fileHandle = fileHandles) 
         {
             if (fileHandle == null) 
@@ -127,11 +134,7 @@ The user then can select a file he already has or create a new one
                 return;
             }
             fileHandleManager.AddReplaceFileHandle(fileHandle);
-
-            // await and process data being converted to JSON objects, was this as intended?
             await dataService.WriteData();
-
-            // make sure we have write access
             writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
 
             // Callback to the parent component
