@@ -23,10 +23,24 @@ The user then can select a file he already has or create a new one
     }
     else
     {
-        <div>
-            <button type="button" class="btn btn-outline-secondary" @onclick="CreateNewFile">Create New</button>
-            <button type="button" class="btn btn-outline-dark" @onclick="OpenAndReadFile">Open File</button>
+        <div class="container-fluid align-items-center">
+
+            <div class="row justify-content-center">
+                <h4 class="col-auto">ASBN App | Welcome</h4>
+            </div>
+
+            <div class="row justify-content-center">
+                <p class="col-auto">
+                    Please select an exisiting file or create a new one to continue.
+                </p>
+            </div>
+
+            <div class="row justify-content-center">
+                <button type="button" class="col-auto btn btn-primary me-2" @onclick="OpenAndReadFile">Open File</button>
+                <button type="button" class="col-auto btn btn-outline-dark" @onclick="CreateNewFile">Create New</button>
+            </div>
         </div>
+        
     }
     
 </div>
@@ -71,9 +85,7 @@ The user then can select a file he already has or create a new one
         // "DisposeAsync" will be called at the end of the using scope.
         await using (var fileHandle = fileHandles.Single()) {
             if (fileHandle == null) {
-                // TODO: throw new exception here
-                // throw new FileNotFoundException("Never received fileHandle, please try again.");
-                Logger.LogWarning("Opened file, but never received fileHandle.");
+                Logger.LogError("Opened file, but never received fileHandle.");
                 return;
             }
             fileHandleManager.AddReplaceFileHandle(fileHandle);
@@ -111,7 +123,6 @@ The user then can select a file he already has or create a new one
         {
             if (fileHandle == null) 
             {
-                // TODO: add new exception here as well?
                 Logger.LogWarning("Got file location, but never received fileHandle.");
                 return;
             }
