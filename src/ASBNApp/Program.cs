@@ -23,5 +23,8 @@ builder.Services.AddSingleton<DateHandler>();
 // Making the FileSystemAccess package available to everyone
 builder.Services.AddFileSystemAccessService();
 
+// Logger
+builder.Services.AddLogging();
+
 
 await builder.Build().RunAsync();

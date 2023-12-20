@@ -16,8 +16,14 @@
     </div>
 
     @* Choose your apprenticeship from a pre-defined list *@
-    <div class="row mt-4">
-        <label for="profession-selector"><p>Your apprenticeship:</p></label>
+    <div class="row mt-4 justify-content-start align-items-center">
+
+        <p class="info-highlight d-flex p-2">
+            <span class="material-symbols-rounded">info </span>
+            <i>&nbsp; Please fill in the information below, as they're required for generating the PDF with the correct information.</i>
+        </p>
+
+        <label for="profession-selector"><p><b>My apprenticeship:</b></p></label>
         <div class="select-location-dropdown">
             <select name="profession-selector" id="profession-selector" @bind="selectedApprenticeship">
                 <option value="" disabled selected>Select Apprenticeship </option>
@@ -31,25 +37,25 @@
 
     @* Specify your working locations and the hours for each location *@
     <div class="row mt-4">
-        <p>My working hours:</p>
+        <p><b>My working hours:</b></p>
         <ShowEditWorkLocationHours @bind-WorkLocationHours="workLocationHours"/>
     </div>
 
     @* Specify your legal representative (if applicable) *@
     <div class="row mt-4">
-        <p class="mb-2">My legal representative (if you're under 18!):</p>
+        <p class="mb-2"><b>My legal representative (if you're under 18!):</b></p>
         <ShowEditTextInput @bind-inputValue="legalRepresentitive" Placeholder="Add your legal representitive here" />
     </div>
 
     @* Add company name here, required for the output pdf *@
     <div class="row mt-4">
-        <p class="mb-2">The company I'm working at:</p>
+        <p class="mb-2"><b>The company I'm working at:</b></p>
         <ShowEditTextInput @bind-inputValue="company" Placeholder="Add your company here" />
     </div>
 
     @* Add school name here, required for the output pdf *@
     <div class="row mt-4">
-        <p class="mb-2">My school:</p>
+        <p class="mb-2"><b>My school:</b></p>
         <ShowEditTextInput @bind-inputValue="school" Placeholder="Add your school here" />
     </div>
 
