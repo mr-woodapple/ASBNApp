@@ -3,7 +3,8 @@
 
 public class EntryRowModel
 {
+    public string? Note { get; set; }
     public DateTime Date { get; set; }
     public string? Location { get; set; }
-    public string? Note { get; set; }
+    public float? Hours { get; set; }
 }

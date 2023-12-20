@@ -9,21 +9,21 @@ Created 20.10.2023
 <div class="row mb-3">
 
 
-    <div class="col-2 entry-row entry-row-date align-items-center justify-content-between">
+    <div class="col-2 me-4 entry-row entry-row-date align-items-center justify-content-between">
         <p class="m-0"> @Entry.Date.DayOfWeek,</p>
         <input type="date" id="date" aria-label="Select date for this entry." @bind="Entry.Date" min="@_minDateValue" max="@_maxDateValue" />
     </div>
 
-    <div class="col mx-4 p-0 entry-row entry-row-note">
+    <div class="col me-4 p-0 entry-row entry-row-note">
         <div class="form-group">
             <textarea class="form-control" rows="2" id="notes"
                 placeholder="I did learn something... Forget what though." @bind="Entry.Note"></textarea>
         </div>
     </div>
 
-    <div class="col-auto entry-row entry-row-location align-items-center justify-content-center">
+    <div class="col-auto me-4 entry-row entry-row-location align-items-center justify-content-center">
         <div class="select-location-dropdown">
-            <select name="work-location" id="work-location" @bind="Entry.Location">
+            <select name="work-location" id="work-location" @bind="Entry.Location" @onclick="UpdateWorkHoursFromLocation">
                 <option value="" disabled selected>Select location</option>
 
                 @if (dataService.GetWorkLocationHours().Count != 0)
@@ -40,6 +40,10 @@ Created 20.10.2023
 
             </select>
         </div>
+    </div>
+
+    <div class="col-2 entry-row entry-row-hours align-items-center">
+        <input type="number" class="form-control form-control-sm" rows="2" @bind="Entry.Hours" placeholder="Add hours"/>
     </div>
 
 </div>
@@ -89,6 +93,7 @@ Created 20.10.2023
     protected override void OnInitialized()
     {
         UpdateMinMaxDates();
+        UpdateWorkHoursFromLocation();
     }
 
     private void UpdateMinMaxDates()
@@ -98,6 +103,17 @@ Created 20.10.2023
             // set values for min and max in the date picker
             _minDateValue = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
             _maxDateValue = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
+        }
+    }
+
+    // Pre-define the hours value based on the selected work location
+    public void UpdateWorkHoursFromLocation() {
+        // filter list for the matching string in SelectedLocation
+        // set corresponding hours value to Hours
+        foreach (var item in dataService.GetWorkLocationHours()) {
+            if(item.Location == Entry.Location) {
+                Entry.Hours = item.Hours;
+            }
         }
     }
 }

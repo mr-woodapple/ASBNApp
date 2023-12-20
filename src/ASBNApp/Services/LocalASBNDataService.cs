@@ -119,15 +119,18 @@ public class LocalASBNDataService : IASBNDataService
     /// <param name="date">DateTime object holding the date to save the entry for</param>
     /// <param name="location">string with user input</param>
     /// <param name="note">string with user input</param>
+    /// <param name="hours">float with user input</param>
     /// <returns>Task</returns>
-    public async Task SaveDay(DateTime date, string location, string note)
+    public async Task SaveDay(string note, DateTime date, string location, float hours)
     {
         // Create new object from variables to be added into the main dictionary
         EntryRowModel entry = new EntryRowModel()
         {
+            
+            Note = note,
             Date = date,
             Location = location,
-            Note = note
+            Hours = hours
         };
 
         // Prepare getting values for inserting into the main dictionary

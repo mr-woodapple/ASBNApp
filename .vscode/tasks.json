@@ -35,7 +35,7 @@
                 "--project",
                 "${workspaceFolder}/ASBNApp.sln"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
         }
     ]
 }

@@ -246,6 +246,11 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
     background: none;
 }
 
+.entry-row-hours .form-control {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
+}
+
 
 /* ################ ShowEdit Text Input Component ################ */
 .show-text {

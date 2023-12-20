@@ -17,7 +17,7 @@ interface IASBNDataService
 
     public EntryRowModel GetDay(DateTime? date);
 
-    public Task SaveDay(DateTime Date, string Location, string Note);
+    public Task SaveDay(string Note, DateTime Date, string Location, float Hours);
 
     public Settings? GetSettings();
 
