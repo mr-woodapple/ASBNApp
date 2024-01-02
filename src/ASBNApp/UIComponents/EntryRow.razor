@@ -21,13 +21,15 @@ Created 20.10.2023
         </div>
     </div>
 
-    <div class="col-2 me-4 entry-row entry-row-location align-items-center justify-content-center">
+    <div class="col-2 me-4 entry-row entry-row-location align-items-center overflow-auto">
 
         <div class="row row-cols-1">
             <div class="col">
+                
                 <div class="select-location-dropdown">
-                    <select name="work-location" id="work-location" @bind="Entry.Location" @onclick="UpdateWorkHoursFromLocation">
-                        <option value="" disabled selected>Select location</option>
+                    <select name="work-location" id="work-location" aria-label="Select your work location." 
+                        @bind="Entry.Location" @onclick="UpdateWorkHoursFromLocation">
+                        <option value="" disabled selected >Select location:</option>
 
                         @if (dataService.GetWorkLocationHours().Count != 0)
                         {
@@ -38,15 +40,17 @@ Created 20.10.2023
                         }
                         else
                         {
-                            <option value="" disabled>No data available, please add a new work location entry in settings.</option>
+                            <option value="" disabled>
+                                No data available, please add a new work location entry in settings.
+                            </option>
                         }
 
                     </select>
                 </div>
             </div>
 
-            <div class="col">
-                <input type="number" class="form-control form-control-sm" @bind="Entry.Hours" placeholder="Add hours"/>
+            <div class="col entry-row-hours">
+                <input type="number" class="input-underline-workhours" @bind="Entry.Hours" placeholder="Add hours"/>
             </div>
             
         </div>

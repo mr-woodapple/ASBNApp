@@ -7,7 +7,11 @@ Created 16.10.2023
 
 <div class="container-fluid mt-3 p-0">
 
-    @* TODO: Create connection from here downwards to have the weeks date available here as well *@
+    @if (alertIsVisible)
+    {
+        <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
+    }
+
     <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
@@ -53,9 +57,44 @@ Created 16.10.2023
     public int? SelectedYear { get; set; }
 
 
-    // Save data
+    /// <summary>
+    /// Triggers the DataService to save the edited data, also trigger
+    /// alert with matching information
+    /// </summary>
     private async void SaveData()
     {
-        await dataService.SaveWeek(rows);
+        if (await dataService.SaveWeek(rows))
+        {
+            alertIsVisible = true;
+            setAlertDetails("success", "That's your data saved!");
+            StateHasChanged();
+        }
+        else
+        {
+            alertIsVisible = true;
+            setAlertDetails("danger", "There was an error saving you data - please allow saving changes if prompted.");
+            StateHasChanged();
+        }
+    }
+
+
+    ///
+    /// Handling alerts
+    /// 
+
+    public bool alertIsVisible = false;
+    public string? alertType;
+    public string? alertMessage;
+
+    public async Task CloseBannerAlertCallback()
+    {
+        alertIsVisible = false;
+        StateHasChanged();
+    }
+
+    private void setAlertDetails(string type, string message)
+    {
+        alertType = type;
+        alertMessage = message;
     }
 }

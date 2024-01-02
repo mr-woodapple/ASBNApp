@@ -251,6 +251,19 @@ input[type="week"]::-webkit-calendar-picker-indicator:hover {
     border: none;
 }
 
+.input-underline-workhours {
+    background-color: #d9d9d9;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #8b8b8b; 
+}
+
+input.input-underline-workhours:focus {
+    outline: none;
+    border: none;
+    border-bottom: 2px solid #000;
+}
+
 
 /* ################ ShowEdit Text Input Component ################ */
 .show-text {

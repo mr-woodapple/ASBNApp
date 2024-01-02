@@ -48,25 +48,37 @@ public class LocalASBNDataService : IASBNDataService
     /// saves that to disk
     /// </summary>
     /// <returns>Task</returns>
-    public async Task WriteData()
+    public async Task<bool> WriteData()
     {
-        // Creating new file, adding empty data before saving it to disk the step after
-        if ( DataReadFromJSON == null ) 
+        try
         {
-            DataReadFromJSON = new JSONDataWrapper() {
-                Settings = new Settings(),
-                WorkLocationHours = new Dictionary<string, WorkLocationHours>(),
-                LoggedData = new Dictionary<string, Dictionary<string, Dictionary<string, EntryRowModel>>>()
-            };
+            // Creating new file, adding empty data before saving it to disk the step after
+            if (DataReadFromJSON == null)
+            {
+                DataReadFromJSON = new JSONDataWrapper()
+                {
+                    Settings = new Settings(),
+                    WorkLocationHours = new Dictionary<string, WorkLocationHours>(),
+                    LoggedData = new Dictionary<string, Dictionary<string, Dictionary<string, EntryRowModel>>>()
+                };
+            }
+
+            // Serialize and write "DataReadFromJSON" to disk
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string serializedData = JsonSerializer.Serialize(DataReadFromJSON, options);
+
+            var writeable = await fileHandles.GetFileHandles().Single().CreateWritableAsync();
+            await writeable.WriteAsync(serializedData);
+            await writeable.CloseAsync();
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message + " Thrown at LocalASBNDataService in WriteData().");
+            return false;
         }
 
-        // Serialize and write "DataReadFromJSON" to disk
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        string serializedData = JsonSerializer.Serialize(DataReadFromJSON, options);
-
-        var writeable = await fileHandles.GetFileHandles().Single().CreateWritableAsync();
-        await writeable.WriteAsync(serializedData);
-        await writeable.CloseAsync();
     }
 
 
@@ -120,13 +132,13 @@ public class LocalASBNDataService : IASBNDataService
     /// <param name="location">string with user input</param>
     /// <param name="note">string with user input</param>
     /// <param name="hours">float with user input</param>
-    /// <returns>Task</returns>
-    public async Task SaveDay(string note, DateTime date, string location, float hours)
+    /// <returns>Bool, true indicates success, false a failure</returns>
+    public async Task<bool> SaveDay(string note, DateTime date, string location, float hours)
     {
         // Create new object from variables to be added into the main dictionary
         EntryRowModel entry = new EntryRowModel()
         {
-            
+
             Note = note,
             Date = date,
             Location = location,
@@ -171,7 +183,8 @@ public class LocalASBNDataService : IASBNDataService
         }
 
         // Call the function that actually saves data to our file
-        WriteData();
+        bool dataSuccessfullyWritten = await WriteData();
+        return dataSuccessfullyWritten;
     }
 
 
@@ -229,7 +242,7 @@ public class LocalASBNDataService : IASBNDataService
     /// </summary>
     /// <param name="entries"></param>
     /// <returns></returns>
-    public async Task SaveWeek(IEnumerable<EntryRowModel> entries)
+    public async Task<bool> SaveWeek(IEnumerable<EntryRowModel> entries)
     {
         // Prepare getting values for inserting into the main dictionary
         var date = entries.ElementAt(0).Date;
@@ -265,7 +278,8 @@ public class LocalASBNDataService : IASBNDataService
         }
 
         // Call the function that actually saves data to our file
-        await WriteData();
+        bool dataSuccessfullyWritten = await WriteData();
+        return dataSuccessfullyWritten;
     }
 
     /// <summary>
@@ -282,16 +296,18 @@ public class LocalASBNDataService : IASBNDataService
     /// </summary>
     /// <param name="settings">Settings object</param>
     /// <returns>Task</returns>
-    public async Task SaveSettings(Settings settings)
+    public async Task<bool> SaveSettings(Settings settings)
     {
         try
         {
             DataReadFromJSON.Settings = settings;
-            WriteData();
+            await WriteData();
+            return true;
         }
         catch (KeyNotFoundException e)
         {
             Console.WriteLine(e.Message + " No 'Settings' object available, cannot write settings.");
+            return false;
         }
     }
 
@@ -325,20 +341,23 @@ public class LocalASBNDataService : IASBNDataService
     /// </summary>
     /// <param name="workLocationHours"></param>
     /// <returns></returns>
-    public async Task SaveWorkLocationHours(List<WorkLocationHours> workLocationHours)
+    public async Task<bool> SaveWorkLocationHours(List<WorkLocationHours> workLocationHours)
     {
         try
         {
             // Clear the dict (otherwise deleted entries will persist foever)
             DataReadFromJSON.WorkLocationHours.Clear();
-            foreach(var entry in workLocationHours) {
+            foreach (var entry in workLocationHours)
+            {
                 DataReadFromJSON.WorkLocationHours[entry.Location] = entry;
             }
-            WriteData();
+            await WriteData();
+            return true;
         }
         catch (KeyNotFoundException e)
         {
             Console.WriteLine(e.Message + " No WorkLocationHours object found, please create one first.");
+            return false;
         }
     }
 }

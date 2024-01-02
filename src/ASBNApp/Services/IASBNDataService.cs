@@ -9,21 +9,21 @@ interface IASBNDataService
     
     public Task ReadData();
 
-    public Task WriteData();
+    public Task<bool> WriteData();
 
     public IEnumerable<EntryRowModel> GetWeek(int? year, int? week);
 
-    public Task SaveWeek(IEnumerable<EntryRowModel> entries);
+    public Task<bool> SaveWeek(IEnumerable<EntryRowModel> entries);
 
     public EntryRowModel GetDay(DateTime? date);
 
-    public Task SaveDay(string Note, DateTime Date, string Location, float Hours);
+    public Task<bool> SaveDay(string Note, DateTime Date, string Location, float Hours);
 
     public Settings? GetSettings();
 
-    public Task SaveSettings(Settings settings);
+    public Task<bool> SaveSettings(Settings settings);
 
     public List<WorkLocationHours> GetWorkLocationHours();
 
-    public Task SaveWorkLocationHours(List<WorkLocationHours> workLocationHours);
+    public Task<bool> SaveWorkLocationHours(List<WorkLocationHours> workLocationHours);
 }
