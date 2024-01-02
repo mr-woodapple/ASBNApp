@@ -42,7 +42,7 @@ Main view to input and edit data, displayed when the user selects the daily view
 
 
 @code {
-    // Variables to bind the selected Date to:
+    // Variables to bind the selected Date to
     private DateTime _selectedDate = DateTime.Today;
     public DateTime SelectedDate 
     {
@@ -56,8 +56,7 @@ Main view to input and edit data, displayed when the user selects the daily view
         }
     } 
 
-    // Variables to bind the selected work location to:
-    //public string? SelectedLocation = null;
+    // Variables to bind the selected work location to
     private string? _selectedLocation = null;
     public string? SelectedLocation 
     {
@@ -77,6 +76,10 @@ Main view to input and edit data, displayed when the user selects the daily view
     // Variable for storing the text the user put in
     public  string? Note = null;
 
+    /// <summary>
+    /// Pre-set the value for hours worked for the UI based on the
+    /// selected workLocationHours element
+    /// </summary>
     public void UpdateWorkHoursFromLocation() {
         // filter list for the matching string in SelectedLocation
         // set corresponding hours value to Hours
@@ -87,8 +90,9 @@ Main view to input and edit data, displayed when the user selects the daily view
         }
     }
 
-    // Gets data for the SelectedDate
-    // TODO: Add some note if no data is present -> or prevent the button being clicked in the first place!
+    /// <summary>
+    /// Gets data for the value in SelectedDate
+    /// </summary>
     public async void GetDataFromDate() {
         // Check if data present, if not create an empty EntryRowModel
         var retrievedData = dataService.GetDay(SelectedDate);
@@ -98,7 +102,9 @@ Main view to input and edit data, displayed when the user selects the daily view
         SelectedLocation = retrievedData.Location;
     }
 
-    // Save data
+    /// <summary>
+    /// Triggers the DataService to save the edited data
+    /// </summary>
     public async void SaveData() {
         // why do I have to convert Hours at all? its a nullable on both ends...
         await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours);

@@ -35,7 +35,7 @@ Created 20.10.2023
                 }
                 else
                 {
-                    <option value="" disabled>No data loaded, please select a file.</option>
+                    <option value="" disabled>No data available, please add a new work location entry in settings.</option>
                 }
 
             </select>
@@ -51,7 +51,7 @@ Created 20.10.2023
 
 
 @code {
-    // dealing with two way binding
+    // Dealing with two way binding
     [Parameter]
     public EntryRowModel Entry { get; set; }
 
@@ -96,6 +96,9 @@ Created 20.10.2023
         UpdateWorkHoursFromLocation();
     }
 
+    /// <summary>
+    /// Updates min and max dates for the date picker in a given week
+    /// </summary>
     private void UpdateMinMaxDates()
     {
         if (SelectedWeek != null && SelectedYear != null)
@@ -106,7 +109,9 @@ Created 20.10.2023
         }
     }
 
-    // Pre-define the hours value based on the selected work location
+    /// <summary>
+    /// Pre-define the hours value for input UI fields based on the selected work location
+    /// </summary>
     public void UpdateWorkHoursFromLocation() {
         // filter list for the matching string in SelectedLocation
         // set corresponding hours value to Hours

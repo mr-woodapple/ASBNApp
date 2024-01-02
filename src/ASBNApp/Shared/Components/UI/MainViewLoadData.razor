@@ -4,7 +4,8 @@ The user then can select a file he already has or create a new one
 *@
 
 @* Keep the square brackets to add info where the log originated from *@
-@inject ILogger<NavBar> Logger;
+@* Why is <NavBar> underlined?? Error: "The type or namespace name 'NavBar' could not be found..." *@
+@inject ILogger<NavBar> Logger; 
 @inject IFileSystemAccessService FileSystemAccessService;
 @inject IASBNDataService dataService;
 @inject IFileHandleManager fileHandleManager;
@@ -61,9 +62,11 @@ The user then can select a file he already has or create a new one
     // Callback function
     [Parameter]
     public Func<Task> OnCallback { get; set; }
-
-
-    // Figure out wether the used browser is supported or not!
+ 
+    /// <summary>
+    /// Check if browser used is supported or not after first render
+    /// </summary>
+    /// <returns>Task</returns>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -74,7 +77,11 @@ The user then can select a file he already has or create a new one
     }
 
 
-    // Let the user pick a file through the OS file system and then add it to our FileHandleManager
+    /// <summary>
+    /// Let the user pick a file through the OS file system and
+    /// add it to our FileHandleManager
+    /// </summary>
+    /// <returns>Task</returns>
     private async Task OpenAndReadFile()
     {
         FileSystemFileHandle[]? fileHandles; 
@@ -107,11 +114,14 @@ The user then can select a file he already has or create a new one
             
             // Callback to the parent component
             await OnCallback.Invoke();
-
-            // TODO: Handle what happens when the user denies write access -> show info button to retrigger the popup
         }
     }
 
+    /// <summary>
+    /// Create an empty file if the user doesn't have one,
+    /// add the file handle to the fileHandleManager
+    /// </summary>
+    /// <returns>Task</returns>
     public async Task CreateNewFile() 
     {
         FileSystemFileHandle? fileHandles;
@@ -121,7 +131,7 @@ The user then can select a file he already has or create a new one
         }
         catch (JSException ex)
         {
-            // Handle Exception or cancelation of File Access prompt
+            // Handle Exception or cancellation of File Access prompt
             Console.WriteLine(ex);
             return;
         }

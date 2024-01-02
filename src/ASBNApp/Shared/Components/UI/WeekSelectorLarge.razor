@@ -48,8 +48,9 @@ Created 16.10.2023
         SelectedWeek = dateHandler.GetCurrentWeekOfYear();
         SelectedYear = DateTime.Now.Year;
         TriggerAllCallbacks();
+
         // Set value for HTML week input
-        _weekFormatInput = SelectedYear + "-W" + SelectedWeek;
+        _weekFormatInput = GetISO8601WeekAsString();
     }
 
     // Single place to trigger the callbacks
@@ -87,17 +88,9 @@ Created 16.10.2023
         {
             SelectedWeek++;
         }
+        
         TriggerAllCallbacks();
-
-        // Add a 0 to the string if SelectedWeek is one digit
-        if(SelectedWeek < 10) 
-        {
-            _weekFormatInput = SelectedYear + "-W0" + SelectedWeek;
-        } 
-        else
-        {
-            _weekFormatInput = SelectedYear + "-W" + SelectedWeek;
-        }
+        _weekFormatInput = GetISO8601WeekAsString();
     }
 
     public void SelectPreviousWeek() 
@@ -113,15 +106,22 @@ Created 16.10.2023
         }
 
         TriggerAllCallbacks();
+        _weekFormatInput = GetISO8601WeekAsString();
         
-        // Add a 0 to the string if SelectedWeek is one digit
+    }
+
+    /// <summary>
+    /// Add a 0 to the front of a string if SelectedWeek is only one digit
+    /// </summary>
+    /// <returns>String matching the ISO8601 format for weeks</returns>
+    public string GetISO8601WeekAsString() {
         if(SelectedWeek < 10)
         {
-            _weekFormatInput = SelectedYear + "-W0" + SelectedWeek;
+            return SelectedYear + "-W0" + SelectedWeek;
         }
         else
         {
-            _weekFormatInput = SelectedYear + "-W" + SelectedWeek;
+            return SelectedYear + "-W" + SelectedWeek;
         }
     }
 }
