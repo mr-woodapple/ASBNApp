@@ -12,7 +12,7 @@ Created 13.10.2023
         @foreach (var entry in dataService.GetWorkLocationHours())
         {
             <div 
-                class="col-auto me-2 mb-2 pill-selector-date @(SelectedLocation == entry.Location ? "active" : "")" 
+                class="col-auto me-2 mb-2 pill-selector-location @(SelectedLocation == entry.Location ? "active" : "")" 
                 @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })"
                 tabindex="0">
                 

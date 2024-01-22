@@ -1,0 +1,22 @@
+.input-bold {
+    font-weight: bold;
+}
+
+.input-underline {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #d3d3d3;
+}
+
+input.input-underline:focus {
+    outline: none;
+    border: none;
+    border-bottom: 2px solid #000;
+}
+
+/* Required this hacky workaround for the settings page header, 
+would be moving the check icon to the next line with the width: 100% property */
+.short-underline {
+    width: auto!important;
+}
+

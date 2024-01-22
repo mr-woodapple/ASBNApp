@@ -10,7 +10,7 @@ This is the markdown todo file for the ASBN App project.
 - [ ] Save data dialog (update with state from backend)
 - [x] Date Picker (as a pop-up / overlay)
 - [x] Component pill as a selector (used on DailyStart for example)
-- [ ] Info message if the app can't be used on my device (not supported by browser / device)
+- [x] Info message if the app can't be used on my device (not supported by browser / device)
 
 
 ## Start Page
@@ -57,10 +57,10 @@ Let's the user create and sign the PDFs, save them locally.
 
 - [x] Overall UI
 - [x] Load data from JSON & display it here
-- [ ] Write user job from JSON -> select from a predefined list
-- [ ] Write user locations/hours, add new entries
-- [ ] Write user legal representitive
-- [ ] Write user company & school
+- [x] Write user job from JSON -> select from a predefined list
+- [x] Write user locations/hours, add new entries
+- [x] Write user legal representitive
+- [x] Write user company & school
 
 
 ## Backend
@@ -70,7 +70,7 @@ Let's the user create and sign the PDFs, save them locally.
 - [ ] Create .json files on the users system
 - [ ] Read/Write files on the users system using the FileSystemAccess API (helpful? https://github.com/KristofferStrube/Blazor.FileSystemAccess)
 - [ ] Get username from the myCard, use that on the document where it says "name"
-- [ ] Store user settings in JSON file
+- [x] Store user settings in JSON file
 - [ ] Get save state, update status bar with current save state
 - [ ] Sign PDF files  
 - [ ] Use exisiting pdf template, index available input fields
