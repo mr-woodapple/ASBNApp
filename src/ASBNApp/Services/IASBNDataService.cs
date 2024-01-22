@@ -1,5 +1,6 @@
-// Created 30.11.2023
-// Interface for retrieving & saving data
+/// <summary>
+/// Interface for retrieving & saving data
+/// </summary>
 
 using ASBNApp.Model;
 

@@ -1,6 +1,7 @@
-// Created 2023-12-06
-// Wrapper for the data read from the JSON file, holds the top level objects 
-// such as WorkLocationHours, Settings & LoggedData
+/// <summary>
+/// Wrapper for the data read from the JSON file, holds the top level objects 
+/// such as WorkLocationHours, Settings & LoggedData
+/// </summary>
 
 using ASBNApp.Model;
 

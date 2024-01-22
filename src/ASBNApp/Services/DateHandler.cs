@@ -1,8 +1,6 @@
-// Week handler to get various information about weeks
-// Created 17.10.2023
-
-// TODO: Add a date as a parameter to these functions, so they 
-// return a value corresponding to the given date
+/// <summary>
+/// Week handler to get various information about weeks
+/// </summary>
 
 
 using System.Globalization;
