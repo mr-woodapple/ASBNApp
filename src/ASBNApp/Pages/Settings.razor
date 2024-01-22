@@ -21,20 +21,22 @@
         </div>
     </div>
 
-    @* Choose your apprenticeship from a pre-defined list *@
-    <div class="row mt-4 justify-content-start align-items-center">
-
+    <div class="row mt-4 px-2">
         <p class="info-highlight d-flex p-2">
             <span class="material-symbols-rounded">info </span>
             <i>&nbsp; Please fill in the information below, as they're required for generating the PDF with the correct
                 information.</i>
         </p>
+    </div>
+
+    @* Choose your apprenticeship from a pre-defined list *@
+    <div class="row mt-4 justify-content-start align-items-center">
 
         <label for="profession-selector">
             <p><b>My apprenticeship:</b></p>
         </label>
-        <div class="select-location-dropdown">
-            <select name="profession-selector" id="profession-selector" @bind="selectedApprenticeship">
+        <div class="select-profession">
+            <select class="p-1 px-2" name="profession-selector" id="profession-selector" @bind="selectedApprenticeship">
                 <option value="" disabled selected>Select Apprenticeship </option>
 
                 @foreach (var entry in Data.Professions.Apprenticeships)
