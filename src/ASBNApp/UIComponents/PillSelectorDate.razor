@@ -35,6 +35,14 @@ Created 13.10.2023
     public EventCallback<DateTime> SelectedDateChanged { get; set; }
 
 
+    // Using this to force-update the SelecteDate in MainViewDay (couldn't get
+    // existing values to load otherwise)
+    protected override void OnInitialized()
+    {
+        SelectedDateChanged.InvokeAsync(DateTime.Today);
+    }
+
+
     private DateTime Today = DateTime.Now;
     private DateTime Tomorrow = DateTime.Now.AddDays(1);
     // Used to control highlight styling
