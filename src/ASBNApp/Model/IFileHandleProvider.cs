@@ -4,5 +4,6 @@
 using KristofferStrube.Blazor.FileSystem;
 
 public interface IFileHandleProvider{
-    IReadOnlyCollection<FileSystemFileHandle> GetFileHandles();
+    // TODO: This used to be an IReadOnlyCollection, is there an equivalent for an object?
+    FileSystemFileHandle GetFileHandle();
 }

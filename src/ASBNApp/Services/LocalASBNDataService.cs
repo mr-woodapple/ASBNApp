@@ -31,7 +31,7 @@ public class LocalASBNDataService : IASBNDataService
     /// <exception cref="NullReferenceException">Throw exception if </exception>
     public async Task ReadData()
     {
-        var fileHandle = fileHandles.GetFileHandles().Single();
+        var fileHandle = fileHandles.GetFileHandle();
         var file = await fileHandle.GetFileAsync();
         var text = await file.TextAsync();
 
@@ -67,7 +67,7 @@ public class LocalASBNDataService : IASBNDataService
             var options = new JsonSerializerOptions { WriteIndented = true };
             string serializedData = JsonSerializer.Serialize(DataReadFromJSON, options);
 
-            var writeable = await fileHandles.GetFileHandles().Single().CreateWritableAsync();
+            var writeable = await fileHandles.GetFileHandle().CreateWritableAsync();
             await writeable.WriteAsync(serializedData);
             await writeable.CloseAsync();
 

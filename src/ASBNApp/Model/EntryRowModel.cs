@@ -1,5 +1,6 @@
-// Created 17.10.2023
-// Models how an entry for a single day looks like
+/// <summary>
+/// Models how an entry for a single day looks like
+/// </summary>
 
 public class EntryRowModel
 {
