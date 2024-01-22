@@ -1,5 +1,6 @@
-// Created 2023-12-04
-// Implements logic to load data from a local JSON file (which the user can specify)
+/// <summary>
+/// Implements logic to load data from a local JSON file (which the user can specify)
+/// </summary>
 
 using System.Text.Json;
 using ASBNApp.Model;
@@ -16,7 +17,7 @@ public class LocalASBNDataService : IASBNDataService
         this.fileSystemAccessService = fileSystemAccessService;
     }
 
-    public JSONDataWrapper? DataReadFromJSON;
+    private JSONDataWrapper? DataReadFromJSON;
     private readonly IFileHandleProvider fileHandles;
     private readonly DateHandler dateHandler;
     private readonly IFileSystemAccessService fileSystemAccessService;

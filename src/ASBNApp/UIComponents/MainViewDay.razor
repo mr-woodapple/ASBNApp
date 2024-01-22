@@ -29,10 +29,10 @@ Main view to input and edit data, displayed when the user selects the daily view
     </div>
 
     <div class="row">
-        <p class="my-2 mt-4">And I did this today...</p>
+        <p class="my-2 mt-4">And I learned this today...</p>
         <div class="form-group">
             <textarea class="form-control" rows="10" id="notes"
-                placeholder="I did learn something... Forget what though." @bind="Note"></textarea>
+                placeholder="I learned this..." @bind="Note"></textarea>
         </div>
     </div>
 
@@ -134,8 +134,9 @@ Main view to input and edit data, displayed when the user selects the daily view
         }
     }
 
+
     ///
-    /// Handling alerts
+    /// Handling alerts (sucess / failure on user saves data)
     /// 
     public bool alertIsVisible = false;
     public string? alertType;

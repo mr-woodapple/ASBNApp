@@ -1,5 +1,6 @@
-// Created 2023-12-06
-// Models what a combination of work location and hours looks liks
+/// <summary>
+/// Models what a combination of work location and hours looks liks
+/// </summary>
 
 
 namespace ASBNApp.Model;

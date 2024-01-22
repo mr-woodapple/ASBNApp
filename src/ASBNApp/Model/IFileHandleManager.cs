@@ -1,5 +1,6 @@
-// Created 2023-12-12
-// Interface that should help manage the available FileSystem handles 
+/// <summary>
+/// Interface that aims to help with managing the fileHandle
+/// </summary>
 
 using KristofferStrube.Blazor.FileSystem;
 

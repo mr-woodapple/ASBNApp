@@ -1,5 +1,6 @@
-// Created 2023-12-06
-// Models what the settings are supposed to look like
+/// <summary>
+/// Models what the settings are supposed to look like
+/// </summary>
 
 namespace ASBNApp.Model;
 
