@@ -56,5 +56,5 @@ jobs:
         with:
           app-name: 'ASBNApp'
           slot-name: 'Production'
-          package: .
+          package: ./wwwroot/
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_127AFF9E486645BE8AC8E6CBFD19C89F }}
