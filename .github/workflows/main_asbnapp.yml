@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -19,17 +19,14 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '7.x'
+          dotnet-version: '8.x'
           include-prerelease: true
 
-      - name: Restore with dotnet
-        run: dotnet restore 
-
       - name: Build with dotnet
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release
 
-      - name: Publish with dotnet
-        run: dotnet publish --configuration Release --output ${{env.DOTNET_ROOT}}/myapp --no-build
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -38,23 +35,23 @@ jobs:
           path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: .net-app
-      
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'ASBNApp'
           slot-name: 'Production'
-          package: ./wwwroot/
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_127AFF9E486645BE8AC8E6CBFD19C89F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_ED70AA639C50412CAC08A16135073C3E }}
+          package: .
