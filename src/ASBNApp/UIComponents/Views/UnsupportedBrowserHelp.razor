@@ -1,0 +1,39 @@
+@* 
+Small component to keep the main code clean from information provided here
+*@
+
+<div class="container p-5">
+
+            <div class="row mt-4">
+                <div class="alert alert-danger p-2 m-0" role="alert">
+
+                    
+                    <h4 class="d-flex align-items-center px-2 pt-2">
+                        <span class="material-symbols-rounded">warning</span> 
+                        <b>&nbsp; Sorry, this browser is not supported.</b>
+                    </h4>
+
+                    <hr class="" />
+
+                    Please see below for more information.
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <p>
+                    <b>Why is my browser not supported?</b><br />
+
+                    This app is using KristofferStrubes 
+                    <a href="https://github.com/KristofferStrube/Blazor.FileSystemAccess">Blazor File System Access</a>.
+                    In the background, this package is using the File System Access API, which isn't fully
+                    supported by all browser yet. See "CanIUse - File System Access API" for more information: 
+                    <a href="https://caniuse.com/native-filesystem-api">caniuse.com</a>.
+                </p>
+
+                <p>
+                    <u>General rule of thumb:</u> All Chromium based browser will work (Google Chrome, Microsoft Edge, Opera),
+                    that's not including the mobile versions unfortunately.
+                </p>
+            </div>
+            
+        </div>

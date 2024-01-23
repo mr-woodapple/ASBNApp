@@ -1,0 +1,36 @@
+.week-change-center {
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+}
+
+.week-change-button {
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    display: flex;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.week-change-button:hover {
+    opacity: 50%;
+}
+
+.week-change-center input {
+    color: white;
+    border: none;
+    background: none;
+}
+
+.week-change-center input:hover {
+    cursor: pointer;
+}
+
+input[type="week"]::-webkit-calendar-picker-indicator {
+    filter: invert();
+}
+
+input[type="week"]::-webkit-calendar-picker-indicator:hover {
+    cursor: pointer;
+}
+

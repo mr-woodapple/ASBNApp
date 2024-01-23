@@ -1,0 +1,141 @@
+@*
+Component to show location & working hours for all entries of WorkLocationHours,
+also manage editing states & update parent component if necessary
+*@
+
+@using ASBNApp.Model;
+
+<div class="container">
+    @foreach (var entry in WorkLocationHours)
+    {
+        <div class="row mb-2">
+            @if (_isEditingList[entry.Location])
+            {
+                @* edit text mode *@
+                <div class="col-5">
+                    <input @bind="@entry.Location" class="input-underline p-1" placeholder="Work Location" />
+                </div>
+                <div class="col-2">
+                    <input @bind="@entry.Hours" class="input-underline p-1" placeholder="Hours" />
+                </div>
+                <div class="col-1">
+                    <span class="btn p-0 material-symbols-rounded"
+                        @onclick="@(async e => { 
+                            // TODO: How to make editing an entry work? Seems to refresh before updating my dict
+                            // See issue #28 for more info
+                            await RebuildIsEditing();
+                            _isEditingList[entry.Location] = false; 
+                            await WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
+                         })">check</span>
+                </div>
+            }
+            else
+            {
+                @* show text mode *@
+                <div class="col-5">
+                    <div class="show-text">
+                        <p class="m-0 p-1 px-2"> @entry.Location </p>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="show-text">
+                        <p class="m-0 p-1 px-2"> @entry.Hours Hours </p>
+                    </div>
+                </div>
+                <div class="col-1">
+                    @* Set focus to the input above *@
+                    <span tabindex="0" class="btn p-0 material-symbols-rounded"
+                        @onclick="@(e => { _isEditingList[entry.Location] = true; })"> edit </span>
+                    <span tabindex="0" class="btn p-0 material-symbols-rounded"
+                        @onclick="@(e => { DeleteWorkLocationHoursEntry(entry); })"> delete </span>
+                </div>
+            }
+
+        </div>
+    }
+
+    @* Add additional row to let the user add data *@
+    <div class="row">
+        <div class="col-5">
+            <input @bind="_newWorkLocation" class="input-underline" placeholder="Add new work location" />
+        </div>
+        <div class="col-2">
+            <input @bind="_newWorkHours" class="input-underline" placeholder="Add hours" />
+        </div>
+        <div class="col-1">
+            <span tabindex="0" class="btn p-0 material-symbols-rounded"
+                @onclick="@(e => { AddNewWorkLocationHoursEntry(); })">add</span>
+        </div>
+    </div>
+
+
+</div>
+
+
+@code {
+    // TODO: Check if this is the smartest way
+    // Bool values on the editing state for all WorkLocationHours entries
+    private Dictionary<string, bool> _isEditingList = new Dictionary<string, bool>();
+
+    // create list with entries on initializion, store values for true and false in here
+    protected override void OnInitialized()
+    {
+        foreach (var entry in WorkLocationHours)
+        {
+            _isEditingList.Add(entry.Location, false);
+        }
+    }
+
+
+    // Two way binding
+    [Parameter]
+    public List<WorkLocationHours>? WorkLocationHours { get; set; }
+    [Parameter]
+    public EventCallback<List<WorkLocationHours>?> WorkLocationHoursChanged { get; set; }
+
+    // variables & methods to add a new entry
+    private string? _newWorkLocation { get; set; }
+    private float? _newWorkHours { get; set; }
+
+    private void AddNewWorkLocationHoursEntry()
+    {
+        // TODO: Change from this to the plus button only becoming active once we have input in both variables
+        if (_newWorkLocation != null && _newWorkHours != null)
+        {
+            // add new entry
+            WorkLocationHours.Add(new WorkLocationHours()
+                {
+                    Location = _newWorkLocation,
+                    Hours = _newWorkHours
+                });
+
+            // update _isEditingList
+            _isEditingList.Add(_newWorkLocation, false);
+
+            // update parent component
+            WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
+        }
+        else 
+        {
+            Console.WriteLine("Add something to both inputs before trying to add the entry!");
+        }
+    }
+
+    private void DeleteWorkLocationHoursEntry(WorkLocationHours entry)
+    {
+        WorkLocationHours.Remove(entry);
+        WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
+    }
+
+    // Rebuild the isEditing dict, required after changing the key on one an entry
+    // TODO: Seems wasteful with computing, better solution available?
+    private Task RebuildIsEditing() {
+        _isEditingList.Clear();
+        foreach (var entry in WorkLocationHours)
+        {
+            _isEditingList.Add(entry.Location, false);
+        }
+        return Task.CompletedTask;
+    }
+
+}

@@ -1,0 +1,153 @@
+@* 
+Main view to load if no data is present.
+The user then can select a file he already has or create a new one
+*@
+
+@* Keep the square brackets to add info where the log originated from *@
+@inject ILogger<NavBar> Logger; 
+@inject IFileSystemAccessService FileSystemAccessService;
+@inject IASBNDataService dataService;
+@inject IFileHandleManager fileHandleManager;
+@inject IFileHandleProvider fileHandleProvider;
+
+@using KristofferStrube.Blazor.FileSystem;
+
+
+<div class="container-fluid mt-3 p-0">
+
+    @* 
+        Hide the load file buttons & display a warning if the browser is not supported 
+        Otherwise show a brief welcome & steps on how to continue (lot's of room for improvement here)
+    *@
+    @if (!_isSupported)
+    {
+        <UnsupportedBrowserHelp />
+    }
+    else
+    {
+        <div class="container-fluid align-items-center">
+
+            <div class="row justify-content-center">
+                <h4 class="col-auto">ASBN App | Welcome</h4>
+            </div>
+
+            <div class="row justify-content-center">
+                <p class="col-auto">
+                    Please select an exisiting file or create a new one to continue.<br />
+                </p>
+            </div>
+
+            <div class="row justify-content-center">
+                <button type="button" class="col-auto btn btn-outline-dark me-2" @onclick="CreateNewFile">Create New</button>
+                <button type="button" class="col-auto btn btn-primary" @onclick="OpenAndReadFile">Open File</button>   
+            </div>
+
+            <div class="row justify-content-center mt-2">
+                <p class="col-auto">
+                    <b>Important:</b> Please allow the website to save changes 
+                    to your file, this is crucial for the application to work.
+                </p>
+            </div>
+        </div>
+    }
+    
+</div>
+
+
+@code {
+    PermissionState writePermissionState;
+    private bool _isSupported;
+
+    // Callback function
+    [Parameter]
+    public Func<Task> OnCallback { get; set; }
+ 
+    /// <summary>
+    /// Check if browser used is supported or not after first render
+    /// </summary>
+    /// <returns>Task</returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {        
+        if (firstRender)
+        {
+            _isSupported = await FileSystemAccessService.IsSupportedAsync();
+            StateHasChanged();
+        }
+    }
+
+
+    /// <summary>
+    /// Let the user pick a file through the OS file system and
+    /// add it to our FileHandleManager
+    /// </summary>
+    /// <returns>Task</returns>
+    private async Task OpenAndReadFile()
+    {
+        FileSystemFileHandle[]? fileHandles; 
+        try
+        {
+            // Can only open one file at a time
+            fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync();
+        }
+        catch (JSException ex)
+        {
+            // Handle Exception or cancelation of File Access prompt, returns empty Task if so
+            Console.WriteLine(ex);
+            return;
+        }
+
+        // The "using" block here makes sure we don't have a memory leak, because
+        // "DisposeAsync" will be called at the end of the using scope.
+        await using (var fileHandle = fileHandles.Single()) {
+            if (fileHandle == null) {
+                Logger.LogError("Opened file, but never received fileHandle.");
+                return;
+            }
+            fileHandleManager.AssignFileHandle(fileHandle);
+
+            // process data into C# objects to work with
+            await dataService.ReadData();
+
+            // make sure we have write access
+            writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
+            
+            // Callback to the parent component
+            await OnCallback.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// Create an empty file if the user doesn't have one,
+    /// add the file handle to the fileHandleManager
+    /// </summary>
+    /// <returns>Task</returns>
+    public async Task CreateNewFile() 
+    {
+        FileSystemFileHandle? fileHandles;
+        try
+        {
+            fileHandles = await FileSystemAccessService.ShowSaveFilePickerAsync();
+        }
+        catch (JSException ex)
+        {
+            // Handle Exception or cancellation of File Access prompt
+            Console.WriteLine(ex);
+            return;
+        }
+
+        await using (var fileHandle = fileHandles) 
+        {
+            if (fileHandle == null) 
+            {
+                Logger.LogWarning("Got file location, but never received fileHandle.");
+                return;
+            }
+            fileHandleManager.AssignFileHandle(fileHandle);
+            await dataService.WriteData();
+            writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
+
+            // Callback to the parent component
+            await OnCallback.Invoke();
+        }
+    }
+}

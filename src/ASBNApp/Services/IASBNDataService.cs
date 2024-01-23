@@ -1,17 +1,30 @@
-// Created 30.11.2023
-// Interface for retrieving & saving data
+/// <summary>
+/// Interface for retrieving & saving data
+/// </summary>
 
-using ASBNApp.Shared.Components.UI;
+using ASBNApp.Model;
 
 interface IASBNDataService
 {
-    // Retrieving / storing weekly data
-    public Task<IEnumerable<EntryRowModel>> GetWeek(int? year, int? week);
+    public JSONDataWrapper GetData();
+    
+    public Task ReadData();
 
-    public Task SaveWeek(IEnumerable<EntryRowModel> entries);
+    public Task<bool> WriteData();
 
-    // Retrieving / storing daily data
-    public Task<EntryRowModel> GetDay(DateTime? date);
+    public IEnumerable<EntryRowModel> GetWeek(int? year, int? week);
 
-    public Task SaveDay(EntryRowModel entry);
+    public Task<bool> SaveWeek(IEnumerable<EntryRowModel> entries);
+
+    public EntryRowModel GetDay(DateTime? date);
+
+    public Task<bool> SaveDay(string Note, DateTime Date, string Location, float Hours);
+
+    public Settings? GetSettings();
+
+    public Task<bool> SaveSettings(Settings settings);
+
+    public List<WorkLocationHours> GetWorkLocationHours();
+
+    public Task<bool> SaveWorkLocationHours(List<WorkLocationHours> workLocationHours);
 }

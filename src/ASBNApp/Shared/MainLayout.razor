@@ -1,21 +1,31 @@
-﻿@inherits LayoutComponentBase
+﻿@inject IASBNDataService dataService;
+
+@inherits LayoutComponentBase
 
 <PageTitle>ASBNApp</PageTitle>
 
+
 <div class="page">
-    <div>
+
+    @* If no data is present = show input page, otherwise load normal UI *@
+    @if(dataService.GetData() == null) {
+        @* show open website with load file and create file buttons here *@
+        <MainViewLoadData OnCallback="Callback" />
+    } 
+    else 
+    {
         <NavBar />
-    </div>
 
-    <main>
-        <!--
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-        -->
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+        <main>
+            <article class="content px-4">
+                @Body
+            </article>
+        </main> 
+    }
 </div>
+
+@code {
+    // Get's called from the sub component, retriggers a re-render of the page
+    // to apply the data loaded (and therefore change the view)
+    public async Task Callback() => StateHasChanged();
+}

@@ -1,0 +1,156 @@
+@*
+Main view to input and edit data, displayed when the user selects the daily view.
+*@
+
+@inject IASBNDataService dataService;
+
+<div class="container-fluid mt-3 p-0">
+
+    @if (alertIsVisible)
+    {
+        <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
+    }
+
+    <div class="row">
+        <p class="my-2">I'm writing a log for...</p>
+        <PillSelectorDate @bind-SelectedDate="SelectedDate" />
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p class="my-2 mt-4">I was working from...</p>
+            <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
+        </div>
+
+        <div class="col">
+            <p class="my-2 mt-4">I worked for...</p>
+            <input class="form-control" type="number" @bind="Hours" placeholder="sooo many hours." />
+        </div>
+    </div>
+
+    <div class="row">
+        <p class="my-2 mt-4">And I learned this today...</p>
+        <div class="form-group">
+            <textarea class="form-control" rows="10" id="notes"
+                placeholder="I learned this..." @bind="Note"></textarea>
+        </div>
+    </div>
+
+    <div class="row justify-content-end">
+        <div class="col-auto">
+            <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+@code {
+    // Variables to bind the selected Date to
+    private DateTime _selectedDate;
+    public DateTime SelectedDate
+    {
+        get => _selectedDate;
+        set
+        {
+            if (value != _selectedDate)
+            {
+                _selectedDate = value;
+                GetDataFromDate();
+            }
+        }
+    }
+
+    // Variables to bind the selected work location to
+    private string? _selectedLocation = null;
+    public string? SelectedLocation
+    {
+        get => _selectedLocation;
+        set
+        {
+            if (value != _selectedLocation)
+            {
+                _selectedLocation = value;
+                UpdateWorkHoursFromLocation();
+            }
+        }
+    }
+
+    // Variable to bind the user input for work hours to
+    public float? Hours = null;
+
+    // Variable for storing the text the user put in
+    public string? Note = null;
+
+    /// <summary>
+    /// Pre-set the value for hours worked for the UI based on the
+    /// selected workLocationHours element
+    /// </summary>
+    public void UpdateWorkHoursFromLocation()
+    {
+        // filter list for the matching string in SelectedLocation
+        // set corresponding hours value to Hours
+        foreach (var entry in dataService.GetWorkLocationHours())
+        {
+            if (entry.Location == SelectedLocation)
+            {
+                Hours = entry.Hours;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets data for the value in SelectedDate
+    /// </summary>
+    public async void GetDataFromDate()
+    {
+        // Check if data present, if not create an empty EntryRowModel
+        var retrievedData = dataService.GetDay(SelectedDate);
+        // Set variables
+        Note = retrievedData.Note;
+        Hours = retrievedData.Hours;
+        SelectedLocation = retrievedData.Location;
+    }
+
+    /// <summary>
+    /// Triggers the DataService to save the edited data, also trigger
+    /// alert with matching information
+    /// </summary>
+    public async void SaveData()
+    {
+        // why do I have to convert Hours at all? its a nullable on both ends...
+        if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours))
+        {
+            alertIsVisible = true;
+            setAlertDetails("success", "That's your data saved!");
+            StateHasChanged();
+        }
+        else
+        {
+            alertIsVisible = true;
+            setAlertDetails("danger", "There was an error saving you data - please allow saving changes if prompted.");
+            StateHasChanged();
+        }
+    }
+
+
+    ///
+    /// Handling alerts (sucess / failure on user saves data)
+    /// 
+    public bool alertIsVisible = false;
+    public string? alertType;
+    public string? alertMessage;
+
+    public async Task CloseBannerAlertCallback()
+    {
+        alertIsVisible = false;
+        StateHasChanged();
+    }
+
+    private void setAlertDetails(string type, string message)
+    {
+        alertType = type;
+        alertMessage = message;
+    }
+}
