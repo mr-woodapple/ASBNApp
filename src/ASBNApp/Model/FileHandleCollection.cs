@@ -5,19 +5,27 @@
 
 using KristofferStrube.Blazor.FileSystem;
 
-public class FileHandleCollection : IFileHandleManager, IFileHandleProvider, IAsyncDisposable{
+public class FileHandleCollection : IFileHandleManager, IFileHandleProvider, IAsyncDisposable
+{
     private FileSystemFileHandle? fileHandle = null;
 
     /// <summary>
     /// Assigns the handle variable to our fileHandle variable
     /// </summary>
     /// <param name="handle">fileHandle from the loaded file</param>
-    public void AssignFileHandle(FileSystemFileHandle handle){
+    public async Task AssignFileHandle(FileSystemFileHandle handle)
+    {
+        if (fileHandle != null)
+        {
+            await fileHandle.DisposeAsync();
+        }
         fileHandle = handle;
     }
 
-    public FileSystemFileHandle GetFileHandle(){
-        if(fileHandle == null){
+    public FileSystemFileHandle GetFileHandle()
+    {
+        if (fileHandle == null)
+        {
             throw new NullReferenceException("No fileHandle available, please load a file first.");
         }
         return fileHandle;

@@ -5,5 +5,5 @@
 using KristofferStrube.Blazor.FileSystem;
 
 public interface IFileHandleManager{
-    void AssignFileHandle(FileSystemFileHandle fileHandle);
+    Task AssignFileHandle(FileSystemFileHandle fileHandle);
 }

@@ -67,7 +67,7 @@ The user then can select a file he already has or create a new one
     /// </summary>
     /// <returns>Task</returns>
     protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
+    {        
         if (firstRender)
         {
             _isSupported = await FileSystemAccessService.IsSupportedAsync();

@@ -15,7 +15,7 @@ Small component to keep the main code clean from information provided here
 
                     <hr class="" />
 
-                    Please see the list below for supported browsers.
+                    Please see below for more information.
                 </div>
             </div>
 
@@ -25,48 +25,15 @@ Small component to keep the main code clean from information provided here
 
                     This app is using KristofferStrubes 
                     <a href="https://github.com/KristofferStrube/Blazor.FileSystemAccess">Blazor File System Access</a>.
-                    Unfortunately, this API is only supported on a limited set of browsers. 
-                    If the app isn't supported on your system, you'll see the red warning
-                    in the navigation bar.
+                    In the background, this package is using the File System Access API, which isn't fully
+                    supported by all browser yet. See "CanIUse - File System Access API" for more information: 
+                    <a href="https://caniuse.com/native-filesystem-api">caniuse.com</a>.
                 </p>
 
                 <p>
-                    See the table below for more information about which Browsers are supported:
+                    <u>General rule of thumb:</u> All Chromium based browser will work (Google Chrome, Microsoft Edge, Opera),
+                    that's not including the mobile versions unfortunately.
                 </p>
-            </div>
-
-            <div class="row">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Browser</th>
-                            <th>Supported</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="table-success">
-                            <td>Chrome (Desktop)</td>
-                            <td>Yes</td>
-                        </tr>
-                        <tr class="table-success">
-                            <td>Edge</td>
-                            <td>Yes</td>
-                        </tr>
-
-                        <tr class="table-danger">
-                            <td>Mozilla Firefox</td>
-                            <td>No</td>
-                        </tr>
-                        <tr class="table-danger">
-                            <td>Chrome for Android</td>
-                            <td>No</td>
-                        </tr>
-                        <tr class="table-danger">
-                            <td>iOS Safari</td>
-                            <td>No</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
             
         </div>

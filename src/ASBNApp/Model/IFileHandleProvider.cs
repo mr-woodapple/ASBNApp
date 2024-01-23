@@ -5,6 +5,5 @@
 using KristofferStrube.Blazor.FileSystem;
 
 public interface IFileHandleProvider{
-    // TODO: This used to be an IReadOnlyCollection, is there an equivalent for an object?
     FileSystemFileHandle GetFileHandle();
 }
