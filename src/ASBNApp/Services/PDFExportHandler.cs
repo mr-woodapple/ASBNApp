@@ -2,22 +2,22 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.AcroForms;
 using ASBNApp.Enums;
+using ASBNApp.Model;
 
 
 /// <summary>
 /// TODO: tba
 /// </summary>
-/// 
 public class PDFExportHandler
 {
     /// <summary>
-    /// Handles opening then pdf, linking data and finalizing the pdf
+    /// Handles opening then pdf, linking data and finalizing the pdf.
     /// </summary>
     /// <param name="src">Bytestream making the template PDF available</param>
     /// <param name="dest">Stream handling the edited PDF</param>
     /// <param name="rows">EntryRowModel with the data to export</param>
     /// <returns></returns>
-    public async Task GeneratePDF(byte[] src, Stream dest, IEnumerable<EntryRowModel> rows)
+    public async Task GeneratePDF(byte[] src, Stream dest, IEnumerable<EntryRowModel> rows, Settings settings)
     {
         try
         {
@@ -33,10 +33,8 @@ public class PDFExportHandler
                 WriteData(ASBNPdfFields.Date4, ASBNPdfFields.Note4, ASBNPdfFields.Hours4, ASBNPdfFields.Location4, rows.ElementAt(3), document);
                 WriteData(ASBNPdfFields.Date5, ASBNPdfFields.Note5, ASBNPdfFields.Hours5, ASBNPdfFields.Location5, rows.ElementAt(4), document);
 
-
-                // TODO: Add data for the top row
-
-                // TODO: Add data for the bottom row
+                // Additional data (header, footer, etc.)
+                WriteAdditionalData(document, settings);
 
 
                 // Sets a value that prevents text being hidden behind form fields
@@ -67,9 +65,10 @@ public class PDFExportHandler
         }
     }
 
+
     /// <summary>
     /// Links user content to the matching fields in the pdf template, 
-    /// then calls FillField to actually handle writing
+    /// then calls FillField to actually handle writing.
     /// </summary>
     /// <param name="fieldDate">Int that links the enum to the field in the pdf</param>
     /// <param name="fieldNote">Int that links the enum to the field in the pdf</param>
@@ -85,8 +84,30 @@ public class PDFExportHandler
         FillField(document, fieldLocation, row.Location);
     }
 
+
+    private void WriteAdditionalData(PdfDocument document, Settings settings)
+    {
+        // TODO: Dropdown
+        // TODO: Make the dropdown a normal text field, simply add the name we specified
+        PdfComboBoxField pdfDropdown = (PdfComboBoxField)document.AcroForm.Fields[0]; //PdfComboBoxField
+        // pdfDropdown.Elements.Values[14].Value = settings.Profession;
+
+        // Add information to the header
+        FillField(document, ASBNPdfFields.Username, settings.Username);
+        //FillField(document, ASBNPdfFields.HeaderProfession, settings.Profession);
+        FillField(document, ASBNPdfFields.HeaderApprenticeYear, "PLACEHOLDER");
+        FillField(document, ASBNPdfFields.HeaderTimeperiod, "PLACEHOLDER");
+        FillField(document, ASBNPdfFields.HeaderCalendarWeek, "PLACEHOLDER");
+
+        // Add data for the bottom row
+        FillField(document, ASBNPdfFields.FooterUserSignatureDate, DateTime.Today.ToShortDateString());
+        FillField(document, ASBNPdfFields.FooterRepresentativeName, settings.LegalRepresentitive);
+        FillField(document, ASBNPdfFields.FooterSchoolName, settings.School);
+    }
+
+
     /// <summary>
-    /// Handles the actual writing of content to their respective fields in the PDF
+    /// Handles the actual writing of content to their respective fields in the PDF.
     /// </summary>
     /// <param name="document">PdfDocument to edit</param>
     /// <param name="field">PdfTextField to edit</param>

@@ -75,6 +75,7 @@
         // Get Data for the selected week
         // Might need it here later
         IEnumerable<EntryRowModel> rows = dataService.GetWeek(SelectedYear, SelectedWeek);
+        Model.Settings settings = dataService.GetSettings();
 
         // Export the PDF
         PDFExportHandler pdfHandler = new PDFExportHandler();
@@ -86,11 +87,8 @@
         FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync();
         using (var outputStream = await fileHandle.CreateWritableAsync())
         {
-            // required at all?
-            // writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
-
             // Hand over to the PDF handling class
-            pdfHandler.GeneratePDF(fileBytes, outputStream, rows);
+            pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings);
 
             // Close the stream and write file to disk
             outputStream.CloseAsync();
