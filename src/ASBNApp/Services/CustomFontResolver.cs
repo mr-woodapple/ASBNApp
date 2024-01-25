@@ -1,4 +1,6 @@
-// required implementation of the IFontResolver, required to use custom fonts within PDFSharpCore
+/// <summary>
+/// Required implementation of the IFontResolver, required to use custom fonts within PDFSharp
+/// </summary>
 
 using PdfSharp.Fonts;
 
@@ -24,9 +26,9 @@ public class CustomFontResolver : IFontResolver
     }
 
 
+    // Needs to be updated if we have more than one option in the family
     public FontResolverInfo? ResolveTypeface(string familyName, bool isBold, bool isItalic)
     {
-        // TODO: Not really sure this could be used in a smarter way
         return new FontResolverInfo("CourierNew.ttf");
     }
 }

@@ -1,13 +1,12 @@
-using KristofferStrube.Blazor.FileSystem;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using PdfSharp.Drawing;
-using System.Reflection.Metadata;
 using PdfSharp.Pdf.AcroForms;
+
 
 /// <summary>
 /// TODO: tba
 /// </summary>
+/// 
 public class PDFExportHandler
 {
 
@@ -26,15 +25,14 @@ public class PDFExportHandler
                 PdfTextField field = (PdfTextField)document.AcroForm.Fields[11];
                 field.Value = new PdfString("ajglkdajgkl");
 
+                field = (PdfTextField)document.AcroForm.Fields[12];
+                field.Value = new PdfString("ajglkdajgkl");
+
+
 
                 // Sets a value that prevents text being hidden behind form fields
                 // (Would only get visible after clicking into that field)
-                if (document.AcroForm.Elements.ContainsKey("/NeedAppearances")) {
-                    document.AcroForm.Elements["/NeedAppearances"] = new PdfBoolean(true);
-                } else {
-                    document.AcroForm.Elements["/NeedAppearances"] = new PdfBoolean(true);
-                }
-
+                
 
                 // Save the edited document to a MemoryStream
                 // Hacky workaround because document.Save(dest) does not support async saving

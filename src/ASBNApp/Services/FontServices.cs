@@ -1,9 +1,7 @@
-
-// service to load fonts -> because the browser only has access to one, we need to load in anything else
-
-
-
-using PdfSharp.Fonts;
+/// <summary>
+/// Service to load custom fonts, required because we don't have access to fonts from the 
+/// browser -> we need to load in any font we need, as in this case
+/// </summary>
 
 public class FontServices
 {
@@ -18,9 +16,9 @@ public class FontServices
 
 
     /// <summary>
-    /// 
+    /// Wrapper to handle loading fonts
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Fonts object including all available fonts</returns>
     public async Task<Fonts> LoadFonts()
     {
         Fonts fonts = new Fonts()
