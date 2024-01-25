@@ -18,12 +18,18 @@ builder.Services.AddSingleton<FileHandleCollection>();
 
 builder.Services.AddSingleton<IFileHandleManager>(s => s.GetRequiredService<FileHandleCollection>());
 builder.Services.AddSingleton<IFileHandleProvider>(s => s.GetRequiredService<FileHandleCollection>());
+
 // DateHandler service
 builder.Services.AddSingleton<DateHandler>();
+
 // Making the FileSystemAccess package available to everyone
 builder.Services.AddFileSystemAccessService();
 
-// Logger
+// Add the font service for exporting PDFs
+// TODO: Why not a singleton here?? Is there a reason such as "we need a new instance for every time"
+builder.Services.AddScoped<FontServices>();
+
+// Add Logger
 builder.Services.AddLogging();
 
 

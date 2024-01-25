@@ -1,5 +1,13 @@
 @page "/export"
 
+@inject HttpClient Http
+@inject IFileSystemAccessService FileSystemAccessService;
+@inject FontServices fontServices;
+
+@using PdfSharp.Fonts;
+@using KristofferStrube.Blazor.FileSystem;
+
+
 <PageTitle>Export</PageTitle>
 
 <div class="container-fluid">
@@ -8,7 +16,7 @@
             <HeaderLarge Header="Let's get this exported & signed!" />
         </div>
     </div>
-    
+
     <div class="row mt-4">
 
         @* Left half, used for options *@
@@ -20,7 +28,7 @@
 
             <div class="row">
                 <div class="col-auto">
-                    <button class="btn btn-dark mt-4" type="submit" @onclick="ExportData" >Export</button>
+                    <button class="btn btn-dark mt-4" type="submit" @onclick="ExportData">Export</button>
                 </div>
             </div>
         </div>
@@ -38,11 +46,47 @@
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
 
+    PermissionState writePermissionState;
 
-    // Export PDF for the variables SelectedWeek & SeletedYear
-    private void ExportData() 
-    {
-        throw new NotImplementedException();
+
+    // as soon as we finished loading the page, get the required fonts
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender){
+            Fonts font = await fontServices.LoadFonts();
+
+            // Implement a custom font resolver (we do seem to need one, yes ^^)
+            try
+            {
+                GlobalFontSettings.FontResolver = new CustomFontResolver(font);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
     }
 
+
+    // Export PDF for the variables SelectedWeek & SeletedYear
+    private async void ExportData()
+    {
+        PDFExportHandler pdfHandler = new PDFExportHandler();
+
+        // Open the pdf template file in a bytestream
+        byte[] fileBytes = await Http.GetByteArrayAsync("pdf/Vorlage_ASBN.pdf");
+
+        // get fileHandle for the output PDF
+        FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync();
+        using (var stream = await fileHandle.CreateWritableAsync())
+        {
+            // required at all?
+            // writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
+
+            // Hand over to the PDF handling class
+            pdfHandler.GeneratePDF(fileBytes, stream);
+
+            // Close the stream and write file to disk
+            stream.CloseAsync();
+        }
+    }
 }
