@@ -1,6 +1,7 @@
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.AcroForms;
+using ASBNApp.Enums;
 
 
 /// <summary>
@@ -9,23 +10,34 @@ using PdfSharp.Pdf.AcroForms;
 /// 
 public class PDFExportHandler
 {
-
-    public async Task GeneratePDF(byte[] src, Stream dest)
+    /// <summary>
+    /// Handles opening then pdf, linking data and finalizing the pdf
+    /// </summary>
+    /// <param name="src">Bytestream making the template PDF available</param>
+    /// <param name="dest">Stream handling the edited PDF</param>
+    /// <param name="rows">EntryRowModel with the data to export</param>
+    /// <returns></returns>
+    public async Task GeneratePDF(byte[] src, Stream dest, IEnumerable<EntryRowModel> rows)
     {
         try
         {
             using(var srcstream = new MemoryStream(src)){
 
-                // Load PDF document
+                // Open PDF document from memory stream
                 var document = PdfReader.Open(new MemoryStream(src));
 
-                // Get fields from the pdf
-                var fieldNames = document.AcroForm.Fields.Names;
-                PdfTextField field = (PdfTextField)document.AcroForm.Fields[11];
-                field.Value = new PdfString("ajglkdajgkl");
+                // Write data for the individual days
+                WriteData(ASBNPdfFields.Date1, ASBNPdfFields.Note1, ASBNPdfFields.Hours1, ASBNPdfFields.Location1, rows.ElementAt(0), document);
+                WriteData(ASBNPdfFields.Date2, ASBNPdfFields.Note2, ASBNPdfFields.Hours2, ASBNPdfFields.Location2, rows.ElementAt(1), document);
+                WriteData(ASBNPdfFields.Date3, ASBNPdfFields.Note3, ASBNPdfFields.Hours3, ASBNPdfFields.Location3, rows.ElementAt(2), document);
+                WriteData(ASBNPdfFields.Date4, ASBNPdfFields.Note4, ASBNPdfFields.Hours4, ASBNPdfFields.Location4, rows.ElementAt(3), document);
+                WriteData(ASBNPdfFields.Date5, ASBNPdfFields.Note5, ASBNPdfFields.Hours5, ASBNPdfFields.Location5, rows.ElementAt(4), document);
 
-                field = (PdfTextField)document.AcroForm.Fields[12];
-                field.Value = new PdfString("ajglkdajgkl");
+
+                // TODO: Add data for the top row
+
+                // TODO: Add data for the bottom row
+
 
                 // Sets a value that prevents text being hidden behind form fields
                 // (Would only get visible after clicking into that field)
@@ -48,12 +60,41 @@ public class PDFExportHandler
                     await memoryStream.CopyToAsync(dest);
                 }
             }
-            
         }
         catch (Exception e)
         {
             Console.WriteLine("Exception thrown while trying to generate the PDF. " + e);
         }
-
     }
+
+    /// <summary>
+    /// Links user content to the matching fields in the pdf template, 
+    /// then calls FillField to actually handle writing
+    /// </summary>
+    /// <param name="fieldDate">Int that links the enum to the field in the pdf</param>
+    /// <param name="fieldNote">Int that links the enum to the field in the pdf</param>
+    /// <param name="fieldHours">Int that links the enum to the field in the pdf</param>
+    /// <param name="fieldLocation">Int that links the enum to the field in the pdf</param>
+    /// <param name="row">EntryModelRow to get data from</param>
+    /// <param name="document">PdfDocument to edit</param>
+    private void WriteData(ASBNPdfFields fieldDate, ASBNPdfFields fieldNote, ASBNPdfFields fieldHours, ASBNPdfFields fieldLocation, EntryRowModel row, PdfDocument document)
+    {
+        FillField(document, fieldDate, row.Date.ToShortDateString());
+        FillField(document, fieldNote, row.Note);
+        FillField(document, fieldHours, row.Hours.ToString());
+        FillField(document, fieldLocation, row.Location);
+    }
+
+    /// <summary>
+    /// Handles the actual writing of content to their respective fields in the PDF
+    /// </summary>
+    /// <param name="document">PdfDocument to edit</param>
+    /// <param name="field">PdfTextField to edit</param>
+    /// <param name="content">String with the content to write</param>
+    private void FillField(PdfDocument document, ASBNPdfFields field, string content)
+    {
+        PdfTextField pdfField = (PdfTextField)document.AcroForm.Fields[((int)field)];
+        pdfField.Value = new PdfString(content);
+    }
+
 }

@@ -1,8 +1,9 @@
 @page "/export"
 
 @inject HttpClient Http
-@inject IFileSystemAccessService FileSystemAccessService;
 @inject FontServices fontServices;
+@inject IASBNDataService dataService
+@inject IFileSystemAccessService FileSystemAccessService;
 
 @using PdfSharp.Fonts;
 @using KristofferStrube.Blazor.FileSystem;
@@ -71,6 +72,11 @@
     // Export PDF for the variables SelectedWeek & SeletedYear
     private async void ExportData()
     {
+        // Get Data for the selected week
+        // Might need it here later
+        IEnumerable<EntryRowModel> rows = dataService.GetWeek(SelectedYear, SelectedWeek);
+
+        // Export the PDF
         PDFExportHandler pdfHandler = new PDFExportHandler();
 
         // Open the pdf template file in a bytestream
@@ -78,16 +84,16 @@
 
         // get fileHandle for the output PDF
         FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync();
-        using (var stream = await fileHandle.CreateWritableAsync())
+        using (var outputStream = await fileHandle.CreateWritableAsync())
         {
             // required at all?
             // writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
 
             // Hand over to the PDF handling class
-            pdfHandler.GeneratePDF(fileBytes, stream);
+            pdfHandler.GeneratePDF(fileBytes, outputStream, rows);
 
             // Close the stream and write file to disk
-            stream.CloseAsync();
+            outputStream.CloseAsync();
         }
     }
 }
