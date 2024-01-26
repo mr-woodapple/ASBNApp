@@ -1,16 +1,20 @@
 ﻿@* Simple input for dates *@
 
-<div class="">
+<div class="date-picker p-1">
+
     @if (showLabel)
     {
         <label for="date"> @label </label>
     }
+
     <input type="date" id="date" 
         @bind="SelectedDate" 
         @onfocusout="@(e => { SelectedDateChanged.InvokeAsync(SelectedDate); })"
         aria-label="@label"
     />
+
 </div>
+
 
 @code {
     [Parameter]

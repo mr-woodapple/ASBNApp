@@ -59,7 +59,9 @@
     @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
     <div class="row mt-4">
         <p class="mb-2"><b>Started my apprenticeship in:</b></p>
-        <DatePicker @bind-SelectedDate="apprenticeshipStartDate" showLabel="false" label="Date the apprenticeship started in."/>
+        <div class="col-2 ms-2 wrapper-start-date-picker">
+            <DatePicker @bind-SelectedDate="apprenticeshipStartDate" showLabel="false" label="Date the apprenticeship started in."/>
+        </div>
     </div>
 
     @* Specify your legal representative (if applicable) *@
