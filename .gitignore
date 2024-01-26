@@ -396,5 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Demo Export stuff
 docs/sampleJSON/test.pdf
-src/ASBNApp/wwwroot/pdf/Vorlage_ASBN.pdf

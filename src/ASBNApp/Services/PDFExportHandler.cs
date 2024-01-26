@@ -26,6 +26,8 @@ public class PDFExportHandler
                 // Open PDF document from memory stream
                 var document = PdfReader.Open(new MemoryStream(src));
 
+                var test = document.AcroForm.Fields.Names;
+
                 // Write data for the individual days
                 WriteData(ASBNPdfFields.Date1, ASBNPdfFields.Note1, ASBNPdfFields.Hours1, ASBNPdfFields.Location1, rows.ElementAt(0), document);
                 WriteData(ASBNPdfFields.Date2, ASBNPdfFields.Note2, ASBNPdfFields.Hours2, ASBNPdfFields.Location2, rows.ElementAt(1), document);
@@ -89,12 +91,13 @@ public class PDFExportHandler
     {
         // TODO: Dropdown
         // TODO: Make the dropdown a normal text field, simply add the name we specified
-        PdfComboBoxField pdfDropdown = (PdfComboBoxField)document.AcroForm.Fields[0]; //PdfComboBoxField
+        // PdfComboBoxField pdfDropdown = (PdfComboBoxField)document.AcroForm.Fields[0]; //PdfComboBoxField
         // pdfDropdown.Elements.Values[14].Value = settings.Profession;
+
 
         // Add information to the header
         FillField(document, ASBNPdfFields.Username, settings.Username);
-        //FillField(document, ASBNPdfFields.HeaderProfession, settings.Profession);
+        FillField(document, ASBNPdfFields.HeaderProfession, settings.Profession);
         FillField(document, ASBNPdfFields.HeaderApprenticeYear, "PLACEHOLDER");
         FillField(document, ASBNPdfFields.HeaderTimeperiod, "PLACEHOLDER");
         FillField(document, ASBNPdfFields.HeaderCalendarWeek, "PLACEHOLDER");
