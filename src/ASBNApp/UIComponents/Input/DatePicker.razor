@@ -1,0 +1,25 @@
+﻿@* Simple input for dates *@
+
+<div class="">
+    @if (showLabel)
+    {
+        <label for="date"> @label </label>
+    }
+    <input type="date" id="date" 
+        @bind="SelectedDate" 
+        @onfocusout="@(e => { SelectedDateChanged.InvokeAsync(SelectedDate); })"
+        aria-label="@label"
+    />
+</div>
+
+@code {
+    [Parameter]
+    public bool showLabel { get; set; }
+    [Parameter]
+    public string label { get; set; }
+
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+    [Parameter]
+    public EventCallback<DateTime> SelectedDateChanged { get; set; }
+}

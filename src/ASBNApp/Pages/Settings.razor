@@ -53,6 +53,12 @@
         <ShowEditWorkLocationHours @bind-WorkLocationHours="workLocationHours" />
     </div>
 
+    @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
+    <div class="row mt-4">
+        <p class="mb-2"><b>Started my apprenticeship in:</b></p>
+        <DatePicker @bind-SelectedDate="apprenticeshipStartDate" showLabel="false" label="Date the apprenticeship started in."/>
+    </div>
+
     @* Specify your legal representative (if applicable) *@
     <div class="row mt-4">
         <p class="mb-2"><b>My legal representative (if you're under 18!):</b></p>
@@ -89,6 +95,7 @@
     public string? legalRepresentitive { get; set; }
     public string? company { get; set; }
     public string? school { get; set; }
+    public DateTime apprenticeshipStartDate { get; set; }
 
 
 
@@ -111,6 +118,7 @@
             legalRepresentitive = settings.LegalRepresentitive;
             company = settings.Company;
             school = settings.School;
+            apprenticeshipStartDate = settings.ApprenticeshipStartDate;
         }
         catch (NullReferenceException e)
         {
@@ -139,6 +147,7 @@
         settings.LegalRepresentitive = legalRepresentitive;
         settings.Company = company;
         settings.School = school;
+        settings.ApprenticeshipStartDate = apprenticeshipStartDate;
 
         if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
         {
@@ -154,6 +163,7 @@
             StateHasChanged();
         }
     }
+
 
     ///
     /// Handling alerts

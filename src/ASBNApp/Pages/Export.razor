@@ -1,8 +1,9 @@
 @page "/export"
 
-@inject HttpClient Http
+@inject HttpClient Http;
+@inject DateHandler dateHandler;
 @inject FontServices fontServices;
-@inject IASBNDataService dataService
+@inject IASBNDataService dataService;
 @inject IFileSystemAccessService FileSystemAccessService;
 
 @using PdfSharp.Fonts;
@@ -37,7 +38,7 @@
 
         @* Right half, used for pdf preview (eventually) *@
         <div class="col-6">
-
+            
         </div>
 
     </div>
@@ -72,13 +73,12 @@
     // Export PDF for the variables SelectedWeek & SeletedYear
     private async void ExportData()
     {
-        // Get Data for the selected week
-        // Might need it here later
+        // Get Data we want to generate the pdf from
         IEnumerable<EntryRowModel> rows = dataService.GetWeek(SelectedYear, SelectedWeek);
         Model.Settings settings = dataService.GetSettings();
 
-        // Export the PDF
-        PDFExportHandler pdfHandler = new PDFExportHandler();
+        // Handles exporting the PDF
+        PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
 
         // Open the pdf template file in a bytestream
         byte[] fileBytes = await Http.GetByteArrayAsync("pdf/Vorlage_ASBN.pdf");
@@ -87,8 +87,8 @@
         FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync();
         using (var outputStream = await fileHandle.CreateWritableAsync())
         {
-            // Hand over to the PDF handling class
-            pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings);
+            // Hand data over to the PDF handling class
+            pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
 
             // Close the stream and write file to disk
             outputStream.CloseAsync();

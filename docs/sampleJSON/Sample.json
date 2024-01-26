@@ -4,7 +4,8 @@
     "Profession": "IT-System-Elektroniker/-in",
     "LegalRepresentitive": "Herbert Gr\u00F6nemayer",
     "Company": "Demo Company",
-    "School": "Demo Schule"
+    "School": "Demo Schule",
+    "ApprenticeshipStartDate": "2022-09-01T00:00:00"
   },
   "WorkLocationHours": {
     "MMS": {

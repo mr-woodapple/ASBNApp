@@ -10,23 +10,32 @@ using ASBNApp.Model;
 /// </summary>
 public class PDFExportHandler
 {
+
+    public PDFExportHandler(DateHandler dateHandler)
+    {
+        this.dateHandler = dateHandler;
+    }
+
+    private readonly DateHandler dateHandler;
+
+
     /// <summary>
     /// Handles opening then pdf, linking data and finalizing the pdf.
     /// </summary>
     /// <param name="src">Bytestream making the template PDF available</param>
     /// <param name="dest">Stream handling the edited PDF</param>
     /// <param name="rows">EntryRowModel with the data to export</param>
-    /// <returns></returns>
-    public async Task GeneratePDF(byte[] src, Stream dest, IEnumerable<EntryRowModel> rows, Settings settings)
+    /// <param name="week">Int holding the week number to export data for</param>
+    /// <param name="year">Int holding the year number to export data for</param>
+    /// <returns>Task</returns>
+    public async Task GeneratePDF(byte[] src, Stream dest, IEnumerable<EntryRowModel> rows, Settings settings, int? week, int? year)
     {
         try
         {
-            using(var srcstream = new MemoryStream(src)){
-
+            using(var srcstream = new MemoryStream(src))
+            {
                 // Open PDF document from memory stream
                 var document = PdfReader.Open(new MemoryStream(src));
-
-                var test = document.AcroForm.Fields.Names;
 
                 // Write data for the individual days
                 WriteData(ASBNPdfFields.Date1, ASBNPdfFields.Note1, ASBNPdfFields.Hours1, ASBNPdfFields.Location1, rows.ElementAt(0), document);
@@ -36,7 +45,7 @@ public class PDFExportHandler
                 WriteData(ASBNPdfFields.Date5, ASBNPdfFields.Note5, ASBNPdfFields.Hours5, ASBNPdfFields.Location5, rows.ElementAt(4), document);
 
                 // Additional data (header, footer, etc.)
-                WriteAdditionalData(document, settings);
+                WriteAdditionalData(document, settings, week, year);
 
 
                 // Sets a value that prevents text being hidden behind form fields
@@ -80,30 +89,31 @@ public class PDFExportHandler
     /// <param name="document">PdfDocument to edit</param>
     private void WriteData(ASBNPdfFields fieldDate, ASBNPdfFields fieldNote, ASBNPdfFields fieldHours, ASBNPdfFields fieldLocation, EntryRowModel row, PdfDocument document)
     {
-        FillField(document, fieldDate, row.Date.ToShortDateString());
+        FillField(document, fieldDate, row.Date.ToString("dd.MM.yyyy"));
         FillField(document, fieldNote, row.Note);
         FillField(document, fieldHours, row.Hours.ToString());
         FillField(document, fieldLocation, row.Location);
     }
 
-
-    private void WriteAdditionalData(PdfDocument document, Settings settings)
+    /// <summary>
+    /// Prepare data that we can't write with WriteData(). Then calls FillField to 
+    /// actually write data.
+    /// </summary>
+    /// <param name="document">PdfDocument to edit</param>
+    /// <param name="settings">Settings object to get data from</param>
+    /// <param name="week">Int for the week of year to export from</param>
+    /// <param name="year">Int for the year to export from</param>
+    private void WriteAdditionalData(PdfDocument document, Settings settings, int? week, int? year)
     {
-        // TODO: Dropdown
-        // TODO: Make the dropdown a normal text field, simply add the name we specified
-        // PdfComboBoxField pdfDropdown = (PdfComboBoxField)document.AcroForm.Fields[0]; //PdfComboBoxField
-        // pdfDropdown.Elements.Values[14].Value = settings.Profession;
-
-
         // Add information to the header
         FillField(document, ASBNPdfFields.Username, settings.Username);
         FillField(document, ASBNPdfFields.HeaderProfession, settings.Profession);
-        FillField(document, ASBNPdfFields.HeaderApprenticeYear, "PLACEHOLDER");
-        FillField(document, ASBNPdfFields.HeaderTimeperiod, "PLACEHOLDER");
-        FillField(document, ASBNPdfFields.HeaderCalendarWeek, "PLACEHOLDER");
+        FillField(document, ASBNPdfFields.HeaderApprenticeYear, dateHandler.CalculateApprenticeshipYear(settings.ApprenticeshipStartDate).ToString());
+        FillField(document, ASBNPdfFields.HeaderTimeperiod, dateHandler.GetFirstDateOfWeek((int)week, (int)year).ToString("dd.MM.") + " - " + dateHandler.GetLastDateOfWeek((int)week, (int)year).ToString("dd.MM.yyyy"));
+        FillField(document, ASBNPdfFields.HeaderCalendarWeek, week.ToString());
 
         // Add data for the bottom row
-        FillField(document, ASBNPdfFields.FooterUserSignatureDate, DateTime.Today.ToShortDateString());
+        FillField(document, ASBNPdfFields.FooterUserSignatureDate, DateTime.Today.ToString("dd.MM.yyyy"));
         FillField(document, ASBNPdfFields.FooterRepresentativeName, settings.LegalRepresentitive);
         FillField(document, ASBNPdfFields.FooterSchoolName, settings.School);
     }

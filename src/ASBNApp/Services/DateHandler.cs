@@ -89,4 +89,17 @@ public class DateHandler {
         // add 6 days to get the last date in a week
         return FirstMondayOfAYear.AddDays((week - 1) * 7 + 6);
     }
+
+    /// <summary>
+    /// Calculates in which year of their apprenticeship a user is.
+    /// </summary>
+    /// <param name="startDate">User specified DateTime</param>
+    /// <returns>Int representing the current year.</returns>
+    public int CalculateApprenticeshipYear(DateTime startDate)
+    {
+        DateTime today = DateTime.Now;
+        var diff = today - startDate;
+
+        return (diff.Days / 365) + 1;
+    }
 }
