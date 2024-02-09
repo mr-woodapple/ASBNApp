@@ -9,7 +9,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 // ASBNDataService dependency injection
 builder.Services.AddScoped<IASBNDataService, LocalASBNDataService>();
 // This registers the FileHandleCollection as a DI service, we then limit
@@ -18,12 +17,19 @@ builder.Services.AddSingleton<FileHandleCollection>();
 
 builder.Services.AddSingleton<IFileHandleManager>(s => s.GetRequiredService<FileHandleCollection>());
 builder.Services.AddSingleton<IFileHandleProvider>(s => s.GetRequiredService<FileHandleCollection>());
+
 // DateHandler service
 builder.Services.AddSingleton<DateHandler>();
+
 // Making the FileSystemAccess package available to everyone
 builder.Services.AddFileSystemAccessService();
 
-// Logger
+// Add the font service for exporting PDFs
+builder.Services.AddHttpClient<FontServices>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+// Add the http client to load the pdf template
+builder.Services.AddHttpClient("httpClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
+// Add Logger
 builder.Services.AddLogging();
 
 
