@@ -1,6 +1,6 @@
 @page "/export"
 
-@inject HttpClient Http;
+@inject IHttpClientFactory httpClientFactory;
 @inject DateHandler dateHandler;
 @inject FontServices fontServices;
 @inject IASBNDataService dataService;
@@ -81,7 +81,9 @@
         PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
 
         // Open the pdf template file in a bytestream
-        byte[] fileBytes = await Http.GetByteArrayAsync("pdf/Vorlage_ASBN.pdf");
+        var client = httpClientFactory.CreateClient("httpClient");
+        byte[] fileBytes = await client.GetByteArrayAsync("pdf/Vorlage_ASBN.pdf");
+
 
         // get fileHandle for the output PDF
         FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync();

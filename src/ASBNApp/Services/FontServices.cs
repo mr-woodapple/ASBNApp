@@ -5,7 +5,6 @@
 
 public class FontServices
 {
-
     // Constructor & DI variables
     public FontServices(HttpClient httpClient)
     {
