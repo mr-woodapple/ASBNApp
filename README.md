@@ -1,3 +1,4 @@
+![ASBN app logo, orange on light grey background](https://github.com/mr-woodapple/ASBNApp/blob/main/assets/logo-asbnapp/Logo-Wide-Orange-wBG.png)
 # ASBN App
 A Blazor Web Assembly app that allows you to write your mandatory apprenticeship report book with ease. The aim is to be able to quickly add a note for a day before forgetting about it, and when the time has come, you can export a ready-to-go pdf with the information you entered sometime before.
 
