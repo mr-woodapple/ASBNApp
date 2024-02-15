@@ -1,10 +1,10 @@
-@* 
+@*
 Main view to load if no data is present.
 The user then can select a file he already has or create a new one
 *@
 
 @* Keep the square brackets to add info where the log originated from *@
-@inject ILogger<NavBar> Logger; 
+@inject ILogger<NavBar> Logger;
 @inject IFileSystemAccessService FileSystemAccessService;
 @inject IASBNDataService dataService;
 @inject IFileHandleManager fileHandleManager;
@@ -13,11 +13,11 @@ The user then can select a file he already has or create a new one
 @using KristofferStrube.Blazor.FileSystem;
 
 
-<div class="container-fluid mt-3 p-0">
+<div class="container-fluid p-0">
 
-    @* 
-        Hide the load file buttons & display a warning if the browser is not supported 
-        Otherwise show a brief welcome & steps on how to continue (lot's of room for improvement here)
+    @*
+    Hide the load file buttons & display a warning if the browser is not supported
+    Otherwise show a brief welcome & steps on how to continue (lot's of room for improvement here)
     *@
     @if (!_isSupported)
     {
@@ -25,32 +25,70 @@ The user then can select a file he already has or create a new one
     }
     else
     {
-        <div class="container-fluid align-items-center">
+        <div class="container-fluid test">
 
-            <div class="row justify-content-center">
-                <h4 class="col-auto">ASBN App | Welcome</h4>
+
+            <div class="row min-vh-100 d-flex align-items-center p-5">
+                <div class="col-md-8 col-sm-12 test">
+                    <div class="m-5 test">
+                        <img src="images/Logo-Rect-Orange-Light.png" alt="ASBN-App Logo"
+                            class="asbnlogo-landingpage mb-5">
+                        
+                        <h1 class="mb-5">ASBN App</h1>
+                        <p>
+                            Making writing your mandatory apprenticeship report as simple
+                            as possible. And all of that, while beeing completely free,
+                            without any user account
+                        </p>
+                        <p>
+                            Further demo text.
+                        </p>
+                        <p class="info-landingpage text-secondary pt-5">
+                            Made with ♥️ in Dresden | 
+                            <a href="https://github.com/mr-woodapple/ASBNApp"
+                                class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">GitHub</a>
+                        </p>
+                    </div>
+                </div>
+                @* Left / lower half to show a place where users can open their file *@
+                <div class="col-md-4 col-sm-12 p-5 wrapper-buttons">
+                    <h4>Get started!</h4>
+                    <p class="mb-5">Create a new file or open an existing one.</p>
+
+                    <div class="d-grid gap-2">
+                        <button type="button" class="col-auto btn btn-outline-dark" @onclick="CreateNewFile">Create New</button>
+                        <button type="button" class="col-auto btn btn-primary" @onclick="OpenAndReadFile">Open File</button>
+                    </div>
+                </div>
             </div>
 
-            <div class="row justify-content-center">
-                <p class="col-auto">
-                    Please select an exisiting file or create a new one to continue.<br />
-                </p>
-            </div>
 
-            <div class="row justify-content-center">
-                <button type="button" class="col-auto btn btn-outline-dark me-2" @onclick="CreateNewFile">Create New</button>
-                <button type="button" class="col-auto btn btn-primary" @onclick="OpenAndReadFile">Open File</button>   
-            </div>
 
-            <div class="row justify-content-center mt-2">
-                <p class="col-auto">
-                    <b>Important:</b> Please allow the website to save changes 
-                    to your file, this is crucial for the application to work.
-                </p>
-            </div>
+
+            @* <div class="row justify-content-center">
+        <h4 class="col-auto">ASBN App | Welcome</h4>
+        </div>
+
+        <div class="row justify-content-center">
+        <p class="col-auto">
+        Please select an exisiting file or create a new one to continue.<br />
+        </p>
+        </div>
+
+        <div class="row justify-content-center">
+        <button type="button" class="col-auto btn btn-outline-dark me-2" @onclick="CreateNewFile">Create New</button>
+        <button type="button" class="col-auto btn btn-primary" @onclick="OpenAndReadFile">Open File</button>
+        </div>
+
+        <div class="row justify-content-center mt-2">
+        <p class="col-auto">
+        <b>Important:</b> Please allow the website to save changes
+        to your file, this is crucial for the application to work.
+        </p>
+        </div> *@
         </div>
     }
-    
+
 </div>
 
 
@@ -61,13 +99,13 @@ The user then can select a file he already has or create a new one
     // Callback function
     [Parameter]
     public Func<Task> OnCallback { get; set; }
- 
+
     /// <summary>
     /// Check if browser used is supported or not after first render
     /// </summary>
     /// <returns>Task</returns>
     protected override async Task OnAfterRenderAsync(bool firstRender)
-    {        
+    {
         if (firstRender)
         {
             _isSupported = await FileSystemAccessService.IsSupportedAsync();
@@ -83,7 +121,7 @@ The user then can select a file he already has or create a new one
     /// <returns>Task</returns>
     private async Task OpenAndReadFile()
     {
-        FileSystemFileHandle[]? fileHandles; 
+        FileSystemFileHandle[]? fileHandles;
         try
         {
             // Can only open one file at a time
@@ -98,8 +136,10 @@ The user then can select a file he already has or create a new one
 
         // The "using" block here makes sure we don't have a memory leak, because
         // "DisposeAsync" will be called at the end of the using scope.
-        await using (var fileHandle = fileHandles.Single()) {
-            if (fileHandle == null) {
+        await using (var fileHandle = fileHandles.Single())
+        {
+            if (fileHandle == null)
+            {
                 Logger.LogError("Opened file, but never received fileHandle.");
                 return;
             }
@@ -109,8 +149,8 @@ The user then can select a file he already has or create a new one
             await dataService.ReadData();
 
             // make sure we have write access
-            writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
-            
+            writePermissionState = await fileHandle.RequestPermissionAsync(new() { Mode = FileSystemPermissionMode.ReadWrite });
+
             // Callback to the parent component
             await OnCallback.Invoke();
         }
@@ -121,7 +161,7 @@ The user then can select a file he already has or create a new one
     /// add the file handle to the fileHandleManager
     /// </summary>
     /// <returns>Task</returns>
-    public async Task CreateNewFile() 
+    public async Task CreateNewFile()
     {
         FileSystemFileHandle? fileHandles;
         try
@@ -135,16 +175,16 @@ The user then can select a file he already has or create a new one
             return;
         }
 
-        await using (var fileHandle = fileHandles) 
+        await using (var fileHandle = fileHandles)
         {
-            if (fileHandle == null) 
+            if (fileHandle == null)
             {
                 Logger.LogWarning("Got file location, but never received fileHandle.");
                 return;
             }
             fileHandleManager.AssignFileHandle(fileHandle);
             await dataService.WriteData();
-            writePermissionState = await fileHandle.RequestPermissionAsync(new() {Mode = FileSystemPermissionMode.ReadWrite });
+            writePermissionState = await fileHandle.RequestPermissionAsync(new() { Mode = FileSystemPermissionMode.ReadWrite });
 
             // Callback to the parent component
             await OnCallback.Invoke();

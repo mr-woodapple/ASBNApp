@@ -1,0 +1,16 @@
+.test {
+    border: 2px dashed red;
+}
+
+.wrapper-landingpage {
+    /* set background image here */
+}
+
+.asbnlogo-landingpage {
+    width: 20%;
+}
+
+.wrapper-buttons {
+    background-color: #d9d9d9;
+    border-radius: 20px;
+}
