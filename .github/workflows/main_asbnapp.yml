@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - ASBNApp
+name: Build and deploy ASP.Net Core app to Azure Web App - asbnapp
 
 on:
   push:
@@ -52,15 +52,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3CF6FE3714594FD89C55C7A9EC3BAF48 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_AF7C2351179F459A98E1A8E2A6E556B2 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BD80C65376CC462387156E6E04FB7865 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_306DB48D6F1E47959869F41346770276 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7C469663151D4B688E9B8F402481EDF5 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1B28F225A32D4F58A526A32250E8BA16 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'ASBNApp'
+          app-name: 'asbnapp'
           slot-name: 'Production'
           package: .
           
