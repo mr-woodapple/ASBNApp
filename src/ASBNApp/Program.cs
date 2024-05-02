@@ -1,13 +1,16 @@
 using ASBNApp;
+using MudBlazor.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using KristofferStrube.Blazor.FileSystemAccess;
 
 
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+
+// MudBlazor
+builder.Services.AddMudServices();
 
 // ASBNDataService dependency injection
 builder.Services.AddScoped<IASBNDataService, LocalASBNDataService>();
