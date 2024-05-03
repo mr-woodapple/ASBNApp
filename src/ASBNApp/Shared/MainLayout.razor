@@ -2,30 +2,27 @@
 
 @inherits LayoutComponentBase
 
-<MudThemeProvider/>
+<MudThemeProvider Theme="@LightTheme.GetTheme()"/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <PageTitle>ASBNApp</PageTitle>
 
-<div class="page">
+<MudLayout>
+    <MudMainContent>
+        @* If no data is present = show input page, otherwise load normal UI *@
+        @if(dataService.GetData() == null) {
+            @* show open website with load file and create file buttons here *@
+            <MainViewLoadData OnCallback="Callback" />
+        } 
+        else 
+        {
+            <NavBar />
+            @Body
+        }
+    </MudMainContent>
+</MudLayout>
 
-    @* If no data is present = show input page, otherwise load normal UI *@
-    @if(dataService.GetData() == null) {
-        @* show open website with load file and create file buttons here *@
-        <MainViewLoadData OnCallback="Callback" />
-    } 
-    else 
-    {
-        <NavBar />
-
-        <main>
-            <article class="content px-4">
-                @Body
-            </article>
-        </main> 
-    }
-</div>
 
 @code {
     // Get's called from the sub component, retriggers a re-render of the page

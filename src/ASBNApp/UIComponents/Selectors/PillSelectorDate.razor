@@ -3,29 +3,23 @@ Simple selector component for dates, shows today and tomorrow, as well as a date
 *@
 
 
-<div class="row mx-0 justify-content-start">
-    
-    <div tabindex="0" class="col-auto me-2 mb-2 pill-selector-date @(Selected == "today" ? "active" : "")" 
-        @onclick="@(e => { Selected = "today"; SelectedDate = DateTime.Today; SelectedDateChanged.InvokeAsync(SelectedDate); })" >
+<MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true" >
+    <MudChip Text="today" Color="Color.Primary" Default="true"
+        @onclick="@(e => { SelectedDate = DateTime.Today; SelectedDateChanged.InvokeAsync(SelectedDate); })">
+        Today (@Today.Date.ToString("dd.MM.yyyy"))
+    </MudChip>
+    <MudChip Text="tomorrow" Color="Color.Primary"
+        @onclick="@(e => { SelectedDate = DateTime.Today.AddDays(1); SelectedDateChanged.InvokeAsync(SelectedDate); })">
+        Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
+    </MudChip>
+    <MudChip Text="customdate" Color="Color.Primary">
+        @* TODO: Update this to show extra input when "customdate" is selected, probably some sort of overlay *@
+        @* See here: https://assets.website-files.com/6231812313e8661d7da3a4e7/62a0a09c3fd2c7a82511f1f0_Date%20Fiel.png *@
+        <label for="date">Pick date: </label>
+        <input type="date" id="date" @bind="SelectedDate" @onfocusout="@(e => { SelectedDateChanged.InvokeAsync(SelectedDate); })" />
+    </MudChip>
+</MudChipSet>
 
-        <p class="m-0">Today (@Today.Date.ToString("dd.MM.yyyy"))</p>
-    </div>
-
-    <div tabindex="0" class="col-auto me-2 mb-2 pill-selector-date @(Selected == "tomorrow" ? "active" : "")" 
-        @onclick="@(e => { Selected = "tomorrow"; SelectedDate = DateTime.Today.AddDays(1); SelectedDateChanged.InvokeAsync(SelectedDate); })">
-
-        <p class="m-0">Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))</p>
-    </div>
-
-    <div class="col-auto pill-selector-date me-2 mb-2 @(Selected == "customdate" ? "active" : "")">
-            <label for="date">Pick day: </label>
-
-            @* TODO: @onfocusout might not be the best option, try to find a better working one! *@
-            @* simply use bind and add the methods from onfocusout??  *@
-            <input type="date" id="date" @bind="SelectedDate" @onfocusout="@(e => { Selected = "customdate"; SelectedDateChanged.InvokeAsync(SelectedDate); })" />
-    </div>
-
-</div>
 
 @code {
     [Parameter]
@@ -33,6 +27,9 @@ Simple selector component for dates, shows today and tomorrow, as well as a date
     [Parameter]
     public EventCallback<DateTime> SelectedDateChanged { get; set; }
 
+    private MudChip selectedChip;
+    private DateTime Today = DateTime.Now;
+    private DateTime Tomorrow = DateTime.Now.AddDays(1);
 
     // Using this to force-update the SelecteDate in MainViewDay (couldn't get
     // existing values to load otherwise)
@@ -40,11 +37,4 @@ Simple selector component for dates, shows today and tomorrow, as well as a date
     {
         SelectedDateChanged.InvokeAsync(DateTime.Today);
     }
-
-
-    private DateTime Today = DateTime.Now;
-    private DateTime Tomorrow = DateTime.Now.AddDays(1);
-    // Used to control highlight styling
-    private string Selected = "today";
-
 }

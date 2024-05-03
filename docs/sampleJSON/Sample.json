@@ -280,6 +280,38 @@
           "Location": "",
           "Hours": null
         }
+      },
+      "18": {
+        "2024-04-29": {
+          "Note": null,
+          "Date": "2024-04-29T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-04-30": {
+          "Note": null,
+          "Date": "2024-04-30T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-01": {
+          "Note": "test",
+          "Date": "2024-05-01T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
+        },
+        "2024-05-02": {
+          "Note": null,
+          "Date": "2024-05-02T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-03": {
+          "Note": "Testeintrag am 03. Mai in der MMS",
+          "Date": "2024-05-03T00:00:00+02:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        }
       }
     }
   }

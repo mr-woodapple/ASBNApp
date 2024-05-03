@@ -4,6 +4,35 @@ Main view to input and edit data, displayed when the user selects the daily view
 
 @inject IASBNDataService dataService;
 
+<MudPaper Elevation="0" Class="mt-5">
+    <MudGrid>
+
+        @* Select date *@
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2">I'm writing a log for...</MudText>
+        </MudItem>
+        <MudItem xs="12">
+            <PillSelectorDate @bind-SelectedDate="SelectedDate" />
+        </MudItem>
+
+        @* Select location *@
+        <MudItem xs="12">
+            <MudItem xs="6">
+                <MudText Typo="Typo.body2">I was working from...</MudText>
+            </MudItem>
+            <MudItem xs="6">
+                <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
+            </MudItem>
+        </MudItem>
+        
+
+    </MudGrid>
+
+</MudPaper>
+
+
+
+@* Old stuff *@
 <div class="container-fluid mt-3 p-0">
 
     @if (alertIsVisible)
@@ -12,16 +41,6 @@ Main view to input and edit data, displayed when the user selects the daily view
     }
 
     <div class="row">
-        <p class="my-2">I'm writing a log for...</p>
-        <PillSelectorDate @bind-SelectedDate="SelectedDate" />
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <p class="my-2 mt-4">I was working from...</p>
-            <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
-        </div>
-
         <div class="col">
             <p class="my-2 mt-4">I worked for...</p>
             <input class="form-control" type="number" @bind="Hours" placeholder="sooo many hours." />
