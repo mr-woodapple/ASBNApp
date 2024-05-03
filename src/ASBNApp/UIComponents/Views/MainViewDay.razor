@@ -10,20 +10,21 @@ Main view to input and edit data, displayed when the user selects the daily view
         @* Select date *@
         <MudItem xs="12">
             <MudText Typo="Typo.body2">I'm writing a log for...</MudText>
-        </MudItem>
-        <MudItem xs="12">
             <PillSelectorDate @bind-SelectedDate="SelectedDate" />
         </MudItem>
 
         @* Select location *@
-        <MudItem xs="12">
-            <MudItem xs="6">
-                <MudText Typo="Typo.body2">I was working from...</MudText>
-            </MudItem>
-            <MudItem xs="6">
-                <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
-            </MudItem>
+        
+        <MudItem xs="6">
+            <MudText Typo="Typo.body2">I was working from...</MudText>
+            <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
         </MudItem>
+
+        <MudItem xs="6">
+            <MudText Typo="Typo.body2">I worked for...</MudText>
+            <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Class="mt-0"/>
+        </MudItem>
+
         
 
     </MudGrid>
@@ -40,12 +41,6 @@ Main view to input and edit data, displayed when the user selects the daily view
         <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
     }
 
-    <div class="row">
-        <div class="col">
-            <p class="my-2 mt-4">I worked for...</p>
-            <input class="form-control" type="number" @bind="Hours" placeholder="sooo many hours." />
-        </div>
-    </div>
 
     <div class="row">
         <p class="my-2 mt-4">And I learned this today...</p>
