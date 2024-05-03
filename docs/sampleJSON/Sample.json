@@ -311,6 +311,12 @@
           "Date": "2024-05-03T00:00:00+02:00",
           "Location": "MMS",
           "Hours": 7.6
+        },
+        "2024-05-04": {
+          "Note": "HUB dresdeb",
+          "Date": "2024-05-04T00:00:00+02:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
         }
       }
     }

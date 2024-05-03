@@ -10,7 +10,7 @@ Simple component to select a location, should get it's values from the database 
     <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
         @foreach (var entry in dataService.GetWorkLocationHours())
         {
-            <MudChip Text="@entry.Location" Color="Color.Primary"
+            <MudChip @ref=ChipRef Text="@entry.Location" Color="Color.Primary"
                 @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" /> 
         }
     </MudChipSet>
@@ -24,27 +24,47 @@ else
 
 
 @code {
+    private string _selectedLocation;
     [Parameter]
-    public string? SelectedLocation { get; set; }
-
+    public string? SelectedLocation 
+    { 
+        get { return _selectedLocation; } 
+        set {
+            _selectedLocation = value;
+            UpdateSelectedChip();
+        } 
+    }
     [Parameter]
     public EventCallback<string?> SelectedLocationChanged { get; set; }
 
     private MudChip selectedChip { get; set; }
+    private MudChip ChipRef { set => availableChips.Add(value); }
     private List<MudChip> availableChips { get; set; } = new();
 
-
-    protected override void OnInitialized()
+    // Run this on component initialzing to pre-set the selected chip
+    protected override void OnAfterRender(bool firstRender)
     {
-        // create an array with all chips
-        foreach (var entry in dataService.GetWorkLocationHours())
+        if (!firstRender) return;
+
+        UpdateSelectedChip();
+        StateHasChanged();
+    }
+
+    // Handle updating the selected chip, as well as edge cases as the items not being loaded yet
+    // or no item set
+    private void UpdateSelectedChip() 
+    {
+        if (availableChips.Count != 0) 
         {
-            availableChips.Add(new MudChip() { Text = entry.Location });
+            try
+            {
+                selectedChip = availableChips.Single(e => e.Text == _selectedLocation);
+            }
+            catch (InvalidOperationException e)
+            {
+                selectedChip = null;
+            }
         }
 
-        // filter the one where the text matches the SelectedLocation string
-        selectedChip = availableChips.Single(e => e.Text == SelectedLocation);
-
-        //TODO: Fix this
     }
 }
