@@ -3,8 +3,9 @@ Main view to input and edit data, displayed when the user selects the daily view
 *@
 
 @inject IASBNDataService dataService;
+@inject ISnackbar Snackbar
 
-<MudPaper Elevation="0" Class="mt-5">
+<MudPaper Outlined="true" Class="mt-5 pa-5">
     <MudGrid>
 
         @* Select date *@
@@ -14,50 +15,24 @@ Main view to input and edit data, displayed when the user selects the daily view
         </MudItem>
 
         @* Select location *@
-        
         <MudItem xs="6">
             <MudText Typo="Typo.body2">I was working from...</MudText>
             <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
         </MudItem>
-
         <MudItem xs="6">
-            <MudText Typo="Typo.body2">I worked for...</MudText>
-            <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Class="mt-0"/>
+            <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Label="I worked for..." />
         </MudItem>
 
-        
+        @* Add note and save *@
+        <MudItem xs="12">
+            <MudTextField Text="@Note" T="string" Label="And I learned this today:" Lines="5" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
+        </MudItem>
 
     </MudGrid>
-
 </MudPaper>
-
-
-
-@* Old stuff *@
-<div class="container-fluid mt-3 p-0">
-
-    @if (alertIsVisible)
-    {
-        <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
-    }
-
-
-    <div class="row">
-        <p class="my-2 mt-4">And I learned this today...</p>
-        <div class="form-group">
-            <textarea class="form-control" rows="10" id="notes"
-                placeholder="I learned this..." @bind="Note"></textarea>
-        </div>
-    </div>
-
-    <div class="row justify-content-end">
-        <div class="col-auto">
-            <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
-        </div>
-    </div>
-
-</div>
-
 
 
 @code {
@@ -107,10 +82,7 @@ Main view to input and edit data, displayed when the user selects the daily view
         // set corresponding hours value to Hours
         foreach (var entry in dataService.GetWorkLocationHours())
         {
-            if (entry.Location == SelectedLocation)
-            {
-                Hours = entry.Hours;
-            }
+            if (entry.Location == SelectedLocation) { Hours = entry.Hours; }
         }
     }
 
@@ -134,37 +106,13 @@ Main view to input and edit data, displayed when the user selects the daily view
     public async void SaveData()
     {
         // why do I have to convert Hours at all? its a nullable on both ends...
-        if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours))
+        if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours)) 
         {
-            alertIsVisible = true;
-            setAlertDetails("success", "That's your data saved!");
-            StateHasChanged();
+            Snackbar.Add("That's your data saved!", Severity.Success);
         }
-        else
+        else 
         {
-            alertIsVisible = true;
-            setAlertDetails("danger", "There was an error saving you data - please allow saving changes if prompted.");
-            StateHasChanged();
+            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
         }
-    }
-
-
-    ///
-    /// Handling alerts (sucess / failure on user saves data).
-    /// 
-    public bool alertIsVisible = false;
-    public string? alertType;
-    public string? alertMessage;
-
-    public async Task CloseBannerAlertCallback()
-    {
-        alertIsVisible = false;
-        StateHasChanged();
-    }
-
-    private void setAlertDetails(string type, string message)
-    {
-        alertType = type;
-        alertMessage = message;
     }
 }

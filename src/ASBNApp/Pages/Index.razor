@@ -5,17 +5,22 @@
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
 
     @* Header space *@
-    <MudPaper Elevation="0" Class="d-flex justify-space-between">
-        <MudItem Elevation="0" Class="d-inline-flex" >
-            <HeaderLarge Header="Let's see what you've been up to!" />
+    <MudItem>
+        <MudItem Elevation="0" Class="my-10">
+            <MudText Typo="Typo.h3" Class="mb-5">Let's see what you've been up to!</MudText>
+            <MudText Typo="Typo.subtitle1">What do you wanna log?</MudText>
         </MudItem>
 
-        <MudItem Elevation="0" Class="d-inline-flex" >
-            @* Two way binding, this works by binding the bool from the component to the bool here. If IsDayBool changes, so does IsDay in the SwitchDayWeek.razor file. *@
-            <SwitchDayWeek @bind-IsDay="IsDayBool" />
-        </MudItem>
-    </MudPaper>
-        
+        @* TODO: Set the tabs to be full width. *@
+        <MudTabs>
+            <MudTabPanel Text="Day" Icon="@Icons.Material.Filled.ViewDay" OnClick="() => IsDayBool = true"
+                ToolTip="Single day view, no distraction."  />
+
+            <MudTabPanel Text="Week" Icon="@Icons.Material.Filled.ViewWeek" OnClick="() => IsDayBool = false"
+                ToolTip="The full week at a glance!" />
+        </MudTabs>
+    </MudItem>
+
     @* Form space *@
     @if (IsDayBool) {
         <MainViewDay />
