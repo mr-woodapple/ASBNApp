@@ -1,24 +1,27 @@
-@* 
-Simple selector component for dates, shows today and tomorrow, as well as a date picker.
-*@
+@*  Simple selector component for dates, shows today and tomorrow, as well as a date picker. *@
 
-
-<MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true" >
-    <MudChip Text="today" Color="Color.Primary" Default="true"
-        @onclick="@(e => { SelectedDate = DateTime.Today; SelectedDateChanged.InvokeAsync(SelectedDate); })">
-        Today (@Today.Date.ToString("dd.MM.yyyy"))
-    </MudChip>
-    <MudChip Text="tomorrow" Color="Color.Primary"
-        @onclick="@(e => { SelectedDate = DateTime.Today.AddDays(1); SelectedDateChanged.InvokeAsync(SelectedDate); })">
-        Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
-    </MudChip>
-    <MudChip Text="customdate" Color="Color.Primary">
-        @* TODO: Update this to show extra input when "customdate" is selected, probably some sort of overlay *@
-        @* See here: https://assets.website-files.com/6231812313e8661d7da3a4e7/62a0a09c3fd2c7a82511f1f0_Date%20Fiel.png *@
-        <label for="date">Pick date: </label>
-        <input type="date" id="date" @bind="SelectedDate" @onfocusout="@(e => { SelectedDateChanged.InvokeAsync(SelectedDate); })" />
-    </MudChip>
-</MudChipSet>
+<MudStack Row="true">
+    <MudPaper Elevation="0">
+        <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true" >
+            <MudChip Text="today" Color="Color.Primary" Default="true"
+                @onclick="@(e => { SelectedDate = DateTime.Today; SelectedDateChanged.InvokeAsync(SelectedDate); })">
+                Today (@Today.Date.ToString("dd.MM.yyyy"))
+            </MudChip>
+            <MudChip Text="tomorrow" Color="Color.Primary"
+                @onclick="@(e => { SelectedDate = DateTime.Today.AddDays(1); SelectedDateChanged.InvokeAsync(SelectedDate); })">
+                Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
+            </MudChip>
+            <MudChip Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
+        </MudChipSet>
+    </MudPaper>
+    
+    <MudPaper Elevation="0" Class="mt-n5">
+        @if(selectedChip != null && selectedChip.Text == "customdate") {
+            <MudDatePicker Label="Select custom date:" 
+                DateChanged="@(e => { SelectedDate = (DateTime)e; SelectedDateChanged.InvokeAsync(SelectedDate); })" />
+        }
+    </MudPaper>
+</MudStack>
 
 
 @code {

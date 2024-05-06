@@ -318,6 +318,38 @@
           "Location": "BSZ ET Dresden",
           "Hours": 7.2
         }
+      },
+      "21": {
+        "2024-05-20": {
+          "Note": null,
+          "Date": "2024-05-20T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-21": {
+          "Note": null,
+          "Date": "2024-05-21T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-22": {
+          "Note": null,
+          "Date": "2024-05-22T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-23": {
+          "Note": null,
+          "Date": "2024-05-23T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-24": {
+          "Note": null,
+          "Date": "2024-05-24T00:00:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 7.2
+        }
       }
     }
   }
