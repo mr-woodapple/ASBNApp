@@ -17,8 +17,7 @@
     
     <MudPaper Elevation="0" Class="mt-n5">
         @if(selectedChip != null && selectedChip.Text == "customdate") {
-            <MudDatePicker Label="Select custom date:" 
-                DateChanged="@(e => { SelectedDate = (DateTime)e; SelectedDateChanged.InvokeAsync(SelectedDate); })" />
+            <MudDatePicker Label="Select custom date:" @bind-Date="date" />
         }
     </MudPaper>
 </MudStack>
@@ -33,11 +32,26 @@
     private MudChip selectedChip;
     private DateTime Today = DateTime.Now;
     private DateTime Tomorrow = DateTime.Now.AddDays(1);
+    
+
+    // Custom get/setter for pre-filling the date picker for
+    // the user selecting a date
+    private DateTime _date;
+    DateTime? date 
+    { 
+        get { return _date; }
+        set 
+        {
+            _date = (DateTime)value;
+            SelectedDate = (DateTime)value;
+        }
+    }
 
     // Using this to force-update the SelecteDate in MainViewDay (couldn't get
     // existing values to load otherwise)
     protected override void OnInitialized()
     {
         SelectedDateChanged.InvokeAsync(DateTime.Today);
+        date = DateTime.Today.AddDays(2);
     }
 }
