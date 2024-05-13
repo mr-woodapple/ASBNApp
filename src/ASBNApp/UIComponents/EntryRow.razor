@@ -1,11 +1,54 @@
-@*
-UI bit that represents a single entry, supposed to be used in MainViewWeek.
-*@
+@* UI bit that represents a single entry, supposed to be used in MainViewWeek. *@
 
 @using ASBNApp.Model;
 @inject IASBNDataService dataService;
 
-<div class="row mb-3">
+<MudPaper Outlined="true" Class="pa-5 ma-5">
+    <MudGrid>
+        @* Name of the day *@
+        <MudItem xs="3">
+            <MudText Typo="Typo.h4"> @Entry.Date.DayOfWeek </MudText>
+        </MudItem>
+
+        @* Date picker *@
+        <MudItem xs="3">
+            <MudDatePicker Label="Date" @bind-Date="date" />
+        </MudItem>
+
+        @* Location selector *@
+        <MudItem xs="3">
+            @if (dataService.GetWorkLocationHours().Count != 0) 
+            {
+                <MudSelect T="string" Label="Select Location" @bind-Value="Entry.Location" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (var entry in dataService.GetWorkLocationHours())
+                    {
+                        <MudSelectItem Value="@entry.Location" />
+                    }                    
+                </MudSelect>
+            }
+            else 
+            {
+                <MudAlert Severity="Severity.Info" Dense="true">
+                    No data available, please add new work location in settings.
+                </MudAlert>
+            }
+        </MudItem>
+
+        @* Location hours input *@
+        <MudItem xs="3">
+            <MudNumericField @bind-Value="Entry.Hours" Label="Select hours"/>
+        </MudItem>
+
+        @* Text *@
+        <MudItem xs="12">
+            <MudTextField T="string" @bind-Text="Entry.Note" Label="And I learned this today:" Lines="3" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+
+@* OLD STUFF  *@
+@* <div class="row mb-3">
 
 
     <div class="col-2 me-4 entry-row entry-row-date align-items-center justify-content-between">
@@ -54,7 +97,7 @@ UI bit that represents a single entry, supposed to be used in MainViewWeek.
             
         </div>
     </div>
-</div>
+</div> *@
 
 
 
@@ -91,6 +134,18 @@ UI bit that represents a single entry, supposed to be used in MainViewWeek.
         }
     }
 
+    // Custom date to handle the date picker
+    private DateTime _date;
+    DateTime? date 
+    { 
+        get { return _date; }
+        set 
+        {
+            _date = (DateTime)value;
+            Entry.Date = (DateTime)value;
+        }
+    }
+
 
     DateHandler dateHandler = new DateHandler();
 
@@ -100,6 +155,9 @@ UI bit that represents a single entry, supposed to be used in MainViewWeek.
 
     protected override void OnInitialized()
     {
+        // Load value for date picker on the first time
+        date = Entry.Date;
+
         UpdateMinMaxDates();
         UpdateWorkHoursFromLocation();
     }

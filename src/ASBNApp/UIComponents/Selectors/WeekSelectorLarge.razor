@@ -1,8 +1,18 @@
-@*
-Large picker to select the week we want to edit.
-*@
+@* Large picker to select the week we want to edit. *@
 
-<div class="row my-4 mx-0 justify-content-center">
+<MudPaper Elevation="0">
+    <MudDatePicker @ref="_picker" Label="Select a date to select the full week" ShowWeekNumbers="true" @bind-Date="date">
+        <PickerActions>
+            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+            <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+            <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
+        </PickerActions>
+    </MudDatePicker>
+</MudPaper>
+
+
+@* OLD STUFF  *@
+@* <div class="row my-4 mx-0 justify-content-center">
 
     <div class="col-auto week-change-button mb-2" @onclick="SelectPreviousWeek">
         <p class="m-0 material-symbols-rounded align-self-center"> 
@@ -13,6 +23,7 @@ Large picker to select the week we want to edit.
     <div class="col-auto px-3 mx-3 mb-2 text-center week-change-center">
         <label for="week">Select week:</label>
         @* TODO: @onfocusout might not be the best idea, there might be a better way to do this *@
+        @*
         <input type="week" id="week" @bind="_weekFormatInput" @onfocusout="UpdateWeekFromSelector" />
     </div>
 
@@ -22,7 +33,7 @@ Large picker to select the week we want to edit.
         </p>
     </div>
 
-</div>
+</div> *@
 
 
 @code {
@@ -39,6 +50,26 @@ Large picker to select the week we want to edit.
     // Callback function
     [Parameter]
     public Func<Task> OnCallback { get; set; }
+
+
+
+    // date picker stuff
+    MudDatePicker _picker;
+    DateTime? _date;
+    DateTime? date 
+    { 
+        get => _date;
+        set {
+            _date = value;
+            UpdateSelectedWeek(value);
+        }
+    }
+
+    private void UpdateSelectedWeek(DateTime? selectedDate) {
+        // TODO: Write helper that returns the week date format for the given date
+        Console.WriteLine("Test");
+    }
+
 
 
     DateHandler dateHandler = new DateHandler();

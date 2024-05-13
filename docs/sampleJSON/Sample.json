@@ -350,6 +350,38 @@
           "Location": "BSZ ET Dresden",
           "Hours": 7.2
         }
+      },
+      "19": {
+        "2024-05-06": {
+          "Note": null,
+          "Date": "2024-05-06T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-07": {
+          "Note": null,
+          "Date": "2024-05-07T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-08": {
+          "Note": "Test",
+          "Date": "2024-05-08T00:00:00+02:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
+        },
+        "2024-05-09": {
+          "Note": null,
+          "Date": "2024-05-09T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2024-05-10": {
+          "Note": null,
+          "Date": "2024-05-10T00:00:00",
+          "Location": null,
+          "Hours": null
+        }
       }
     }
   }

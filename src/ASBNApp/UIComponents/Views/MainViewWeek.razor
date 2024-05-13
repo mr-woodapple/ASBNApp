@@ -1,17 +1,11 @@
-@*
-Main view to input and edit data, displayed when the user selects the weekly view.
-*@
+@* Main view to input and edit data, displayed when the user selects the weekly view. *@
 
 @inject IASBNDataService dataService
 
-<div class="container-fluid mt-3 p-0">
-
-    @if (alertIsVisible)
-    {
-        <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
-    }
-
-    <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
+<MudPaper Outlined="true" Elevation="0" Class="mt-5">
+    <MudItem Class="pa-5">
+        <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
+    </MudItem>
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
     @if (SelectedYear != null && SelectedWeek != null)
@@ -19,6 +13,28 @@ Main view to input and edit data, displayed when the user selects the weekly vie
         @foreach (var entry in rows)
         {
             <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" />
+        }
+    }
+</MudPaper>
+
+
+
+@* OLD STUFF *@
+<div class="container-fluid mt-3 p-0">
+
+    @if (alertIsVisible)
+    {
+        <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
+    }
+
+    @* <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" /> *@
+
+    @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
+    @if (SelectedYear != null && SelectedWeek != null)
+    {
+        @foreach (var entry in rows)
+        {
+            @* <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" /> *@
         }
     }
 
