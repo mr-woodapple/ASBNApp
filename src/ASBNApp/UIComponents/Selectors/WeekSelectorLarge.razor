@@ -1,11 +1,13 @@
 @* Large picker to select the week we want to edit. *@
 
 <MudPaper Elevation="0">
-    <MudDatePicker @ref="_picker" Label="Select a date to select the full week" ShowWeekNumbers="true" @bind-Date="date">
+    <MudText>Selected Week: @SelectedWeek, @SelectedYear</MudText>
+    <MudDatePicker @ref="_picker" ShowWeekNumbers="true" @bind-Date="date" AutoClose="true" 
+        Label="Select a date to select the full week" 
+        HelperText="Simply select a date, the app will match the week to the date.">
         <PickerActions>
-            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
-            <MudButton OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
-            <MudButton Color="Color.Primary" OnClick="@(() => _picker.Close())">Ok</MudButton>
+            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+            <MudButton Color="Color.Primary" OnClick="@(() => SetPickerToCurrentWeek())">Current Week</MudButton>
         </PickerActions>
     </MudDatePicker>
 </MudPaper>
@@ -33,7 +35,7 @@
         </p>
     </div>
 
-</div> *@
+</div>  *@
 
 
 @code {
@@ -61,15 +63,12 @@
         get => _date;
         set {
             _date = value;
-            UpdateSelectedWeek(value);
+            DateTime validDate = (DateTime)value;
+            SelectedWeek = dateHandler.GetWeekOfYear(validDate);
+            SelectedYear = validDate.Year;
+            TriggerAllCallbacks();
         }
     }
-
-    private void UpdateSelectedWeek(DateTime? selectedDate) {
-        // TODO: Write helper that returns the week date format for the given date
-        Console.WriteLine("Test");
-    }
-
 
 
     DateHandler dateHandler = new DateHandler();
@@ -83,8 +82,8 @@
         SelectedYear = DateTime.Now.Year;
         TriggerAllCallbacks();
 
-        // Set value for HTML week input
-        _weekFormatInput = GetISO8601WeekAsString();
+        // Set value for the date picker
+        date = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
     }
 
     // Single place to trigger the callbacks
@@ -96,21 +95,9 @@
         await OnCallback.Invoke();
     }
 
-    // Required function to update the CurrentWeek number if the user selects
-    // a week through the HTML input
-    public void UpdateWeekFromSelector()
-    {
-        if (_weekFormatInput != null)
-        {
-            // Extract year and week from the WeekFormatInput string
-            SelectedWeek = int.Parse(_weekFormatInput.Substring(6));
-            SelectedYear = int.Parse(_weekFormatInput.Substring(0, 4));
-            TriggerAllCallbacks();
-        }
-        else
-        {
-            throw new NullReferenceException("_weekFormatInput is null, but shouldn't!");
-        }
+    public void SetPickerToCurrentWeek() {
+        _picker.Close();
+        date = DateTime.Now;
     }
 
 
@@ -131,7 +118,7 @@
         }
 
         TriggerAllCallbacks();
-        _weekFormatInput = GetISO8601WeekAsString();
+        // TODO: Add method that updates the datepicker
     }
 
     public void SelectPreviousWeek()
@@ -147,23 +134,6 @@
         }
 
         TriggerAllCallbacks();
-        _weekFormatInput = GetISO8601WeekAsString();
-
-    }
-
-    /// <summary>
-    /// Add a 0 to the front of a string if SelectedWeek is only one digit
-    /// </summary>
-    /// <returns>String matching the ISO8601 format for weeks</returns>
-    public string GetISO8601WeekAsString()
-    {
-        if (SelectedWeek < 10)
-        {
-            return SelectedYear + "-W0" + SelectedWeek;
-        }
-        else
-        {
-            return SelectedYear + "-W" + SelectedWeek;
-        }
+        // TODO: Add method that updates the datepicker
     }
 }
