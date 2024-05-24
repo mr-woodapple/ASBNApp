@@ -1,7 +1,18 @@
-@*
-Same as the HeaderLarge component, but allows to edit the text in it
-*@
+@* Same as the HeaderLarge component, but allows to edit the text in it *@
 
+
+<MudItem>
+    @if (_isEditing)
+    {
+        <MudTextField @bind-Value="EditeableHeader" Variant="Variant.Text"></MudTextField>
+    }
+    else
+    {
+        <MudText Typo="Typo.h5"><b> Hi, @EditeableHeader </b></MudText>
+    }
+</MudItem>
+
+@* OLD STUFF *@
 <div>
     <h2>
         @if (_isEditing)

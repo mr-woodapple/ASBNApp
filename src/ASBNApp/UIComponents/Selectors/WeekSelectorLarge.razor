@@ -1,6 +1,17 @@
 @* Large picker to select the week we want to edit. *@
 
-<MudPaper Elevation="0">
+<MudItem>
+    <MudStack Row="true">
+        <MudText>Selected Week: @SelectedWeek, @SelectedYear</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Primary" OnClick="OpenDatePickerOverlay" />
+    </MudStack>
+
+    <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
+        <MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today.AddDays(1))" />
+    </MudOverlay>
+</MudItem>
+
+@* <MudItem>
     <MudText>Selected Week: @SelectedWeek, @SelectedYear</MudText>
     <MudDatePicker @ref="_picker" ShowWeekNumbers="true" @bind-Date="date" AutoClose="true" 
         Label="Select a date to select the full week" 
@@ -10,7 +21,7 @@
             <MudButton Color="Color.Primary" OnClick="@(() => SetPickerToCurrentWeek())">Current Week</MudButton>
         </PickerActions>
     </MudDatePicker>
-</MudPaper>
+</MudItem> *@
 
 
 @* OLD STUFF  *@
@@ -53,6 +64,14 @@
     [Parameter]
     public Func<Task> OnCallback { get; set; }
 
+
+    // NEW Date Picker stuff
+    private bool isDatePickerOverlayVisible;
+    public void OpenDatePickerOverlay()
+    {
+        isDatePickerOverlayVisible = true;
+        StateHasChanged();
+    }
 
 
     // date picker stuff

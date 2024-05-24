@@ -1,8 +1,9 @@
 @* Main view to input and edit data, displayed when the user selects the weekly view. *@
 
 @inject IASBNDataService dataService
+@inject ISnackbar Snackbar
 
-<MudPaper Outlined="true" Elevation="0" Class="mt-5">
+<MudPaper Outlined="true" Elevation="0" Class="my-5">
     <MudItem Class="pa-5">
         <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
     </MudItem>
@@ -15,37 +16,11 @@
             <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" />
         }
     }
+
+    <MudItem xs="12" Class="pa-5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
+    </MudItem>
 </MudPaper>
-
-
-
-@* OLD STUFF *@
-<div class="container-fluid mt-3 p-0">
-
-    @if (alertIsVisible)
-    {
-        <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
-    }
-
-    @* <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" /> *@
-
-    @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
-    @if (SelectedYear != null && SelectedWeek != null)
-    {
-        @foreach (var entry in rows)
-        {
-            @* <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" /> *@
-        }
-    }
-
-    <div class="row justify-content-end">
-        <div class="col-auto">
-            <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
-        </div>
-    </div>
-
-</div>
-
 
 
 @code {
@@ -78,38 +53,15 @@
     /// </summary>
     private async void SaveData()
     {
+        // TODO: Might wanna change this to check the return of dataService? 
+        // if task.success, show success snackbar, if not error snackbar
         if (await dataService.SaveWeek(rows))
         {
-            alertIsVisible = true;
-            setAlertDetails("success", "That's your data saved!");
-            StateHasChanged();
+            Snackbar.Add("That's your data saved!", Severity.Success);
         }
         else
         {
-            alertIsVisible = true;
-            setAlertDetails("danger", "There was an error saving you data - please allow saving changes if prompted.");
-            StateHasChanged();
+            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
         }
-    }
-
-
-    ///
-    /// Handling alerts
-    /// 
-
-    public bool alertIsVisible = false;
-    public string? alertType;
-    public string? alertMessage;
-
-    public async Task CloseBannerAlertCallback()
-    {
-        alertIsVisible = false;
-        StateHasChanged();
-    }
-
-    private void setAlertDetails(string type, string message)
-    {
-        alertType = type;
-        alertMessage = message;
     }
 }
