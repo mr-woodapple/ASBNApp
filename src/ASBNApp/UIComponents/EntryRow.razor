@@ -12,7 +12,7 @@
 
         @* Date picker *@
         <MudItem xs="3">
-            <MudDatePicker Label="Date" @bind-Date="date" />
+            <MudDatePicker Label="Date" @bind-Date="date" MinDate="@_minDateValue" MaxDate="@_maxDateValue" />
         </MudItem>
 
         @* Location selector *@
@@ -22,7 +22,7 @@
                 <MudSelect T="string" Label="Select Location" @bind-Value="Entry.Location" AnchorOrigin="Origin.BottomCenter">
                     @foreach (var entry in dataService.GetWorkLocationHours())
                     {
-                        <MudSelectItem Value="@entry.Location" />
+                        <MudSelectItem Value="@entry.Location"  OnClick="@UpdateWorkHoursFromLocation"/>
                     }                    
                 </MudSelect>
             }
@@ -109,7 +109,7 @@
     [Parameter]
     public EventCallback<EntryRowModel> OnUpdate { get; set; }
 
-    // Week & year variables to set min and max values for
+    // Week & year variables to set min and max values for the date picker
     private int? _selectedWeek;
     [Parameter]
     public int? SelectedWeek
@@ -134,30 +134,24 @@
         }
     }
 
-    // Custom date to handle the date picker
-    private DateTime _date;
-    DateTime? date 
+    private DateTime? _date;
+    private DateTime? date 
     { 
-        get { return _date; }
+        get => _date; 
         set 
         {
-            _date = (DateTime)value;
+            _date = value;
             Entry.Date = (DateTime)value;
         }
     }
-
-
     DateHandler dateHandler = new DateHandler();
 
     // Min & max values
-    private string? _minDateValue = null;
-    private string? _maxDateValue = null;
+    private DateTime? _minDateValue;
+    private DateTime? _maxDateValue;
 
     protected override void OnInitialized()
     {
-        // Load value for date picker on the first time
-        date = Entry.Date;
-
         UpdateMinMaxDates();
         UpdateWorkHoursFromLocation();
     }
@@ -169,21 +163,24 @@
     {
         if (SelectedWeek != null && SelectedYear != null)
         {
+            date = Entry.Date;
+
             // set values for min and max in the date picker
-            _minDateValue = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
-            _maxDateValue = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear).ToString("yyyy-MM-dd");
+            _minDateValue = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+            _maxDateValue = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear);
         }
     }
 
     /// <summary>
-    /// Pre-define the hours value for input UI fields based on the selected work location
+    /// Pre-define the hours value for input UI fields based on the selected work location.
+    ///
+    /// Filter list for the matching string in SelectedLocation, then set corresponding hours value to Hours
     /// </summary>
     public void UpdateWorkHoursFromLocation() {
-        // filter list for the matching string in SelectedLocation
-        // set corresponding hours value to Hours
         foreach (var item in dataService.GetWorkLocationHours()) {
             if(item.Location == Entry.Location) {
                 Entry.Hours = item.Hours;
+                StateHasChanged();
             }
         }
     }

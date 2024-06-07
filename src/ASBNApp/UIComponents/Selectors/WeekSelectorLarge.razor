@@ -1,56 +1,29 @@
 @* Large picker to select the week we want to edit. *@
 
-<MudItem>
+<MudItem style="border: 2px dashed red">
     <MudStack Row="true">
-        <MudText>Selected Week: @SelectedWeek, @SelectedYear</MudText>
-        <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Primary" OnClick="OpenDatePickerOverlay" />
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick="SelectPreviousWeek" />
+
+        <MudStack Row="true" class="mud-theme-primary rounded-pill">
+            <MudText>Selected Week: @SelectedWeek, @SelectedYear</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Primary" OnClick="OpenDatePickerOverlay" />
+        </MudStack>
+
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="SelectNextWeek" />
     </MudStack>
 
     <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
-        <MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today.AddDays(1))" />
+        <MudDatePicker @ref="_picker" PickerVariant="PickerVariant.Static" @bind-Date="date" ShowWeekNumbers="true">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(() => SetPickerToCurrentWeek())">Current week</MudButton>
+            </PickerActions>
+        </MudDatePicker>
     </MudOverlay>
 </MudItem>
 
-@* <MudItem>
-    <MudText>Selected Week: @SelectedWeek, @SelectedYear</MudText>
-    <MudDatePicker @ref="_picker" ShowWeekNumbers="true" @bind-Date="date" AutoClose="true" 
-        Label="Select a date to select the full week" 
-        HelperText="Simply select a date, the app will match the week to the date.">
-        <PickerActions>
-            <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
-            <MudButton Color="Color.Primary" OnClick="@(() => SetPickerToCurrentWeek())">Current Week</MudButton>
-        </PickerActions>
-    </MudDatePicker>
-</MudItem> *@
-
-
-@* OLD STUFF  *@
-@* <div class="row my-4 mx-0 justify-content-center">
-
-    <div class="col-auto week-change-button mb-2" @onclick="SelectPreviousWeek">
-        <p class="m-0 material-symbols-rounded align-self-center"> 
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m432-480 156 156q11 11 11 28t-11 28q-11 11-28 11t-28-11L348-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 28-11t28 11q11 11 11 28t-11 28L432-480Z" /></svg>
-        </p>
-    </div>
-
-    <div class="col-auto px-3 mx-3 mb-2 text-center week-change-center">
-        <label for="week">Select week:</label>
-        @* TODO: @onfocusout might not be the best idea, there might be a better way to do this *@
-        @*
-        <input type="week" id="week" @bind="_weekFormatInput" @onfocusout="UpdateWeekFromSelector" />
-    </div>
-
-    <div class="col-auto week-change-button mb-2" @onclick="SelectNextWeek">
-        <p class="m-0 material-symbols-rounded align-self-center">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M504-480 348-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L404-268q-11 11-28 11t-28-11q-11-11-11-28t11-28l156-156Z" /></svg>
-        </p>
-    </div>
-
-</div>  *@
-
 
 @code {
-    //Two way binding paramters
     [Parameter]
     public int? SelectedWeek { get; set; }
     [Parameter]
@@ -59,13 +32,13 @@
     public int? SelectedYear { get; set; }
     [Parameter]
     public EventCallback<int?> SelectedYearChanged { get; set; }
-
-    // Callback function
     [Parameter]
     public Func<Task> OnCallback { get; set; }
 
+    DateHandler dateHandler = new DateHandler();
 
-    // NEW Date Picker stuff
+
+    // Logic related to open and closing the date picker overlay
     private bool isDatePickerOverlayVisible;
     public void OpenDatePickerOverlay()
     {
@@ -73,8 +46,7 @@
         StateHasChanged();
     }
 
-
-    // date picker stuff
+    // Making the MudDatePicker work (& updating variables)
     MudDatePicker _picker;
     DateTime? _date;
     DateTime? date 
@@ -82,16 +54,13 @@
         get => _date;
         set {
             _date = value;
-            DateTime validDate = (DateTime)value;
-            SelectedWeek = dateHandler.GetWeekOfYear(validDate);
-            SelectedYear = validDate.Year;
+            SelectedWeek = dateHandler.GetWeekOfYear((DateTime)value);
+            SelectedYear = ((DateTime)value).Year;
+            isDatePickerOverlayVisible = false;
+
             TriggerAllCallbacks();
         }
     }
-
-
-    DateHandler dateHandler = new DateHandler();
-    private string? _weekFormatInput = null;
 
     // Use onInitialized() to assign calculated values to the matching variables, avoids data not being loaded into memory
     // Also make sure to update the week number on the parent component
@@ -119,7 +88,6 @@
         date = DateTime.Now;
     }
 
-
     // Updates the week number and the formatted week number for the selector
     // Take into account that we need to switch from 52 to 1 on week numbers and
     // to the next/previous year
@@ -137,7 +105,6 @@
         }
 
         TriggerAllCallbacks();
-        // TODO: Add method that updates the datepicker
     }
 
     public void SelectPreviousWeek()
@@ -153,6 +120,5 @@
         }
 
         TriggerAllCallbacks();
-        // TODO: Add method that updates the datepicker
     }
 }
