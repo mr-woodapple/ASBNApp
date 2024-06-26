@@ -1,7 +1,5 @@
-@*
-Main view to load if no data is present.
-The user then can select a file he already has or create a new one
-*@
+@*  Main view to load if no data is present.
+    The user then can select a file he already has or create a new one *@
 
 @* Keep the square brackets to add info where the log originated from *@
 @inject ILogger<NavBar> Logger;
@@ -13,59 +11,51 @@ The user then can select a file he already has or create a new one
 @using KristofferStrube.Blazor.FileSystem;
 
 
-<div class="container-fluid p-0 m-0">
+<MudContainer Class="pt-0" MaxWidth="MaxWidth.ExtraExtraLarge">
 
-    @*
-    Hide the load file buttons & display a warning if the browser is not supported
-    Otherwise show a brief welcome & steps on how to continue (lot's of room for improvement here)
-    *@
+    @*  Hide the load file buttons & display a warning if the browser is not supported
+        Otherwise show a brief welcome & steps on how to continue (lot's of room for improvement here) *@
     @if (!_isSupported)
     {
         <UnsupportedBrowserHelp />
     }
     else
     {
-        <div class="container-fluid wrapper-landingpage">
+        <MudGrid Class="pa-5 align-content-center" Style="min-height: 100vh">
 
+            <MudItem xs="6" Class="align-content-center">
+                <MudImage Src="./images/Logo-Rect-Grey-Dark.png" style="width: 75%"/>
+                <MudText Typo="Typo.body1" Class="mt-5">
+                    This app makes writing your mandatory apprenticeship report as simple
+                    as possible. And all of that, while beeing completely free,
+                    without any user account.
+                </MudText>
+                <MudText Typo="Typo.body1" Class="mt-5">
+                    Your data will be stored in a text file, that stays on your PC - you need to bring that with you every time you use the app.
+                    Start using the app by creating a new file!
+                </MudText>
 
-            <div class="row min-vh-100 d-flex align-items-center p-5">
-                <div class="col-md-7 col-sm-12">
-                    <div class="m-5">
-                        @* <img src="images/Logo-Rect-Orange-Light.png" alt="ASBN-App Logo" class="asbnlogo-landingpage mb-5"> *@
+                <MudButton Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" Class="mt-10"
+                           Variant="Variant.Outlined" EndIcon="@Icons.Custom.Brands.GitHub" Color="Color.Primary" Style="text-transform:none">
+                    GitHub Link
+                </MudButton>
+            </MudItem>
 
-                        <h1 class="mb-5">ASBN App</h1>
-                        <p>
-                            Making writing your mandatory apprenticeship report as simple
-                            as possible. And all of that, while beeing completely free,
-                            without any user account.
-                        </p>
-                        <p>
-                            Your data will be stored in a text file, that stays on your PC - you need to bring that
-                            with you every time you use the app. Start using the app by creating a new file!
-                        </p>
-                        <p class="info-landingpage text-white pt-5">
-                            Made with ♥️ in Dresden |
-                            <a href="https://github.com/mr-woodapple/ASBNApp"
-                                class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">GitHub</a>
-                        </p>
-                    </div>
-                </div>
-                @* Left / lower half to show a place where users can open their file *@
-                <div class="col-md-5 col-sm-12 p-5 wrapper-buttons">
-                    <h4>Get started!</h4>
-                    <p class="mb-5">Create a new file or open an existing one.</p>
+            <MudItem xs="6" Class="pa-5">
+                <MudPaper Class="pa-10" Elevation="2">
+                    <MudStack>
+                        <MudText Typo="Typo.h6">Get started!</MudText>
+                        <MudText Typo="Typo.body1">Create a new file if you don't have yet or open an existing one.</MudText>
 
-                    <div class="d-grid gap-2">
-                        <button type="button" class="col-auto btn btn-outline-light" @onclick="CreateNewFile">Create
-                            New</button>
-                        <button type="button" class="col-auto btn btn-light" @onclick="OpenAndReadFile">Open File</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <MudButton Class="mt-10" Variant="Variant.Outlined" Color="Color.Primary" OnClick="CreateNewFile">Create New</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenAndReadFile">Open Existing</MudButton>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+
+        </MudGrid>
     }
-
-</div>
+</MudContainer>
 
 
 @code {

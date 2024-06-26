@@ -9,18 +9,20 @@
 <PageTitle>ASBNApp</PageTitle>
 
 <MudLayout>
-    <MudMainContent>
         @* If no data is present = show input page, otherwise load normal UI *@
         @if(dataService.GetData() == null) {
             @* show open website with load file and create file buttons here *@
-            <MainViewLoadData OnCallback="Callback" />
+            <MudMainContent style="padding-top: 0;">
+                <MainViewLoadData OnCallback="Callback" />
+            </MudMainContent>
         } 
         else 
         {
             <NavBar />
-            @Body
+            <MudMainContent>
+                @Body
+            </MudMainContent>
         }
-    </MudMainContent>
 </MudLayout>
 
 
