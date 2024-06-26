@@ -36,7 +36,7 @@
 
         @* Location hours input *@
         <MudItem xs="3">
-            <MudNumericField @bind-Value="Entry.Hours" Label="Select hours"/>
+            <MudNumericField @bind-Value="Entry.Hours" Label="Select hours" Min="0" Format="N1" />
         </MudItem>
 
         @* Text *@
@@ -45,60 +45,6 @@
         </MudItem>
     </MudGrid>
 </MudPaper>
-
-
-@* OLD STUFF  *@
-@* <div class="row mb-3">
-
-
-    <div class="col-2 me-4 entry-row entry-row-date align-items-center justify-content-between">
-        <p class="m-0"> @Entry.Date.DayOfWeek,</p>
-        <input type="date" id="date" aria-label="Select date for this entry." @bind="Entry.Date" min="@_minDateValue" max="@_maxDateValue" />
-    </div>
-
-    <div class="col me-4 p-0 entry-row entry-row-note">
-        <div class="form-group">
-            <textarea class="form-control" rows="2" id="notes"
-                placeholder="I learned this..." @bind="Entry.Note"></textarea>
-        </div>
-    </div>
-
-    <div class="col-2 me-4 entry-row entry-row-location align-items-center overflow-auto">
-
-        <div class="row row-cols-1">
-            <div class="col">
-                
-                <div class="select-location-dropdown">
-                    <select name="work-location" id="work-location" aria-label="Select your work location." 
-                        @bind="Entry.Location" @onclick="UpdateWorkHoursFromLocation">
-                        <option value="" disabled selected >Select location:</option>
-
-                        @if (dataService.GetWorkLocationHours().Count != 0)
-                        {
-                            @foreach (var entry in dataService.GetWorkLocationHours())
-                            {
-                                <option value="@entry.Location"> @entry.Location</option>
-                            }
-                        }
-                        else
-                        {
-                            <option value="" disabled>
-                                No data available, please add a new work location entry in settings.
-                            </option>
-                        }
-
-                    </select>
-                </div>
-            </div>
-
-            <div class="col entry-row-hours">
-                <input type="number" class="input-underline-workhours" @bind="Entry.Hours" placeholder="Add hours"/>
-            </div>
-            
-        </div>
-    </div>
-</div> *@
-
 
 
 @code {
