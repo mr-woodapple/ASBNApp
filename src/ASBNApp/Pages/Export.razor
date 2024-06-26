@@ -12,37 +12,31 @@
 
 <PageTitle>Export</PageTitle>
 
-<div class="container-fluid">
-    <div class="row justify-content-between align-items-center">
-        <div class="col-md-auto">
-            <HeaderLarge Header="Let's get this exported!" />
-            <i>Attention: As of right now, you need to manually sign these.</i>
-        </div>
-    </div>
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
 
-    <div class="row mt-4">
+    @* Header space *@
+    <MudItem Elevation="0" Class="my-10">
+        <MudText Typo="Typo.h3" Class="mb-5">Let's get this exported!</MudText>
+        <MudText Typo="Typo.subtitle1">Attention: You still need to manually sign these (if required by your company).</MudText>
+    </MudItem>
+    
+    <MudPaper Outlined="true" Class="mt-5 pa-5">
+        <MudGrid>
 
-        @* Left half, used for options *@
-        <div class="col-6">
-            <p>Select a week to export data for: </p>
+            <MudItem xs="12">
+                <MudText Typo="Typo.body2">Select a week to export data for:</MudText>
+                @* Add pill selector for weeks here *@
+                <PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
+            </MudItem>
 
-            @* Create & add PillSelectorWeek here *@
-            <PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">Export Data</MudButton>
+            </MudItem>
 
-            <div class="row">
-                <div class="col-auto">
-                    <button class="btn btn-dark mt-4" type="submit" @onclick="ExportData">Export</button>
-                </div>
-            </div>
-        </div>
+        </MudGrid>
+    </MudPaper>
+</MudContainer>
 
-        @* Right half, used for pdf preview (eventually) *@
-        <div class="col-6">
-            
-        </div>
-
-    </div>
-</div>
 
 @code {
     // Variables to bind to the child component
