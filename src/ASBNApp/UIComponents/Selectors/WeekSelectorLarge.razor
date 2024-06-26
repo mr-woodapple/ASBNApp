@@ -1,12 +1,12 @@
 @* Large picker to select the week we want to edit. *@
 
-<MudItem style="border: 2px dashed red">
-    <MudStack Row="true">
+<MudItem>
+    <MudStack Row="true" Justify="Justify.Center" >
         <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick="SelectPreviousWeek" />
 
-        <MudStack Row="true" class="mud-theme-primary rounded-pill">
-            <MudText>Selected Week: @SelectedWeek, @SelectedYear</MudText>
-            <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Primary" OnClick="OpenDatePickerOverlay" />
+        <MudStack Row="true" class="mud-theme-primary rounded-pill" AlignItems="AlignItems.Center">
+            <MudText Class="ps-5">Selected Week: @SelectedWeek, @SelectedYear</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Surface" OnClick="OpenDatePickerOverlay" />
         </MudStack>
 
         <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="SelectNextWeek" />
@@ -15,7 +15,7 @@
     <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
         <MudDatePicker @ref="_picker" PickerVariant="PickerVariant.Static" @bind-Date="date" ShowWeekNumbers="true">
             <PickerActions>
-                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => CancelPicker())">Cancel</MudButton>
                 <MudButton Color="Color.Primary" OnClick="@(() => SetPickerToCurrentWeek())">Current week</MudButton>
             </PickerActions>
         </MudDatePicker>
@@ -81,6 +81,11 @@
         await SelectedYearChanged.InvokeAsync(SelectedYear);
         // Callback to the parent component
         await OnCallback.Invoke();
+    }
+
+    public void CancelPicker() {
+        _picker.Close(false);
+        isDatePickerOverlayVisible = false;
     }
 
     public void SetPickerToCurrentWeek() {

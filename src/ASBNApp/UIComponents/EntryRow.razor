@@ -19,10 +19,10 @@
         <MudItem xs="3">
             @if (dataService.GetWorkLocationHours().Count != 0) 
             {
-                <MudSelect T="string" Label="Select Location" @bind-Value="Entry.Location" AnchorOrigin="Origin.BottomCenter">
+                <MudSelect T="string" Value="Entry.Location" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
                     @foreach (var entry in dataService.GetWorkLocationHours())
                     {
-                        <MudSelectItem Value="@entry.Location"  OnClick="@UpdateWorkHoursFromLocation"/>
+                        <MudSelectItem Value="entry.Location"/>
                     }                    
                 </MudSelect>
             }
@@ -150,10 +150,11 @@
     private DateTime? _minDateValue;
     private DateTime? _maxDateValue;
 
+
     protected override void OnInitialized()
     {
         UpdateMinMaxDates();
-        UpdateWorkHoursFromLocation();
+        UpdateWorkHoursFromLocation(Entry.Location);
     }
 
     /// <summary>
@@ -176,12 +177,21 @@
     ///
     /// Filter list for the matching string in SelectedLocation, then set corresponding hours value to Hours
     /// </summary>
-    public void UpdateWorkHoursFromLocation() {
-        foreach (var item in dataService.GetWorkLocationHours()) {
-            if(item.Location == Entry.Location) {
-                Entry.Hours = item.Hours;
-                StateHasChanged();
+    public void UpdateWorkHoursFromLocation(string? location) {
+        if (!string.IsNullOrEmpty(location))
+        {
+            foreach (var item in dataService.GetWorkLocationHours())
+            {
+                if (location == item.Location)
+                {
+                    Entry.Location = item.Location;
+                    Entry.Hours = item.Hours;
+
+                    Console.WriteLine("Entry.Hours = ", Entry.Hours);
+                    StateHasChanged();
+                }
             }
         }
+        
     }
 }
