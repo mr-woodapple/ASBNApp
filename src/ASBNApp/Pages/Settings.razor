@@ -1,98 +1,83 @@
 @page "/settings"
 
-@inject IASBNDataService dataService;
 @using ASBNApp.Model;
+@inject IASBNDataService dataService;
+@inject ISnackbar Snackbar
 
 <PageTitle>Settings</PageTitle>
 
-<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
-    
+<MudContainer Class="mt-5 mb-15" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudPaper Outlined="true" Class="pa-5">
+        <MudGrid>
+
+            @* Header with username, required for the output pdf *@
+            <MudItem xs="12">
+                <HeaderLargeEditeable @bind-EditeableHeader="username" />
+            </MudItem>
+            
+            @* Info message to why this is important *@
+            <MudItem xs="12">
+                <MudAlert Severity="Severity.Normal">
+                    Please fill in the information below, as they're required for generating the PDF with the correct information.
+                </MudAlert>
+            </MudItem>
+
+            @* Choose your apprenticeship from a pre-defined list *@
+            <MudItem xs="12">
+                <MudSelect @bind-Value="@selectedApprenticeship" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter" HelperText="This will be shown on your exported documents.">
+                    @foreach (var entry in Data.Professions.Apprenticeships)
+                    {
+                        <MudSelectItem Value="@entry" />
+                    }
+                </MudSelect>
+            </MudItem>
+
+            @* Specify your working locations and the hours for each location *@
+            <MudItem xs="12">
+                <MudText Typo="Typo.body2" Class="mb-3">
+                    <b>My working hours & locations:</b>
+                </MudText>
+                <ShowEditWorkLocationHours @bind-WorkLocationHours="workLocationHours" />
+            </MudItem>
+            
+            <MudItem xs="12">
+                <MudText Typo="Typo.body2" Class="mb-3">
+                    <b>Further details:</b>
+                </MudText>
+
+                <MudGrid>
+                    @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
+                    <MudItem xs="6">
+                        <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="apprenticeshipStartDate">
+                            <PickerActions>
+                                <MudButton Color="Color.Primary" OnClick="SetDateToToday">Today</MudButton>
+                            </PickerActions>
+                        </MudDatePicker>
+                    </MudItem>
+
+                    @* Specify your legal representative (if applicable) *@
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="legalRepresentitive" Label="Enter your legal representitive..." Variant="Variant.Text" HelperText="Required for students below 18 years."/>
+                    </MudItem>
+
+                    @* Add company name here, required for the output pdf *@
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="company" Label="Company name..." Variant="Variant.Text" HelperText="Name of the company you're working at." />
+                    </MudItem>
+
+                    @* Add school name here, required for the output pdf *@
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="school" Label="School name..." Variant="Variant.Text" HelperText="Name of the school you're going to." />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
 </MudContainer>
-
-@* OLD STUFF *@
-<div class="container-fluid mb-5">
-
-    @if (alertIsVisible)
-    {
-        <BannerAlert AlertType=@alertType AlertMessage=@alertMessage OnCallback="CloseBannerAlertCallback" />
-    }
-
-    @* Header with username *@
-    <div class="row justify-content-between align-items-center">
-        <div class="col-md-auto">
-            @* Required for the output pdf *@
-            <HeaderLargeEditeable @bind-EditeableHeader="username" />
-        </div>
-    </div>
-
-    <div class="row mt-4 px-2">
-        <p class="info-highlight d-flex p-2">
-            <svg height="24" viewBox="0 -960 960 960" width="24">
-                <path d="M480-280q17 0 28.5-11.5T520-320v-160q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480v160q0 17 11.5 28.5T480-280Zm0-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
-            </svg>
-
-            <i>&nbsp; Please fill in the information below, as they're required for generating the PDF with the correct
-                information.</i>
-        </p>
-    </div>
-
-    @* Choose your apprenticeship from a pre-defined list *@
-    <div class="row mt-4 justify-content-start align-items-center">
-
-        <label for="profession-selector">
-            <p><b>My apprenticeship:</b></p>
-        </label>
-        <div class="select-profession">
-            <select class="p-1 px-2" name="profession-selector" id="profession-selector" @bind="selectedApprenticeship">
-                <option value="" disabled selected>Select Apprenticeship </option>
-
-                @foreach (var entry in Data.Professions.Apprenticeships)
-                {
-                    <option value="@entry"> @entry </option>
-                }
-            </select>
-        </div>
-    </div>
-
-    @* Specify your working locations and the hours for each location *@
-    <div class="row mt-4">
-        <p><b>My working hours:</b></p>
-        <ShowEditWorkLocationHours @bind-WorkLocationHours="workLocationHours" />
-    </div>
-
-    @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
-    <div class="row mt-4">
-        <p class="mb-2"><b>Started my apprenticeship in:</b></p>
-        <div class="col-2 ms-2 wrapper-start-date-picker">
-            <DatePicker @bind-SelectedDate="apprenticeshipStartDate" showLabel="false" label="Date the apprenticeship started in."/>
-        </div>
-    </div>
-
-    @* Specify your legal representative (if applicable) *@
-    <div class="row mt-4">
-        <p class="mb-2"><b>My legal representative (if you're under 18!):</b></p>
-        <ShowEditTextInput @bind-inputValue="legalRepresentitive" Placeholder="Add your legal representitive here" />
-    </div>
-
-    @* Add company name here, required for the output pdf *@
-    <div class="row mt-4">
-        <p class="mb-2"><b>The company I'm working at:</b></p>
-        <ShowEditTextInput @bind-inputValue="company" Placeholder="Add your company here" />
-    </div>
-
-    @* Add school name here, required for the output pdf *@
-    <div class="row mt-4">
-        <p class="mb-2"><b>My school:</b></p>
-        <ShowEditTextInput @bind-inputValue="school" Placeholder="Add your school here" />
-    </div>
-
-    <div class="row justify-content-end">
-        <div class="col-auto">
-            <button class="btn btn-dark mt-4" type="submit" @onclick="SaveData">Save</button>
-        </div>
-    </div>
-
-</div>
 
 
 @code {
@@ -103,9 +88,9 @@
     public string? legalRepresentitive { get; set; }
     public string? company { get; set; }
     public string? school { get; set; }
-    public DateTime apprenticeshipStartDate { get; set; }
+    public DateTime? apprenticeshipStartDate { get; set; }
 
-
+    private MudDatePicker _startDatePicker { get; set; }
 
     // Get settings object with JSON data on initialization
     protected override void OnInitialized()
@@ -114,13 +99,13 @@
         LoadWorkLocationHoursData();
     }
 
-    // load settings data
+    // Load settings data
     public void LoadSettingsData()
     {
         try
         {
+            // Set settings variables
             settings = dataService.GetSettings();
-            // set variables
             username = settings.Username;
             selectedApprenticeship = settings.Profession;
             legalRepresentitive = settings.LegalRepresentitive;
@@ -147,6 +132,9 @@
         }
     }
 
+    /// <summary>
+    /// Handles saving the data to the applications storage.
+    /// </summary>
     public async void SaveData()
     {
         // Assign variables
@@ -155,41 +143,25 @@
         settings.LegalRepresentitive = legalRepresentitive;
         settings.Company = company;
         settings.School = school;
-        settings.ApprenticeshipStartDate = apprenticeshipStartDate;
+        settings.ApprenticeshipStartDate = (DateTime)apprenticeshipStartDate;
 
         if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
         {
             // Show dialog if successful
-            alertIsVisible = true;
-            setAlertDetails("success", "That's your data saved!");
-            StateHasChanged();
+            Snackbar.Add("That's your data saved!", Severity.Success);
         }
         else
         {
-            alertIsVisible = true;
-            setAlertDetails("danger", "Error, please try again (please have a look at the console to learn more).");
-            StateHasChanged();
+            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
         }
     }
 
-
-    ///
-    /// Handling alerts
-    /// 
-
-    public bool alertIsVisible = false;
-    public string? alertType;
-    public string? alertMessage;
-
-    public async Task CloseBannerAlertCallback()
+    /// <summary>
+    /// Helper message to get the current date.
+    /// </summary>
+    /// <returns>Task</returns>
+    private async Task SetDateToToday()
     {
-        alertIsVisible = false;
-        StateHasChanged();
-    }
-
-    private void setAlertDetails(string type, string message)
-    {
-        alertType = type;
-        alertMessage = message;
+        await _startDatePicker.GoToDate(DateTime.Today);
     }
 }

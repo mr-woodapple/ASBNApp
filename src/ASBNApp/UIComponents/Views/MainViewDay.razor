@@ -18,7 +18,7 @@
             <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
         </MudItem>
         <MudItem xs="6">
-            <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Label="I worked for..." />
+            <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
         </MudItem>
 
         @* Add note and save *@
