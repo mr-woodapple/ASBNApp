@@ -8,9 +8,9 @@
     <base href="/" />
 
     <link href="ASBNApp.styles.css" rel="stylesheet" />
-    <link href="css/generalStyle.css" rel="stylesheet" />
     <link href="css/blazorStyles.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="Favicon-ASBN-Orange-Light_512.png"/>
+    <link href="css/generalStyles.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="Favicon-ASBN-Orange-Light_512.png" />
 
     <!-- MudBlazor -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
@@ -19,11 +19,10 @@
 
 <body>
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <div class="loading-wrapper">
+            <img src="images/Logo-Rect-Grey-Dark.png" aria-label="ASBN App Logo" />
+            <!-- <div class="loading-progress-text"></div> -->
+        </div>
     </div>
 
     <div id="blazor-error-ui">

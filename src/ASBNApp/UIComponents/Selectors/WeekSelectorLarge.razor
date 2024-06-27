@@ -4,9 +4,10 @@
     <MudStack Row="true" Justify="Justify.Center" >
         <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick="SelectPreviousWeek" />
 
-        <MudStack Row="true" class="mud-theme-primary rounded-pill" AlignItems="AlignItems.Center">
-            <MudText Class="ps-5">Selected Week: @SelectedWeek, @SelectedYear</MudText>
-            <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Surface" OnClick="OpenDatePickerOverlay" />
+        <MudStack Row="true" Class="mud-theme-primary rounded-pill ps-5" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.subtitle1" Class="m-0"><b>Selected Week: </b>@SelectedWeek of @SelectedYear</MudText>
+
+            <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Inherit" OnClick="OpenDatePickerOverlay" />
         </MudStack>
 
         <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="SelectNextWeek" />

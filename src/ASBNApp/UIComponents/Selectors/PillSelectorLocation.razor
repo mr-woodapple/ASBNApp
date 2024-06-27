@@ -1,24 +1,22 @@
-@* 
-Simple component to select a location, should get it's values from the database at some point. 
-*@
+@* Simple component to select a location, should get it's values from the database at some point. *@
 
 @using ASBNApp.Model;
 @inject IASBNDataService dataService;
 
 @if(dataService.GetWorkLocationHours().Count != 0) {
-    @* <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true"> *@
     <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
         @foreach (var entry in dataService.GetWorkLocationHours())
         {
             <MudChip @ref=ChipRef Text="@entry.Location" Color="Color.Primary"
-                @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" /> 
+                     @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" /> 
         }
     </MudChipSet>
 }
 else
 {
-    <MudAlert Severity="Severity.Info" Dense="true">
+    <MudAlert Severity="Severity.Warning" Dense="true">
         No data available, please add new work location in settings.
+        <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
     </MudAlert>
 }
 

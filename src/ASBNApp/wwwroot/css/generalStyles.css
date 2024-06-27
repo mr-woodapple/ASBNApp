@@ -1,5 +1,10 @@
 /* add main styles here, for example headings / text sizes */
 
+/* ################ Custom fonts ################ */
+@font-face {
+    font-family: 'Inter';
+    src: url('./../fonts/Inter-VariableFont_slnt,wght.ttf') format('truetype');
+}
 
 /* ################ Nav bar ################ */
 .nav-link.nav-underline.active {
