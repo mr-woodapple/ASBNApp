@@ -1,0 +1,144 @@
+@* UI bit that represents a single entry, supposed to be used in MainViewWeek. *@
+
+@using ASBNApp.Model;
+@inject IASBNDataService dataService;
+
+<MudPaper Outlined="true" Class="pa-5 ma-5">
+    <MudGrid>
+        @* Name of the day *@
+        <MudItem xs="3">
+            <MudText Typo="Typo.h4"> @Entry.Date.DayOfWeek </MudText>
+        </MudItem>
+
+        @* Date picker *@
+        <MudItem xs="3">
+            <MudDatePicker Label="Date" @bind-Date="date" MinDate="@_minDateValue" MaxDate="@_maxDateValue" />
+        </MudItem>
+
+        @* Location selector *@
+        <MudItem xs="3">
+            @if (dataService.GetWorkLocationHours().Count != 0) 
+            {
+                <MudSelect T="string" Value="Entry.Location" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
+                    @foreach (var entry in dataService.GetWorkLocationHours())
+                    {
+                        <MudSelectItem Value="entry.Location"/>
+                    }                    
+                </MudSelect>
+            }
+            else 
+            {
+                <MudAlert Severity="Severity.Warning" Dense="true">
+                    No data available, please add new work location in settings.
+                    <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
+                </MudAlert>
+            }
+        </MudItem>
+
+        @* Location hours input *@
+        <MudItem xs="3">
+            <MudNumericField @bind-Value="Entry.Hours" Label="Select hours" Min="0" Format="N1" />
+        </MudItem>
+
+        @* Text *@
+        <MudItem xs="12">
+            <MudTextField T="string" @bind-Text="Entry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+
+@code {
+    // Dealing with two way binding
+    [Parameter]
+    public EntryRowModel Entry { get; set; }
+
+    [Parameter]
+    public EventCallback<EntryRowModel> OnUpdate { get; set; }
+
+    // Week & year variables to set min and max values for the date picker
+    private int? _selectedWeek;
+    [Parameter]
+    public int? SelectedWeek
+    {
+        get => _selectedWeek;
+        set
+        {
+            _selectedWeek = value;
+            UpdateMinMaxDates();
+        }
+    }
+
+    private int? _selectedYear;
+    [Parameter]
+    public int? SelectedYear
+    {
+        get => _selectedYear;
+        set
+        {
+            _selectedYear = value;
+            UpdateMinMaxDates();
+        }
+    }
+
+    private DateTime? _date;
+    private DateTime? date 
+    { 
+        get => _date; 
+        set 
+        {
+            _date = value;
+            Entry.Date = (DateTime)value;
+        }
+    }
+    DateHandler dateHandler = new DateHandler();
+
+    // Min & max values
+    private DateTime? _minDateValue;
+    private DateTime? _maxDateValue;
+
+
+    protected override void OnInitialized()
+    {
+        UpdateMinMaxDates();
+        UpdateWorkHoursFromLocation(Entry.Location);
+    }
+
+    /// <summary>
+    /// Updates min and max dates for the date picker in a given week
+    /// </summary>
+    private void UpdateMinMaxDates()
+    {
+        if (SelectedWeek != null && SelectedYear != null)
+        {
+            date = Entry.Date;
+
+            // set values for min and max in the date picker
+            _minDateValue = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+            _maxDateValue = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+        }
+    }
+
+    /// <summary>
+    /// Pre-define the hours value for input UI fields based on the selected work location.
+    ///
+    /// Filter list for the matching string in SelectedLocation, then set corresponding hours value to Hours
+    /// </summary>
+    public void UpdateWorkHoursFromLocation(string? location) {
+        if (!string.IsNullOrEmpty(location))
+        {
+            foreach (var item in dataService.GetWorkLocationHours())
+            {
+                if (location == item.Location)
+                {
+                    Entry.Location = item.Location;
+                    Entry.Hours = item.Hours;
+
+                    Console.WriteLine("Entry.Hours = ", Entry.Hours);
+                    StateHasChanged();
+                }
+            }
+        }
+        
+    }
+}

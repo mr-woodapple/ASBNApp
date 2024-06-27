@@ -1,0 +1,167 @@
+@page "/settings"
+
+@using ASBNApp.Model;
+@inject IASBNDataService dataService;
+@inject ISnackbar Snackbar
+
+<PageTitle>Settings</PageTitle>
+
+<MudContainer Class="mt-5 mb-15" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudPaper Outlined="true" Class="pa-5">
+        <MudGrid>
+
+            @* Header with username, required for the output pdf *@
+            <MudItem xs="12">
+                <HeaderLargeEditeable @bind-EditeableHeader="username" />
+            </MudItem>
+            
+            @* Info message to why this is important *@
+            <MudItem xs="12">
+                <MudAlert Severity="Severity.Normal">
+                    Please fill in the information below, as they're required for generating the PDF with the correct information.
+                </MudAlert>
+            </MudItem>
+
+            @* Choose your apprenticeship from a pre-defined list *@
+            <MudItem xs="12">
+                <MudSelect @bind-Value="@selectedApprenticeship" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter" HelperText="This will be shown on your exported documents.">
+                    @foreach (var entry in Data.Professions.Apprenticeships)
+                    {
+                        <MudSelectItem Value="@entry" />
+                    }
+                </MudSelect>
+            </MudItem>
+
+            @* Specify your working locations and the hours for each location *@
+            <MudItem xs="12">
+                <MudText Typo="Typo.body2" Class="mb-3">
+                    <b>My working hours & locations:</b>
+                </MudText>
+                <ShowEditWorkLocationHours @bind-WorkLocationHours="workLocationHours" />
+            </MudItem>
+            
+            <MudItem xs="12">
+                <MudText Typo="Typo.body2" Class="mb-3">
+                    <b>Further details:</b>
+                </MudText>
+
+                <MudGrid>
+                    @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
+                    <MudItem xs="6">
+                        <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="apprenticeshipStartDate">
+                            <PickerActions>
+                                <MudButton Color="Color.Primary" OnClick="SetDateToToday">Today</MudButton>
+                            </PickerActions>
+                        </MudDatePicker>
+                    </MudItem>
+
+                    @* Specify your legal representative (if applicable) *@
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="legalRepresentitive" Label="Enter your legal representitive..." Variant="Variant.Text" HelperText="Required for students below 18 years."/>
+                    </MudItem>
+
+                    @* Add company name here, required for the output pdf *@
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="company" Label="Company name..." Variant="Variant.Text" HelperText="Name of the company you're working at." />
+                    </MudItem>
+
+                    @* Add school name here, required for the output pdf *@
+                    <MudItem xs="6">
+                        <MudTextField @bind-Value="school" Label="School name..." Variant="Variant.Text" HelperText="Name of the school you're going to." />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+</MudContainer>
+
+
+@code {
+    public ASBNApp.Model.Settings? settings { get; set; }
+    public List<WorkLocationHours> workLocationHours { get; set; } = new();
+    public string? username { get; set; }
+    public string? selectedApprenticeship { get; set; }
+    public string? legalRepresentitive { get; set; }
+    public string? company { get; set; }
+    public string? school { get; set; }
+    public DateTime? apprenticeshipStartDate { get; set; }
+
+    private MudDatePicker _startDatePicker { get; set; }
+
+    // Get settings object with JSON data on initialization
+    protected override void OnInitialized()
+    {
+        LoadSettingsData();
+        LoadWorkLocationHoursData();
+    }
+
+    // Load settings data
+    public void LoadSettingsData()
+    {
+        try
+        {
+            // Set settings variables
+            settings = dataService.GetSettings();
+            username = settings.Username;
+            selectedApprenticeship = settings.Profession;
+            legalRepresentitive = settings.LegalRepresentitive;
+            company = settings.Company;
+            school = settings.School;
+            apprenticeshipStartDate = settings.ApprenticeshipStartDate;
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e.Message + " Load JSON file before trying to read values for settings.");
+        }
+    }
+
+    // Load work location data
+    public void LoadWorkLocationHoursData()
+    {
+        try
+        {
+            workLocationHours = dataService.GetWorkLocationHours();
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e.Message + " Load JSON file before trying to read values for work location data.");
+        }
+    }
+
+    /// <summary>
+    /// Handles saving the data to the applications storage.
+    /// </summary>
+    public async void SaveData()
+    {
+        // Assign variables
+        settings.Username = username;
+        settings.Profession = selectedApprenticeship;
+        settings.LegalRepresentitive = legalRepresentitive;
+        settings.Company = company;
+        settings.School = school;
+        settings.ApprenticeshipStartDate = (DateTime)apprenticeshipStartDate;
+
+        if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
+        {
+            // Show dialog if successful
+            Snackbar.Add("That's your data saved!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
+        }
+    }
+
+    /// <summary>
+    /// Helper message to get the current date.
+    /// </summary>
+    /// <returns>Task</returns>
+    private async Task SetDateToToday()
+    {
+        await _startDatePicker.GoToDate(DateTime.Today);
+    }
+}

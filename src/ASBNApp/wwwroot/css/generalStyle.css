@@ -1,8 +1,0 @@
-/* add main styles here, for example headings / text sizes */
-
-
-/* ################ Nav bar ################ */
-.nav-link.nav-underline.active {
-    border-bottom: 2px solid black;
-    margin-bottom: -2px;
-}

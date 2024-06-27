@@ -1,0 +1,68 @@
+@* Main view to input and edit data, displayed when the user selects the weekly view. *@
+
+@inject IASBNDataService dataService
+@inject ISnackbar Snackbar
+
+<MudPaper Outlined="true" Elevation="0" Class="my-5">
+    <MudItem Class="pa-5">
+        <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
+    </MudItem>
+
+    @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
+    @if (SelectedYear != null && SelectedWeek != null)
+    {
+        @foreach (var entry in rows)
+        {
+            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" />
+        }
+    }
+
+    <MudItem xs="12" Class="pa-5">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
+    </MudItem>
+</MudPaper>
+
+
+@code {
+    // Define the IEnumerable variable the fill with data from the JSON
+    IEnumerable<EntryRowModel> rows;
+
+    // Function to trigger a callback from the child component (and then do whatever is in this method)
+    public async Task Callback()
+    {
+        GetDataFromWeekDates();
+        StateHasChanged();
+    }
+
+    // Update the data we have from the data the (dummy) interface implementation returns
+    // Will be called on initialization & once SelectedWeek or SelectedYear changes
+    public void GetDataFromWeekDates()
+    {
+        // Call DataService to get the values for the matching week / year & assign to rows
+        rows = dataService.GetWeek(SelectedYear, SelectedWeek);
+    }
+
+
+    // Creates DateHandler instance & variables to pass down to child component
+    public int? SelectedWeek { get; set; }
+    public int? SelectedYear { get; set; }
+
+
+    /// <summary>
+    /// Triggers the DataService to save the edited data, also trigger
+    /// alert with matching information
+    /// </summary>
+    private async void SaveData()
+    {
+        // TODO: Might wanna change this to check the return of dataService? 
+        // if task.success, show success snackbar, if not error snackbar
+        if (await dataService.SaveWeek(rows))
+        {
+            Snackbar.Add("That's your data saved!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
+        }
+    }
+}

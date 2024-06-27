@@ -1,0 +1,33 @@
+﻿@inject IASBNDataService dataService;
+
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@LightTheme.GetTheme()"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<PageTitle>ASBNApp</PageTitle>
+
+<MudLayout>
+        @* If no data is present = show input page, otherwise load normal UI *@
+        @if(dataService.GetData() == null) {
+            @* show open website with load file and create file buttons here *@
+            <MudMainContent style="padding-top: 0;">
+                <MainViewLoadData OnCallback="Callback" />
+            </MudMainContent>
+        } 
+        else 
+        {
+            <NavBar />
+            <MudMainContent>
+                @Body
+            </MudMainContent>
+        }
+</MudLayout>
+
+
+@code {
+    // Get's called from the sub component, retriggers a re-render of the page
+    // to apply the data loaded (and therefore change the view)
+    public async Task Callback() => StateHasChanged();
+}

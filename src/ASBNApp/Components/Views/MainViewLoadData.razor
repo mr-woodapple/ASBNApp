@@ -1,0 +1,158 @@
+@*  Main view to load if no data is present.
+    The user then can select a file he already has or create a new one *@
+
+@* Keep the square brackets to add info where the log originated from *@
+@inject ILogger<NavBar> Logger;
+@inject IFileSystemAccessService FileSystemAccessService;
+@inject IASBNDataService dataService;
+@inject IFileHandleManager fileHandleManager;
+@inject IFileHandleProvider fileHandleProvider;
+
+@using KristofferStrube.Blazor.FileSystem;
+
+
+<MudContainer Class="pt-0" MaxWidth="MaxWidth.ExtraExtraLarge">
+
+    @*  Hide the load file buttons & display a warning if the browser is not supported
+        Otherwise show a brief welcome & steps on how to continue (lot's of room for improvement here) *@
+    @if (!_isSupported)
+    {
+        <UnsupportedBrowserHelp />
+    }
+    else
+    {
+        <MudGrid Class="pa-5 align-content-center" Style="min-height: 100vh">
+
+            <MudItem xs="12" lg="6" Class="align-content-center">
+                <MudImage Src="./images/Logo-Rect-Grey-Dark.png" style="width: 50%"/>
+                <MudText Typo="Typo.body1" Class="mt-5">
+                    This app makes writing your mandatory apprenticeship report as simple
+                    as possible. And all of that, while beeing completely free,
+                    without any user account.
+                </MudText>
+                <MudText Typo="Typo.body1" Class="mt-5">
+                    Your data will be stored in a text file, that stays on your PC - you need to bring that with you every time you use the app.
+                    Start using the app by creating a new file!
+                </MudText>
+
+                <MudButton Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" Class="mt-10"
+                           Variant="Variant.Outlined" EndIcon="@Icons.Custom.Brands.GitHub" Color="Color.Primary" Style="text-transform:none">
+                    View on GitHub
+                </MudButton>
+            </MudItem>
+
+            <MudItem xs="12" lg="6">
+                <MudPaper Class="pa-10" Elevation="2">
+                    <MudStack>
+                        <MudText Typo="Typo.h6">Get started!</MudText>
+                        <MudText Typo="Typo.body1">Create a new file if you don't have yet or open an existing one.</MudText>
+
+                        <MudButton Class="mt-10" Variant="Variant.Outlined" Color="Color.Primary" OnClick="CreateNewFile">Create New</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenAndReadFile">Open Existing</MudButton>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+
+        </MudGrid>
+    }
+</MudContainer>
+
+
+@code {
+    PermissionState writePermissionState;
+    private bool _isSupported;
+
+    // Callback function
+    [Parameter]
+    public Func<Task> OnCallback { get; set; }
+
+    /// <summary>
+    /// Check if browser used is supported or not after first render
+    /// </summary>
+    /// <returns>Task</returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isSupported = await FileSystemAccessService.IsSupportedAsync();
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Let the user pick a file through the OS file system and
+    /// add it to our FileHandleManager
+    /// </summary>
+    /// <returns>Task</returns>
+    private async Task OpenAndReadFile()
+    {
+        FileSystemFileHandle[]? fileHandles;
+        try
+        {
+            // Can only open one file at a time
+            fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync();
+        }
+        catch (JSException ex)
+        {
+            // Handle Exception or cancelation of File Access prompt, returns empty Task if so
+            Console.WriteLine(ex);
+            return;
+        }
+
+        // The "using" block here makes sure we don't have a memory leak, because
+        // "DisposeAsync" will be called at the end of the using scope.
+        await using (var fileHandle = fileHandles.Single())
+        {
+            if (fileHandle == null)
+            {
+                Logger.LogError("Opened file, but never received fileHandle.");
+                return;
+            }
+            fileHandleManager.AssignFileHandle(fileHandle);
+
+            // process data into C# objects to work with
+            await dataService.ReadData();
+
+            // make sure we have write access
+            writePermissionState = await fileHandle.RequestPermissionAsync(new() { Mode = FileSystemPermissionMode.ReadWrite });
+
+            // Callback to the parent component
+            await OnCallback.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// Create an empty file if the user doesn't have one,
+    /// add the file handle to the fileHandleManager
+    /// </summary>
+    /// <returns>Task</returns>
+    public async Task CreateNewFile()
+    {
+        FileSystemFileHandle? fileHandles;
+        try
+        {
+            fileHandles = await FileSystemAccessService.ShowSaveFilePickerAsync();
+        }
+        catch (JSException ex)
+        {
+            // Handle Exception or cancellation of File Access prompt
+            Console.WriteLine(ex);
+            return;
+        }
+
+        await using (var fileHandle = fileHandles)
+        {
+            if (fileHandle == null)
+            {
+                Logger.LogWarning("Got file location, but never received fileHandle.");
+                return;
+            }
+            fileHandleManager.AssignFileHandle(fileHandle);
+            await dataService.WriteData();
+            writePermissionState = await fileHandle.RequestPermissionAsync(new() { Mode = FileSystemPermissionMode.ReadWrite });
+
+            // Callback to the parent component
+            await OnCallback.Invoke();
+        }
+    }
+}
