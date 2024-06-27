@@ -25,3 +25,4 @@ Many thanks to the people behind these packages that made my life a lot easier!
 
 - [Blazor.FileSystemAccess](https://github.com/KristofferStrube/Blazor.FileSystemAccess) by Kristoffer Strube
 - [PDFsharp](https://github.com/empira/PDFsharp) by the folks behind empira
+- [MudBlazor](https://mudblazor.com/) 
