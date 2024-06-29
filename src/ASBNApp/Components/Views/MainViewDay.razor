@@ -45,6 +45,7 @@
             {
                 _selectedDate = value;
                 GetDataFromDate();
+                Console.WriteLine("MainViewDay: Selected date changed!");
             }
         }
     }
@@ -91,6 +92,8 @@
     {
         // Check if data present, if not create an empty EntryRowModel
         var retrievedData = dataService.GetDay(SelectedDate);
+        Console.WriteLine($"retrievedData for {SelectedDate} = ", retrievedData);
+
         // Set variables
         Note = retrievedData.Note;
         Hours = retrievedData.Hours;
