@@ -1,0 +1,50 @@
+﻿@page "/app"
+
+@inject IASBNDataService dataService;
+@inject NavigationManager navigationManager;
+
+<PageTitle>Start</PageTitle>
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
+
+    @* Header space *@
+    <MudItem>
+        <MudItem Elevation="0" Class="my-10">
+            <MudText Typo="Typo.h3" Class="mb-5">Let's see what you've been up to!</MudText>
+            <MudText Typo="Typo.subtitle1">What do you wanna log?</MudText>
+        </MudItem>
+
+        @* TODO: Set the tabs to be full width. *@
+        <MudTabs>
+            <MudTabPanel Text="Day" Icon="@Icons.Material.Filled.ViewDay" OnClick="() => IsDayBool = true"
+                ToolTip="Single day view, no distraction."  />
+
+            <MudTabPanel Text="Week" Icon="@Icons.Material.Filled.ViewWeek" OnClick="() => IsDayBool = false"
+                ToolTip="The full week at a glance!" />
+        </MudTabs>
+    </MudItem>
+
+    @* Form space *@
+    @if (IsDayBool) {
+        <MainViewDay />
+    } else {
+        <MainViewWeek />
+    }
+
+</MudContainer>
+
+
+@code {
+    private bool IsDayBool = true;
+
+    /// <summary>
+    /// Check if we have data available, if not redirect to the index page.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        if (dataService.GetData() == null)
+        {
+            navigationManager.NavigateTo("/");
+        }
+    }
+}

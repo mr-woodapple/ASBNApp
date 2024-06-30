@@ -5,6 +5,7 @@
 @inject FontServices fontServices;
 @inject IASBNDataService dataService;
 @inject IFileSystemAccessService FileSystemAccessService;
+@inject NavigationManager navigationManager;
 
 @using PdfSharp.Fonts;
 @using KristofferStrube.Blazor.FileSystem;
@@ -43,8 +44,16 @@
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
 
-    PermissionState writePermissionState;
-
+    /// <summary>
+    /// Check if we have data available, if not redirect to the index page.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        if (dataService.GetData() == null)
+        {
+            navigationManager.NavigateTo("/");
+        }
+    }
 
     // as soon as we finished loading the page, get the required fonts
     protected override async Task OnAfterRenderAsync(bool firstRender) {
