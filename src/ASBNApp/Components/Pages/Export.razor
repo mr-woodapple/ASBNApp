@@ -6,6 +6,7 @@
 @inject IASBNDataService dataService;
 @inject IFileSystemAccessService FileSystemAccessService;
 @inject NavigationManager navigationManager;
+@inject ISnackbar Snackbar;
 
 @using PdfSharp.Fonts;
 @using KristofferStrube.Blazor.FileSystem;
@@ -15,88 +16,103 @@
 
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
 
-    @* Header space *@
-    <MudItem Elevation="0" Class="my-10">
-        <MudText Typo="Typo.h3" Class="mb-5">Let's get this exported!</MudText>
-        <MudText Typo="Typo.subtitle1">Attention: You still need to manually sign these (if required by your company).</MudText>
-    </MudItem>
-    
-    <MudPaper Outlined="true" Class="mt-5 pa-5">
-        <MudGrid>
+	@* Header space *@
+	<MudItem Elevation="0" Class="my-10">
+		<MudText Typo="Typo.h3" Class="mb-5">Let's get this exported!</MudText>
+		<MudText Typo="Typo.subtitle1">Attention: You still need to manually sign these (if required by your company).</MudText>
+	</MudItem>
 
-            <MudItem xs="12">
-                <MudText Typo="Typo.body2">Select a week to export data for:</MudText>
-                @* Add pill selector for weeks here *@
-                <PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
-            </MudItem>
+	<MudPaper Outlined="true" Class="mt-5 pa-5">
+		<MudGrid>
 
-            <MudItem xs="12">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">Export Data</MudButton>
-            </MudItem>
+			<MudItem xs="12">
+				<MudText Typo="Typo.body2">Select a week to export data for:</MudText>
+				@* Add pill selector for weeks here *@
+				<PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
+			</MudItem>
 
-        </MudGrid>
-    </MudPaper>
+			<MudItem xs="12">
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">Export Data</MudButton>
+			</MudItem>
+
+		</MudGrid>
+	</MudPaper>
 </MudContainer>
 
 
 @code {
-    // Variables to bind to the child component
-    public int? SelectedWeek { get; set; }
-    public int? SelectedYear { get; set; }
+	// Variables to bind to the child component
+	public int? SelectedWeek { get; set; }
+	public int? SelectedYear { get; set; }
 
-    /// <summary>
-    /// Check if we have data available, if not redirect to the index page.
-    /// </summary>
-    protected override void OnInitialized()
-    {
-        if (dataService.GetData() == null)
-        {
-            navigationManager.NavigateTo("/");
-        }
-    }
+	/// <summary>
+	/// Check if we have data available, if not redirect to the index page.
+	/// </summary>
+	protected override void OnInitialized()
+	{
+		if (dataService.GetData() == null)
+		{
+			navigationManager.NavigateTo("/");
+		}
+	}
 
-    // as soon as we finished loading the page, get the required fonts
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender){
-            Fonts font = await fontServices.LoadFonts();
+	// As soon as we finished loading the page, get the required fonts
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			Fonts font = await fontServices.LoadFonts();
 
-            // Implement a custom font resolver (we do seem to need one, yes ^^)
-            try
-            {
-                GlobalFontSettings.FontResolver = new CustomFontResolver(font);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }
-    }
-
-
-    // Export PDF for the variables SelectedWeek & SeletedYear
-    private async void ExportData()
-    {
-        // Get Data we want to generate the pdf from
-        IEnumerable<EntryRowModel> rows = dataService.GetWeek(SelectedYear, SelectedWeek);
-        Model.Settings settings = dataService.GetSettings();
-
-        // Handles exporting the PDF
-        PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
-
-        // Open the pdf template file in a bytestream
-        var client = httpClientFactory.CreateClient("httpClient");
-        byte[] fileBytes = await client.GetByteArrayAsync("pdf/Vorlage_ASBN.pdf");
+			// Implement a custom font resolver (we do seem to need one, yes ^^)
+			try
+			{
+				GlobalFontSettings.FontResolver = new CustomFontResolver(font);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+		}
+	}
 
 
-        // get fileHandle for the output PDF
-        FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync();
-        using (var outputStream = await fileHandle.CreateWritableAsync())
-        {
-            // Hand data over to the PDF handling class
-            pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
+	// Export PDF for the variables SelectedWeek & SeletedYear
+	private async void ExportData()
+	{
+		// Get Data we want to generate the pdf from
+		IEnumerable<EntryRowModel> rows = dataService.GetWeek(SelectedYear, SelectedWeek);
+		Model.Settings settings = dataService.GetSettings();
 
-            // Close the stream and write file to disk
-            outputStream.CloseAsync();
-        }
-    }
+		// Handles exporting the PDF
+		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
+
+		// Open the pdf template file in a bytestream
+		var client = httpClientFactory.CreateClient("httpClient");
+		byte[] fileBytes = await client.GetByteArrayAsync("pdf/Vorlage_ASBN.pdf");
+
+		try
+		{
+			// Get fileHandle for the output PDF
+			var options = new SaveFilePickerOptionsStartInFileSystemHandle()
+				{
+					SuggestedName = $"Export-Week{SelectedWeek}-{SelectedYear}",
+					Types = Data.FilePickerAcceptTypes.fileTypePDF
+				};
+			FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync(options);
+			using (var outputStream = await fileHandle.CreateWritableAsync())
+			{
+				// Hand data over to the PDF handling class
+				await pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
+
+				// Close the stream and write file to disk
+				await outputStream.CloseAsync();
+				Snackbar.Add("Your PFD just finished exporting!", Severity.Success);
+			}
+		}
+		catch (Exception e)
+		{
+			Snackbar.Add($"Failed to create your PDF file. Error: {e.Message}", Severity.Error);
+		}
+	}
+}
 }

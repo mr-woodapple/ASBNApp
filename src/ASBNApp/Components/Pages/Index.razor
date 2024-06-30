@@ -94,7 +94,12 @@
         try
         {
             // Can only open one file at a time
-            fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync();
+            var options = new OpenFilePickerOptionsStartInFileSystemHandle()
+                {
+                    Multiple = false,
+                    Types = Data.FilePickerAcceptTypes.fileTypeJSON
+                };
+            fileHandles = await FileSystemAccessService.ShowOpenFilePickerAsync(options);
         }
         catch (JSException ex)
         {
@@ -133,7 +138,12 @@
         FileSystemFileHandle? fileHandles;
         try
         {
-            fileHandles = await FileSystemAccessService.ShowSaveFilePickerAsync();
+            var options = new SaveFilePickerOptionsStartInFileSystemHandle()
+                {
+                    SuggestedName = $"ASBNApp-Data",
+                    Types = Data.FilePickerAcceptTypes.fileTypeJSON
+                };
+            fileHandles = await FileSystemAccessService.ShowSaveFilePickerAsync(options);
         }
         catch (JSException ex)
         {
