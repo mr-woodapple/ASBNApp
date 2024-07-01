@@ -56,6 +56,7 @@
     [Parameter]
     public EventCallback<EntryRowModel> OnUpdate { get; set; }
 
+
     // Week & year variables to set min and max values for the date picker
     private int? _selectedWeek;
     [Parameter]
@@ -80,6 +81,7 @@
             UpdateMinMaxDates();
         }
     }
+
 
     private DateTime? _date;
     private DateTime? date 
@@ -133,8 +135,6 @@
                 {
                     Entry.Location = item.Location;
                     Entry.Hours = item.Hours;
-
-                    Console.WriteLine("Entry.Hours = ", Entry.Hours);
                     StateHasChanged();
                 }
             }

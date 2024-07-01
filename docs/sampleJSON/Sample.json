@@ -388,7 +388,7 @@
           "Note": "Testeintrag Montag 24.06.\n- Neuer Test.\n- Test 2",
           "Date": "2024-06-24T00:00:00",
           "Location": "MMS",
-          "Hours": 5.6000004
+          "Hours": 7.6
         },
         "2024-06-25": {
           "Note": "",
@@ -403,14 +403,46 @@
           "Hours": null
         },
         "2024-06-27": {
-          "Note": "",
+          "Note": "test sonntag, ge\u00E4ndert auf Donnerstag",
           "Date": "2024-06-27T00:00:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2024-06-29": {
+          "Note": "Testeintrag ",
+          "Date": "2024-06-29T00:00:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 7.2
+        }
+      },
+      "27": {
+        "2024-07-01": {
+          "Note": "Neue Woche neues Gl\u00FCck",
+          "Date": "2024-07-01T08:51:22.759+02:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 7.2
+        },
+        "2024-07-02": {
+          "Note": "",
+          "Date": "2024-07-02T00:00:00",
           "Location": "",
           "Hours": null
         },
-        "2024-06-28": {
+        "2024-07-03": {
           "Note": "",
-          "Date": "2024-06-28T00:00:00",
+          "Date": "2024-07-03T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-07-04": {
+          "Note": "",
+          "Date": "2024-07-04T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-07-07": {
+          "Note": "",
+          "Date": "2024-07-07T00:00:00",
           "Location": "",
           "Hours": null
         }

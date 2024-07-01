@@ -252,19 +252,22 @@ public class LocalASBNDataService : IASBNDataService
 
         try
         {
-            // Try updating the entries as they are
+            // Clear the weeks object before adding new entries
+            Console.WriteLine($"Week object {WeekNumberAsString} of {YearAsString} already existing, clearing now before inserting day objects.");
+
+            DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString].Clear();
             foreach (var entry in entries)
             {
                 DataReadFromJSON.LoggedData[YearAsString][WeekNumberAsString][entry.Date.ToString("yyyy-MM-dd")] = entry;
             }
-        }
+        } 
         catch (KeyNotFoundException e)
         {
             Console.WriteLine(e.Message + " No dict entries for the selected year / week available, creating missing entries now.");
 
+            // Add new year to the dictionary if not existing
             if (!DataReadFromJSON.LoggedData.ContainsKey(YearAsString))
             {
-                // Add new year to the dictionary
                 DataReadFromJSON.LoggedData.Add(YearAsString, new Dictionary<string, Dictionary<string, EntryRowModel>>());
             }
 

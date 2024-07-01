@@ -20,10 +20,14 @@ public class FileHandleCollection : IFileHandleManager, IFileHandleProvider, IAs
             await fileHandle.DisposeAsync();
         }
         fileHandle = handle;
+        
+        // TODO: save to local storage
     }
 
     public FileSystemFileHandle GetFileHandle()
     {
+        // TODO: Check if fileHandle is available in local storage, if so assign it
+
         if (fileHandle == null)
         {
             throw new NullReferenceException("No fileHandle available, please load a file first.");

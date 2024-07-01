@@ -4,11 +4,11 @@
     <MudPaper Elevation="0">
         <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true" >
             <MudChip Text="today" Color="Color.Primary" Default="true"
-                     @onclick="@(e => { SelectedDate = DateTime.Today; SelectedDateChanged.InvokeAsync(SelectedDate); date = DateTime.Now; })">
+                     @onclick="@(e => { date = DateTime.Now; })">
                      Today (@Today.Date.ToString("dd.MM.yyyy"))
             </MudChip>
             <MudChip Text="tomorrow" Color="Color.Primary"
-                     @onclick="@(e => { SelectedDate = DateTime.Today.AddDays(1); SelectedDateChanged.InvokeAsync(SelectedDate); date = DateTime.Now; })">
+                     @onclick="@(e => { date = DateTime.Now.AddDays(1); })">
                      Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
             </MudChip>
             <MudChip Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
@@ -53,6 +53,6 @@
     protected override void OnInitialized()
     {
         SelectedDateChanged.InvokeAsync(DateTime.Today);
-        date = DateTime.Today.AddDays(2);
+        date = DateTime.Now;
     }
 }

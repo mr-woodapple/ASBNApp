@@ -27,7 +27,10 @@
     // Define the IEnumerable variable the fill with data from the JSON
     IEnumerable<EntryRowModel> rows;
 
-    // Function to trigger a callback from the child component (and then do whatever is in this method)
+    /// <summary>
+    /// Function to trigger a callback from the child component (and then do whatever is in this method)
+    /// </summary>
+    /// <returns>Task if successfull.</returns>
     public async Task Callback()
     {
         GetDataFromWeekDates();
@@ -39,6 +42,7 @@
     public void GetDataFromWeekDates()
     {
         // Call DataService to get the values for the matching week / year & assign to rows
+        // TODO: Sort this after date
         rows = dataService.GetWeek(SelectedYear, SelectedWeek);
     }
 

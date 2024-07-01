@@ -1,0 +1,16 @@
+﻿@inject IASBNDataService dataService;
+
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@LightTheme.GetTheme()"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<PageTitle>ASBNApp</PageTitle>
+
+<MudLayout>
+    <NavBar />
+    <MudMainContent>
+        @Body
+    </MudMainContent> 
+</MudLayout>

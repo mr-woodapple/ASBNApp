@@ -6,7 +6,7 @@ using ASBNApp.Model;
 
 
 /// <summary>
-/// TODO: tba
+/// PDF handler, allows to generate pdfs from user data.
 /// </summary>
 public class PDFExportHandler
 {

@@ -1,8 +1,11 @@
 @page "/settings"
 
-@using ASBNApp.Model;
+@inject NavigationManager navigationManager;
 @inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
+
+@using ASBNApp.Model;
+
 
 <PageTitle>Settings</PageTitle>
 
@@ -92,9 +95,17 @@
 
     private MudDatePicker _startDatePicker { get; set; }
 
-    // Get settings object with JSON data on initialization
+    /// <summary>
+    /// Get settings object with JSON data on initialization
+    /// </summary>
     protected override void OnInitialized()
     {
+        // Check if we have data available, if not redirect to the index page.
+        if (dataService.GetData() == null)
+        {
+            navigationManager.NavigateTo("/");
+        }
+
         LoadSettingsData();
         LoadWorkLocationHoursData();
     }
