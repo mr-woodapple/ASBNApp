@@ -68,6 +68,13 @@
     PermissionState writePermissionState;
     private bool _isSupported;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        // TODO: 
+        // Check with FileHandleCollection if we have a fileHandle in localStorage, if so load that, if not do nothing
+    }
+
     /// <summary>
     /// Check if browser used is supported or not after first render
     /// </summary>
@@ -117,7 +124,7 @@
                 Logger.LogError("Opened file, but never received fileHandle.");
                 return;
             }
-            fileHandleManager.AssignFileHandle(fileHandle);
+            await fileHandleManager.AssignFileHandle(fileHandle);
 
             // process data into C# objects to work with
             await dataService.ReadData();
@@ -159,7 +166,7 @@
                 Logger.LogWarning("Got file location, but never received fileHandle.");
                 return;
             }
-            fileHandleManager.AssignFileHandle(fileHandle);
+            await fileHandleManager.AssignFileHandle(fileHandle);
             await dataService.WriteData();
             writePermissionState = await fileHandle.RequestPermissionAsync(new() { Mode = FileSystemPermissionMode.ReadWrite });
             navigationManager.NavigateTo("/app");

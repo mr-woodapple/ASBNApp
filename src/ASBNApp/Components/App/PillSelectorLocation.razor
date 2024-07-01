@@ -22,11 +22,11 @@ else
 
 
 @code {
-    private string _selectedLocation;
+    private string? _selectedLocation;
     [Parameter]
     public string? SelectedLocation 
     { 
-        get { return _selectedLocation; } 
+        get => _selectedLocation; 
         set {
             _selectedLocation = value;
             UpdateSelectedChip();
@@ -35,7 +35,7 @@ else
     [Parameter]
     public EventCallback<string?> SelectedLocationChanged { get; set; }
 
-    private MudChip selectedChip { get; set; }
+    private MudChip? selectedChip { get; set; }
     private MudChip ChipRef { set => availableChips.Add(value); }
     private List<MudChip> availableChips { get; set; } = new();
 
