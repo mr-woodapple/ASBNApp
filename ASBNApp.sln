@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASBNApp", "src\ASBNApp\ASBN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASBNApp.DataAPI", "src\ASBNApp.DataAPI\ASBNApp.DataAPI.csproj", "{998B41B4-03BF-4D1B-A31D-152969CE4170}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASBNApp.Frontend", "src\ASBNApp.Frontend\ASBNApp.Frontend.csproj", "{9F8D4856-E356-4041-AABF-18D4C0FE443E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{998B41B4-03BF-4D1B-A31D-152969CE4170}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{998B41B4-03BF-4D1B-A31D-152969CE4170}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{998B41B4-03BF-4D1B-A31D-152969CE4170}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F8D4856-E356-4041-AABF-18D4C0FE443E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F8D4856-E356-4041-AABF-18D4C0FE443E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F8D4856-E356-4041-AABF-18D4C0FE443E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F8D4856-E356-4041-AABF-18D4C0FE443E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +36,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EAE2219D-BDBF-4C85-863D-356E55B15CE3} = {36F455A3-6767-4300-926B-C5F1932D2217}
 		{998B41B4-03BF-4D1B-A31D-152969CE4170} = {36F455A3-6767-4300-926B-C5F1932D2217}
+		{9F8D4856-E356-4041-AABF-18D4C0FE443E} = {36F455A3-6767-4300-926B-C5F1932D2217}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {223FE9FC-7B77-435A-8B6F-FDB9F2609BBB}

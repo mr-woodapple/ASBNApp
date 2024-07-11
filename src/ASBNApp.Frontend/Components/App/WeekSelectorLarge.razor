@@ -1,0 +1,130 @@
+@* Large picker to select the week we want to edit. *@
+
+<MudItem>
+    <MudStack Row="true" Justify="Justify.Center" >
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick="SelectPreviousWeek" />
+
+        <MudStack Row="true" Class="mud-theme-primary rounded-pill ps-5" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.subtitle1" Class="m-0"><b>Selected Week: </b>@SelectedWeek of @SelectedYear</MudText>
+
+            <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Inherit" OnClick="OpenDatePickerOverlay" />
+        </MudStack>
+
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="SelectNextWeek" />
+    </MudStack>
+
+    <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
+        <MudDatePicker @ref="_picker" PickerVariant="PickerVariant.Static" @bind-Date="date" ShowWeekNumbers="true">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => CancelPicker())">Cancel</MudButton>
+                <MudButton Color="Color.Primary" OnClick="@(() => SetPickerToCurrentWeek())">Current week</MudButton>
+            </PickerActions>
+        </MudDatePicker>
+    </MudOverlay>
+</MudItem>
+
+
+@code {
+    [Parameter]
+    public int? SelectedWeek { get; set; }
+    [Parameter]
+    public EventCallback<int?> SelectedWeekChanged { get; set; }
+    [Parameter]
+    public int? SelectedYear { get; set; }
+    [Parameter]
+    public EventCallback<int?> SelectedYearChanged { get; set; }
+    [Parameter]
+    public Func<Task> OnCallback { get; set; }
+
+    DateHandler dateHandler = new DateHandler();
+
+
+    // Logic related to open and closing the date picker overlay
+    private bool isDatePickerOverlayVisible;
+    public void OpenDatePickerOverlay()
+    {
+        isDatePickerOverlayVisible = true;
+        StateHasChanged();
+    }
+
+    // Making the MudDatePicker work (& updating variables)
+    MudDatePicker _picker;
+    DateTime? _date;
+    DateTime? date 
+    { 
+        get => _date;
+        set {
+            _date = value;
+            SelectedWeek = dateHandler.GetWeekOfYear((DateTime)value);
+            SelectedYear = ((DateTime)value).Year;
+            isDatePickerOverlayVisible = false;
+
+            TriggerAllCallbacks();
+        }
+    }
+
+    // Use onInitialized() to assign calculated values to the matching variables, avoids data not being loaded into memory
+    // Also make sure to update the week number on the parent component
+    protected override void OnInitialized()
+    {
+        SelectedWeek = dateHandler.GetCurrentWeekOfYear();
+        SelectedYear = DateTime.Now.Year;
+        TriggerAllCallbacks();
+
+        // Set value for the date picker
+        date = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+    }
+
+    // Single place to trigger the callbacks
+    public async void TriggerAllCallbacks()
+    {
+        await SelectedWeekChanged.InvokeAsync(SelectedWeek);
+        await SelectedYearChanged.InvokeAsync(SelectedYear);
+        // Callback to the parent component
+        await OnCallback.Invoke();
+    }
+
+    public void CancelPicker() {
+        _picker.Close(false);
+        isDatePickerOverlayVisible = false;
+    }
+
+    public void SetPickerToCurrentWeek() {
+        _picker.Close();
+        date = DateTime.Now;
+    }
+
+    // Updates the week number and the formatted week number for the selector
+    // Take into account that we need to switch from 52 to 1 on week numbers and
+    // to the next/previous year
+    // Also update the binded values
+    public void SelectNextWeek()
+    {
+        if (SelectedWeek == 52)
+        {
+            SelectedWeek = 1;
+            SelectedYear++;
+        }
+        else
+        {
+            SelectedWeek++;
+        }
+
+        TriggerAllCallbacks();
+    }
+
+    public void SelectPreviousWeek()
+    {
+        if (SelectedWeek == 01)
+        {
+            SelectedWeek = 52;
+            SelectedYear--;
+        }
+        else
+        {
+            SelectedWeek--;
+        }
+
+        TriggerAllCallbacks();
+    }
+}

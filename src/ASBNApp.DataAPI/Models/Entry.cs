@@ -9,7 +9,7 @@ namespace ASBNApp.DataAPI.Models
     {
         public int Id { get; set; }
 
-        public DateTimeOffset Date { get; set; }
+        public DateTime Date { get; set; }
         public string? Note { get; set; }
         public string? Location { get; set; }
         public float? Hours { get; set; }

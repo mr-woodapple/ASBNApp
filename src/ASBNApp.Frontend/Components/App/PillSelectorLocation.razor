@@ -1,0 +1,86 @@
+@* Simple component to select a location, should get it's values from the database at some point. *@
+
+@using ASBNApp.Model;
+@inject IASBNDataService dataService;
+
+
+@if(_workLocationHours == null)
+{
+    <MudStack Row>
+        <MudSkeleton Width="33%" Height="50px" />
+        <MudSkeleton Width="33%" Height="50px" />
+        <MudSkeleton Width="33%" Height="50px" />
+    </MudStack>
+}
+else if (_workLocationHours.Count == 0)
+{
+    <MudAlert Severity="Severity.Warning" Dense="true">
+        No data available, please add new work location in settings.
+        <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
+    </MudAlert>
+}
+else if(_workLocationHours.Count != 0) {
+    <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
+        @foreach (var entry in _workLocationHours)
+        {
+            <MudChip @ref=ChipRef Text="@entry.Location" Color="Color.Primary"
+                     @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" /> 
+        }
+    </MudChipSet>
+}
+
+
+@code {
+    private string? _selectedLocation;
+    [Parameter]
+    public string? SelectedLocation 
+    { 
+        get => _selectedLocation; 
+        set {
+            _selectedLocation = value;
+            UpdateSelectedChip();
+        } 
+    }
+    [Parameter]
+    public EventCallback<string?> SelectedLocationChanged { get; set; }
+
+    private MudChip? selectedChip { get; set; }
+    private MudChip ChipRef { set => availableChips.Add(value); }
+    private List<MudChip> availableChips { get; set; } = new();
+
+    private List<WorkLocationHours>? _workLocationHours;
+
+    /// <summary>
+    /// Update <see cref="_workLocationHours"> List on after the first render.
+    /// </summary>
+    /// <returns></returns>
+    protected override void OnInitialized()
+    {
+        GetData();
+    }
+
+    // Get data, then pre-select the chosen chip.
+    private async Task GetData()
+    {
+        _workLocationHours = await dataService.GetWorkLocationHours();
+        UpdateSelectedChip();
+        StateHasChanged();
+    }
+
+    // Handle updating the selected chip, as well as edge cases as the items not being loaded yet
+    // or no item set
+    private void UpdateSelectedChip()
+    {
+        if (_workLocationHours != null)
+        {
+            try
+            {
+                selectedChip = availableChips.Single(e => e.Text == _selectedLocation);
+            }
+            catch (InvalidOperationException e)
+            {
+                selectedChip = null;
+            }
+        }
+    }
+}

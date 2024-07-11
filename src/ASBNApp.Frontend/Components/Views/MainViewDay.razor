@@ -1,5 +1,6 @@
 @* Main view to input and edit data, displayed when the user selects the daily view. *@
 
+@using System.Net.Http.Json;
 @inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
 
@@ -44,8 +45,8 @@
             if (value != _selectedDate)
             {
                 _selectedDate = value;
-                GetDataFromDate();
-                Console.WriteLine("MainViewDay: Selected date changed!");
+                GetDataForDay().GetAwaiter().GetResult();
+                Console.WriteLine($"MainViewDay: Selected date changed to {SelectedDate.Date.ToString()}!");
             }
         }
     }
@@ -60,7 +61,7 @@
             if (value != _selectedLocation)
             {
                 _selectedLocation = value;
-                UpdateWorkHoursFromLocation();
+                //UpdateWorkHoursFromLocation();
             }
         }
     }
@@ -71,33 +72,34 @@
     // Variable for storing the text the user put in
     public string? Note = null;
 
+
     /// <summary>
     /// Pre-set the value for hours worked for the UI based on the
     /// selected workLocationHours element.
     /// </summary>
     public void UpdateWorkHoursFromLocation()
     {
-        // filter list for the matching string in SelectedLocation
+        // Filter list for the matching string in SelectedLocation
         // set corresponding hours value to Hours
-        foreach (var entry in dataService.GetWorkLocationHours())
-        {
-            if (entry.Location == SelectedLocation) { Hours = entry.Hours; }
-        }
+
+        // foreach (var entry in dataService.GetWorkLocationHours())
+        //{
+        //if (entry.Location == SelectedLocation) { Hours = entry.Hours; }
+        //}
     }
 
     /// <summary>
     /// Gets data for the value in SelectedDate
     /// </summary>
-    public async void GetDataFromDate()
+    public async Task GetDataForDay()
     {
-        // Check if data present, if not create an empty EntryRowModel
-        var retrievedData = dataService.GetDay(SelectedDate);
-        Console.WriteLine($"retrievedData for {SelectedDate} = ", retrievedData);
+        var data = await dataService.GetDay(SelectedDate);
 
-        // Set variables
-        Note = retrievedData.Note;
-        Hours = retrievedData.Hours;
-        SelectedLocation = retrievedData.Location;
+        SelectedLocation = data.Location;
+        Note = data.Note;
+        Hours = data.Hours;
+
+        StateHasChanged();
     }
 
     /// <summary>
@@ -107,7 +109,8 @@
     public async void SaveData()
     {
         // why do I have to convert Hours at all? its a nullable on both ends...
-        if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours)) 
+        //if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours)) 
+        if (true)
         {
             Snackbar.Add("That's your data saved!", Severity.Success);
         }

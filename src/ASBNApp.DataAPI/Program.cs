@@ -1,7 +1,10 @@
 using ASBNApp.DataAPI.Context;
 using ASBNApp.DataAPI.Models;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OData.ModelBuilder;
 using System.Diagnostics;
+using static MudBlazor.Icons;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,26 @@ var config = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
 
-builder.Services.AddControllers();
+// Configuring CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowASBNAppFrontend", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+var modelBuilder = new ODataConventionModelBuilder();
+modelBuilder.EntitySet<Entry>("Entries");
+modelBuilder.EntitySet<WorkLocation>("WorkLocations");
+
+builder.Services.AddControllers().AddOData(
+    options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
+        "odata",
+        modelBuilder.GetEdmModel()));
+
 builder.Services.AddDbContext<ASBNAppContext>(
     options => options.UseSqlServer(config.GetConnectionString("Default")));
 
@@ -33,6 +55,7 @@ using (var scope = app.Services.CreateScope())
     SeedWorkLocations.Initialize(services);
 }
 
+app.UseCors("AllowASBNAppFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -44,5 +67,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();

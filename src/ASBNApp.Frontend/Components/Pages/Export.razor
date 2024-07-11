@@ -5,7 +5,6 @@
 @inject FontServices fontServices;
 @inject IASBNDataService dataService;
 @inject IFileSystemAccessService FileSystemAccessService;
-@inject NavigationManager navigationManager;
 @inject ISnackbar Snackbar;
 
 @using PdfSharp.Fonts;
@@ -45,16 +44,6 @@
 	public int? SelectedWeek { get; set; }
 	public int? SelectedYear { get; set; }
 
-	/// <summary>
-	/// Check if we have data available, if not redirect to the index page.
-	/// </summary>
-	protected override void OnInitialized()
-	{
-		if (dataService.GetData() == null)
-		{
-			navigationManager.NavigateTo("/");
-		}
-	}
 
 	// As soon as we finished loading the page, get the required fonts
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -81,7 +70,7 @@
 	{
 		// Get Data we want to generate the pdf from
 		IEnumerable<EntryRowModel> rows = dataService.GetWeek(SelectedYear, SelectedWeek);
-		Model.Settings settings = dataService.GetSettings();
+		//Settings settings = dataService.GetSettings();
 
 		// Handles exporting the PDF
 		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
@@ -102,7 +91,7 @@
 			using (var outputStream = await fileHandle.CreateWritableAsync())
 			{
 				// Hand data over to the PDF handling class
-				await pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
+				//await pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
 
 				// Close the stream and write file to disk
 				await outputStream.CloseAsync();
