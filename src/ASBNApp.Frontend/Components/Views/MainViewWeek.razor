@@ -1,6 +1,7 @@
 @* Main view to input and edit data, displayed when the user selects the weekly view. *@
 
 @inject IASBNDataService dataService
+@inject DateHandler dateHandler
 @inject ISnackbar Snackbar
 
 <MudPaper Outlined="true" Elevation="0" Class="my-5">
@@ -25,7 +26,7 @@
 
 @code {
     // Define the IEnumerable variable the fill with data from the JSON
-    IEnumerable<EntryRowModel> rows;
+    List<EntryRowModel> rows = new();
 
     /// <summary>
     /// Function to trigger a callback from the child component (and then do whatever is in this method)
@@ -33,17 +34,20 @@
     /// <returns>Task if successfull.</returns>
     public async Task Callback()
     {
-        GetDataFromWeekDates();
+        await GetDataFromWeekDates();
         StateHasChanged();
     }
 
     // Update the data we have from the data the (dummy) interface implementation returns
     // Will be called on initialization & once SelectedWeek or SelectedYear changes
-    public void GetDataFromWeekDates()
+    public async Task GetDataFromWeekDates()
     {
         // Call DataService to get the values for the matching week / year & assign to rows
-        // TODO: Sort this after date
-        rows = dataService.GetWeek(SelectedYear, SelectedWeek);
+        DateHandler dateHandler = new DateHandler();
+        var startDate = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+        var endDate = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+
+        rows = await dataService.GetWeek(startDate, endDate);
     }
 
 

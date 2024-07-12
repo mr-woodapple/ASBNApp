@@ -10,7 +10,7 @@ interface IASBNDataService
 
     public Task<bool> WriteData();
 
-    public IEnumerable<EntryRowModel> GetWeek(int? year, int? week);
+    public Task<List<EntryRowModel>> GetWeek(DateTime? startDate, DateTime? endDate);
 
     public Task<bool> SaveWeek(IEnumerable<EntryRowModel> entries);
 

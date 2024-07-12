@@ -34,10 +34,24 @@ namespace ASBNApp.Frontend.Services
             throw new NotImplementedException();
         }
 
-        public IEnumerable<EntryRowModel> GetWeek(int? year, int? week)
+
+
+        public async Task<List<EntryRowModel>> GetWeek(DateTime? startDate, DateTime? endDate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var json = await httpClient.GetStringAsync($"/odata/Entries?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}");
+                var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModel>>(json);
+
+                return odata.value;
+            }
+            catch (Exception ex)
+            {
+                return new List<EntryRowModel>();
+            }
         }
+
+
 
         public async Task<List<WorkLocationHours>> GetWorkLocationHours()
         {
