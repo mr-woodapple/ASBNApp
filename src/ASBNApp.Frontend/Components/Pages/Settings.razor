@@ -4,7 +4,7 @@
 @inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
 
-@using ASBNApp.Model;
+@using ASBNApp.Frontend.Model;
 
 
 <PageTitle>Settings</PageTitle>
@@ -84,7 +84,7 @@
 
 
 @code {
-    public ASBNApp.Model.Settings? settings { get; set; }
+    public Model.Settings? settings { get; set; }
     public List<WorkLocationHours> workLocationHours { get; set; } = new();
     public string? username { get; set; }
     public string? selectedApprenticeship { get; set; }

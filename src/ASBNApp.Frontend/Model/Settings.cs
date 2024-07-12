@@ -2,7 +2,7 @@
 /// Models what the settings are supposed to look like
 /// </summary>
 
-namespace ASBNApp.Model;
+namespace ASBNApp.Frontend.Model;
 
 public class Settings {
     public string? Username { get; set; }

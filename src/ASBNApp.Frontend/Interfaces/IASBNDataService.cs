@@ -2,7 +2,7 @@
 /// Interface for retrieving & saving data
 /// </summary>
 
-using ASBNApp.Model;
+using ASBNApp.Frontend.Model;
 
 interface IASBNDataService
 {   
@@ -16,7 +16,7 @@ interface IASBNDataService
 
     public Task<EntryRowModel> GetDay(DateTime? date);
 
-    public Task<bool> SaveDay(string Note, DateTime Date, string Location, float Hours);
+    public Task<bool> SaveDay(EntryRowModel entry);
 
     public Settings? GetSettings();
 

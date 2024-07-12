@@ -2,7 +2,7 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.AcroForms;
 using ASBNApp.Enums;
-using ASBNApp.Model;
+using ASBNApp.Frontend.Model;
 
 
 /// <summary>

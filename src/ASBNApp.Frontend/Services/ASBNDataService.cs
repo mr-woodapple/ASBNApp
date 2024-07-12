@@ -1,17 +1,18 @@
-﻿using ASBNApp.Frontend.Helper;
-using ASBNApp.Frontend.Model;
-using ASBNApp.Model;
-using Microsoft.Extensions.Options;
-using System.Globalization;
+﻿using ASBNApp.Frontend.Model;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace ASBNApp.Frontend.Services
 {
     public class ASBNDataService(HttpClient httpClient) : IASBNDataService
     {
+        /// <summary>
+        /// Sends an OData request for the desired date.
+        /// If the response object is null, return an empty EntryRowModel for the given day.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns><see cref="EntryRowModel"/></returns>
         public async Task<EntryRowModel> GetDay(DateTime? date)
         {
             try
@@ -19,12 +20,12 @@ namespace ASBNApp.Frontend.Services
                 var json = await httpClient.GetStringAsync($"/odata/Entries?$filter=Date eq {date?.ToString("yyyy-MM-dd")}");
                 var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModel>>(json);
                 
-                return odata.value.FirstOrDefault();
+                return odata.value.FirstOrDefault() ?? new EntryRowModel{ Date = (DateTime)date };
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine($"HttpsRequestException catched: {ex.Message}");
-                return new EntryRowModel();
+                return new EntryRowModel { Date = (DateTime)date };
             }
         }
 
@@ -59,9 +60,13 @@ namespace ASBNApp.Frontend.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> SaveDay(string Note, DateTime Date, string Location, float Hours)
+        public async Task<bool> SaveDay(EntryRowModel entry)
         {
-            throw new NotImplementedException();
+            var json = JsonSerializer.Serialize(entry);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await httpClient.PostAsync($"/odata/Entries", content);
+
+            return response.IsSuccessStatusCode ? true : false;
         }
 
         public Task<bool> SaveSettings(Settings settings)

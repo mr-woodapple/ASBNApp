@@ -3,7 +3,7 @@
 /// </summary>
 
 
-namespace ASBNApp.Model;
+namespace ASBNApp.Frontend.Model;
 
 public class WorkLocationHours
 {

@@ -23,7 +23,7 @@ namespace ASBNApp.DataAPI.Controllers
             _context = context;
         }
 
-        // GET: api/WorkLocations
+
         [HttpGet]
         [EnableQuery]
         public ActionResult<IEnumerable<WorkLocation>> Get()

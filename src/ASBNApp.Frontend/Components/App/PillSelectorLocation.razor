@@ -1,10 +1,10 @@
 @* Simple component to select a location, should get it's values from the database at some point. *@
 
-@using ASBNApp.Model;
+@using ASBNApp.Frontend.Model;
 @inject IASBNDataService dataService;
 
 
-@if(_workLocationHours == null)
+@if (_workLocationHours == null)
 {
     <MudStack Row>
         <MudSkeleton Width="33%" Height="50px" />
@@ -19,12 +19,13 @@ else if (_workLocationHours.Count == 0)
         <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
     </MudAlert>
 }
-else if(_workLocationHours.Count != 0) {
+else if (_workLocationHours.Count != 0)
+{
     <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
         @foreach (var entry in _workLocationHours)
         {
             <MudChip @ref=ChipRef Text="@entry.Location" Color="Color.Primary"
-                     @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" /> 
+                     @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" />
         }
     </MudChipSet>
 }
@@ -33,13 +34,14 @@ else if(_workLocationHours.Count != 0) {
 @code {
     private string? _selectedLocation;
     [Parameter]
-    public string? SelectedLocation 
-    { 
-        get => _selectedLocation; 
-        set {
+    public string? SelectedLocation
+    {
+        get => _selectedLocation;
+        set
+        {
             _selectedLocation = value;
             UpdateSelectedChip();
-        } 
+        }
     }
     [Parameter]
     public EventCallback<string?> SelectedLocationChanged { get; set; }
@@ -50,28 +52,30 @@ else if(_workLocationHours.Count != 0) {
 
     private List<WorkLocationHours>? _workLocationHours;
 
-    /// <summary>
-    /// Update <see cref="_workLocationHours"> List on after the first render.
-    /// </summary>
-    /// <returns></returns>
-    protected override void OnInitialized()
-    {
-        GetData();
-    }
 
-    // Get data, then pre-select the chosen chip.
-    private async Task GetData()
+    // Run this on after the first render to pre-set the selected chip
+    protected override async void OnAfterRender(bool firstRender)
     {
-        _workLocationHours = await dataService.GetWorkLocationHours();
+        if (!firstRender)
+            return;
+        await GetData();
         UpdateSelectedChip();
         StateHasChanged();
     }
 
+
+    private async Task GetData()
+    {
+        _workLocationHours = await dataService.GetWorkLocationHours();
+        StateHasChanged();
+    }
+
+    
     // Handle updating the selected chip, as well as edge cases as the items not being loaded yet
     // or no item set
     private void UpdateSelectedChip()
     {
-        if (_workLocationHours != null)
+        if (availableChips.Count != 0)
         {
             try
             {

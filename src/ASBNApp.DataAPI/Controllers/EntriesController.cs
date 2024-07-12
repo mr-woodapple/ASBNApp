@@ -26,12 +26,20 @@ namespace ASBNApp.DataAPI.Controllers
         }
 
 
-        // GET: api/Entries
         [EnableQuery]
         [HttpGet]
         public ActionResult<IEnumerable<Entry>> Get()
         {
             return Ok(_context.Entry);
+        }
+
+        [EnableQuery]
+        [HttpPost]
+        public ActionResult Post([FromBody] Entry entry)
+        {
+            _context.Entry.Add(entry);
+            _context.SaveChanges();
+            return Created(entry);
         }
     }
 }

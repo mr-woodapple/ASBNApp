@@ -108,13 +108,23 @@
     /// </summary>
     public async void SaveData()
     {
-        // why do I have to convert Hours at all? its a nullable on both ends...
-        //if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours)) 
-        if (true)
+        var data = new EntryRowModel()
+            {
+                Date = SelectedDate,
+                Hours = Hours,
+                Location = SelectedLocation,
+                Note = Note
+            };
+
+        dataService.SaveDay(data);
+
+    // why do I have to convert Hours at all? its a nullable on both ends...
+    //if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours))
+    if (true)
         {
             Snackbar.Add("That's your data saved!", Severity.Success);
         }
-        else 
+        else
         {
             Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
         }
