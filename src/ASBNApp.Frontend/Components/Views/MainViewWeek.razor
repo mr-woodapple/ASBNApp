@@ -1,3 +1,4 @@
+@using ASBNApp.Frontend.Helpers
 @* Main view to input and edit data, displayed when the user selects the weekly view. *@
 
 @inject IASBNDataService dataService
@@ -8,6 +9,14 @@
     <MudItem Class="pa-5">
         <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
     </MudItem>
+
+    @if(rows.Count > 5)
+    {
+        <MudAlert Severity="Severity.Warning" Class="ma-5">
+            <b>Attention: You cannot have more than 5 entries per week!</b> 
+            Please make sure you only have 5 entries before you start exporting, as the output PDF can only hold 5 entries.
+        </MudAlert>
+    }
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
     @if (SelectedYear != null && SelectedWeek != null)
@@ -48,6 +57,12 @@
         var endDate = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear);
 
         rows = await dataService.GetWeek(startDate, endDate);
+
+        // Add missing rows / entries
+        if(rows.Count < 5)
+        {
+            rows = MainViewWeekHelper.GetCompleteWeek(rows, SelectedWeek, SelectedYear);
+        }
     }
 
 

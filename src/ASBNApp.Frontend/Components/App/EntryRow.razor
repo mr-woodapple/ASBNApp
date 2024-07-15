@@ -16,8 +16,8 @@
         </MudItem>
 
         @* Location selector *@
-        @* <MudItem xs="3">
-            @if (dataService.GetWorkLocationHours().Count != 0) 
+        <MudItem xs="3">
+            @* @if (dataService.GetWorkLocationHours().Count != 0) 
             {
                 <MudSelect T="string" Value="Entry.Location" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
                     @foreach (var entry in dataService.GetWorkLocationHours())
@@ -32,8 +32,8 @@
                     No data available, please add new work location in settings.
                     <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
                 </MudAlert>
-            }
-        </MudItem> *@
+            } *@
+        </MudItem>
 
         @* Location hours input *@
         <MudItem xs="3">

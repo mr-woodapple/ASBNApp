@@ -56,8 +56,8 @@ else if (_workLocationHours.Count != 0)
     // Run this on after the first render to pre-set the selected chip
     protected override async void OnAfterRender(bool firstRender)
     {
-        if (!firstRender)
-            return;
+        if (!firstRender) return;
+
         await GetData();
         UpdateSelectedChip();
         StateHasChanged();
