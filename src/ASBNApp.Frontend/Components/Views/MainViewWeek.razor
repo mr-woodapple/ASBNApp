@@ -1,9 +1,11 @@
-@using ASBNApp.Frontend.Helpers
 @* Main view to input and edit data, displayed when the user selects the weekly view. *@
 
 @inject IASBNDataService dataService
 @inject DateHandler dateHandler
 @inject ISnackbar Snackbar
+
+@using ASBNApp.Frontend.Helpers
+
 
 <MudPaper Outlined="true" Elevation="0" Class="my-5">
     <MudItem Class="pa-5">
@@ -19,13 +21,21 @@
     }
 
     @* Iterate over the rows, write an <EntryRow /> for each, bind that value to the one here *@
-    @if (SelectedYear != null && SelectedWeek != null)
+    @if(rows.Count == 0) {
+        @for (var i = 0; i < 5; i++)
+        {
+            <EntryRowSkeleton />
+        }
+    }
+    else 
     {
         @foreach (var entry in rows)
         {
-            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" />
+            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" WorkLocationHours="_workLocationHours" />
         }
     }
+    
+    
 
     <MudItem xs="12" Class="pa-5">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
@@ -34,8 +44,13 @@
 
 
 @code {
-    // Define the IEnumerable variable the fill with data from the JSON
-    List<EntryRowModel> rows = new();
+    private List<EntryRowModel> rows = new();
+    private List<WorkLocationHours> _workLocationHours = new();
+
+    protected override void OnInitialized()
+    {
+        GetWorkLocationHours();
+    }
 
     /// <summary>
     /// Function to trigger a callback from the child component (and then do whatever is in this method)
@@ -44,6 +59,11 @@
     public async Task Callback()
     {
         await GetDataFromWeekDates();
+    }
+
+    public async Task GetWorkLocationHours()
+    {
+        _workLocationHours = await dataService.GetWorkLocationHours();
         StateHasChanged();
     }
 
@@ -63,6 +83,9 @@
         {
             rows = MainViewWeekHelper.GetCompleteWeek(rows, SelectedWeek, SelectedYear);
         }
+
+        // Force update the UI
+        StateHasChanged();
     }
 
 
