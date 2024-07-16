@@ -131,16 +131,15 @@
     public void UpdateWorkHoursFromLocation(string? location) {
         if (!string.IsNullOrEmpty(location))
         {
-            // Won't work with the new
-            // foreach (var item in dataService.GetWorkLocationHours())
-            // {
-            //     if (location == item.Location)
-            //     {
-            //         Entry.Location = item.Location;
-            //         Entry.Hours = item.Hours;
-            //         StateHasChanged();
-            //     }
-            // }
+            foreach (var item in WorkLocationHours)
+            {
+                if (location == item.Location)
+                {
+                    Entry.Location = item.Location;
+                    Entry.Hours = item.Hours;
+                    StateHasChanged();
+                }
+            }
         }
         
     }

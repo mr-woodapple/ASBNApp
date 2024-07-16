@@ -16,7 +16,7 @@
         @* Select location *@
         <MudItem xs="6">
             <MudText Typo="Typo.body2">I was working from...</MudText>
-            <PillSelectorLocation @bind-SelectedLocation="SelectedLocation" />
+            <PillSelectorLocation WorkLocationHours="WorkLocationHours" @bind-SelectedLocation="SelectedLocation" />
         </MudItem>
         <MudItem xs="6">
             <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
@@ -46,7 +46,6 @@
             {
                 _selectedDate = value;
                 GetDataForDay().GetAwaiter().GetResult();
-                Console.WriteLine($"MainViewDay: Selected date changed to {SelectedDate.Date.ToString()}!");
             }
         }
     }
@@ -61,17 +60,34 @@
             if (value != _selectedLocation)
             {
                 _selectedLocation = value;
-                //UpdateWorkHoursFromLocation();
+                UpdateWorkHoursFromLocation();
             }
         }
     }
 
     // Variable to bind the user input for work hours to
     public float? Hours = null;
-
     // Variable for storing the text the user put in
     public string? Note = null;
 
+    List<WorkLocationHours> WorkLocationHours { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        GetWorkLocationData();
+    }
+
+    /// <summary>
+    /// Get's data for the work locations from the data service, 
+    /// set them for the sub components.
+    /// </summary>
+    public async Task GetWorkLocationData()
+    {
+        WorkLocationHours = await dataService.GetWorkLocationHours();
+        StateHasChanged();
+    }
 
     /// <summary>
     /// Pre-set the value for hours worked for the UI based on the
@@ -79,13 +95,12 @@
     /// </summary>
     public void UpdateWorkHoursFromLocation()
     {
-        // Filter list for the matching string in SelectedLocation
+        // Filter list for the matching string in SelectedLocation,
         // set corresponding hours value to Hours
-
-        // foreach (var entry in dataService.GetWorkLocationHours())
-        //{
-        //if (entry.Location == SelectedLocation) { Hours = entry.Hours; }
-        //}
+        foreach (var entry in WorkLocationHours)
+        {
+        if (entry.Location == SelectedLocation) { Hours = entry.Hours; }
+        }
     }
 
     /// <summary>

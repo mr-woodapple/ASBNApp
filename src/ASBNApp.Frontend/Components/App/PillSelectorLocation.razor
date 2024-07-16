@@ -4,7 +4,7 @@
 @inject IASBNDataService dataService;
 
 
-@if (_workLocationHours == null)
+@if (WorkLocationHours == null)
 {
     <MudStack Row>
         <MudSkeleton Width="33%" Height="50px" />
@@ -12,17 +12,17 @@
         <MudSkeleton Width="33%" Height="50px" />
     </MudStack>
 }
-else if (_workLocationHours.Count == 0)
+else if (WorkLocationHours.Count == 0)
 {
     <MudAlert Severity="Severity.Warning" Dense="true">
         No data available, please add new work location in settings.
         <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
     </MudAlert>
 }
-else if (_workLocationHours.Count != 0)
+else if (WorkLocationHours.Count != 0)
 {
     <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
-        @foreach (var entry in _workLocationHours)
+        @foreach (var entry in WorkLocationHours)
         {
             <MudChip @ref=ChipRef Text="@entry.Location" Color="Color.Primary"
                      @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" />
@@ -50,7 +50,8 @@ else if (_workLocationHours.Count != 0)
     private MudChip ChipRef { set => availableChips.Add(value); }
     private List<MudChip> availableChips { get; set; } = new();
 
-    private List<WorkLocationHours>? _workLocationHours;
+    [Parameter]
+    public List<WorkLocationHours>? WorkLocationHours { get; set; }
 
 
     // Run this on after the first render to pre-set the selected chip
@@ -58,15 +59,7 @@ else if (_workLocationHours.Count != 0)
     {
         if (!firstRender) return;
 
-        await GetData();
         UpdateSelectedChip();
-        StateHasChanged();
-    }
-
-
-    private async Task GetData()
-    {
-        _workLocationHours = await dataService.GetWorkLocationHours();
         StateHasChanged();
     }
 
