@@ -38,7 +38,7 @@ namespace ASBNApp.Frontend.Services
         {
             try
             {
-                var json = await httpClient.GetStringAsync($"/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}");
+                var json = await httpClient.GetStringAsync($"/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
                 var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModel>>(json);
 
                 return odata.value;

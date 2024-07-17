@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ASBNApp.DataAPI.Models
+﻿namespace ASBNApp.DataAPI.Models
 {
     /// <summary>
     /// The entry for a single day.
@@ -13,7 +11,5 @@ namespace ASBNApp.DataAPI.Models
         public string? Note { get; set; }
         public string? Location { get; set; }
         public float? Hours { get; set; }
-
-
     }
 }
