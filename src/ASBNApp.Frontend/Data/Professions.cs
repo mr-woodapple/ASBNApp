@@ -1,4 +1,4 @@
-namespace ASBNApp.Data;
+namespace ASBNApp.Frontend.Data;
 
 public static class Professions {
 
@@ -15,5 +15,4 @@ public static class Professions {
         "Kaufmann/-frau für Dialogmarketing",
         "Industriekaufmann/-frau"
     };
-
 }

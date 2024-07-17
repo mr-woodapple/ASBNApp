@@ -1,6 +1,6 @@
 ﻿using KristofferStrube.Blazor.FileSystemAccess;
 
-namespace ASBNApp.Data
+namespace ASBNApp.Frontend.Data
 {
 	/// <summary>
 	/// Pre-defines allowed file types for file pickers throughout the app.

@@ -77,10 +77,7 @@
         rows = await dataService.GetWeek(startDate, endDate);
 
         // Add missing rows / entries
-        if(rows.Count < 5)
-        {
-            rows = MainViewWeekHelper.GetCompleteWeek(rows, SelectedWeek, SelectedYear);
-        }
+        rows = MainViewWeekHelper.GetCompleteWeek(rows, SelectedWeek, SelectedYear);
 
         // Force update the UI
         StateHasChanged();

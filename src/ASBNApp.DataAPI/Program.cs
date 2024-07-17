@@ -3,8 +3,7 @@ using ASBNApp.DataAPI.Models;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
-using System.Diagnostics;
-using static MudBlazor.Icons;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,9 +30,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Create the EDM models
 var modelBuilder = new ODataConventionModelBuilder();
-modelBuilder.EntitySet<Entry>("Entries");
-modelBuilder.EntitySet<WorkLocation>("WorkLocations");
+modelBuilder.EntitySet<Entry>("Entry");
+modelBuilder.EntitySet<WorkLocation>("WorkLocation");
+
+// Define a custom action that accepts a collection of Entry objects
+var entryType = modelBuilder.EntityType<Entry>();
+entryType.Collection.Action("PostMultipleEntries").CollectionParameter<Entry>("Entries");
 
 builder.Services.AddControllers().AddOData(
     options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(

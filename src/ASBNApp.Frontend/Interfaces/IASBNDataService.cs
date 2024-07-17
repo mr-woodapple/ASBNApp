@@ -5,11 +5,7 @@
 using ASBNApp.Frontend.Model;
 
 interface IASBNDataService
-{   
-    public Task ReadData();
-
-    public Task<bool> WriteData();
-
+{
     public Task<List<EntryRowModel>> GetWeek(DateTime? startDate, DateTime? endDate);
 
     public Task<bool> SaveWeek(IEnumerable<EntryRowModel> entries);
