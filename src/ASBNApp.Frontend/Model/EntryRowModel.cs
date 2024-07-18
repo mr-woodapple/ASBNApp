@@ -1,15 +1,14 @@
-using System.Text.Json.Serialization;
-
-/// <summary>
-/// Models for what a single day entry looks like.
-/// </summary>
-
-public class EntryRowModel
+namespace ASBNApp.Frontend.Model
 {
-    [JsonIgnore]
-    public int? Id { get; set; }
-    public string? Note { get; set; }
-    public DateTime Date { get; set; }
-    public string? Location { get; set; }
-    public float? Hours { get; set; }
+    /// <summary>
+    /// Basic entry model for what a single day entry looks like.
+    /// Without the ID so it can be send to the database.
+    /// </summary>
+    public class EntryRowModel
+    {
+        public string? Note { get; set; }
+        public DateTime Date { get; set; }
+        public string? Location { get; set; }
+        public float? Hours { get; set; }
+    }
 }

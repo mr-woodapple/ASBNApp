@@ -65,10 +65,10 @@
         }
     }
 
-    // Variable to bind the user input for work hours to
-    public float? Hours = null;
-    // Variable for storing the text the user put in
-    public string? Note = null;
+    // Variables to bind the user input to
+    public float? Hours;
+    public string? Note;
+    public int? Id;
 
     List<WorkLocationHours> WorkLocationHours { get; set; }
 
@@ -110,9 +110,10 @@
     {
         var data = await dataService.GetDay(SelectedDate);
 
-        SelectedLocation = data.Location;
+        Id = data.Id;
         Note = data.Note;
         Hours = data.Hours;
+        SelectedLocation = data.Location;
 
         StateHasChanged();
     }
@@ -123,12 +124,13 @@
     /// </summary>
     public async void SaveData()
     {
-        var data = new EntryRowModel()
+        var data = new EntryRowModelWithID()
         {
-            Date = SelectedDate,
+            Id = Id,
             Hours = Hours,
-            Location = SelectedLocation,
-            Note = Note
+            Note = Note,
+            Date = SelectedDate,
+            Location = SelectedLocation
         };
 
         // why do I have to convert Hours at all? its a nullable on both ends...

@@ -1,4 +1,6 @@
-﻿namespace ASBNApp.Frontend.Helpers
+﻿using ASBNApp.Frontend.Model;
+
+namespace ASBNApp.Frontend.Helpers
 {
     public static class MainViewWeekHelper
     {
@@ -8,11 +10,11 @@
         /// Makes sure we have at least 5 entries present, also tries to replace empty days during the week
         /// with content from the weekend.
         /// </summary>
-        /// <param name="entries">List of <see cref="EntryRowModel"/>s from the data source.</param>
+        /// <param name="entries">List of <see cref="EntryRowModelWithID"/>s from the data source.</param>
         /// <param name="selectedWeek">The selected week of the year.</param>
         /// <param name="selectedYear">The selected year.</param>
-        /// <returns>A List of <see cref="EntryRowModel"/>s, ready to display.</returns>
-        public static List<EntryRowModel> GetCompleteWeek(List<EntryRowModel> entries, int? selectedWeek, int? selectedYear)
+        /// <returns>A List of <see cref="EntryRowModelWithID"/>s, ready to display.</returns>
+        public static List<EntryRowModelWithID> GetCompleteWeek(List<EntryRowModelWithID> entries, int? selectedWeek, int? selectedYear)
         {
             var dateHandler = new DateHandler();
             var possibleDates = new List<DateTime>();
@@ -20,8 +22,8 @@
             for (int i = 0; i < 7; i++) { possibleDates.Add(startDate.AddDays(i)); }
 
             // Create dict from possible dates, then fill with the data received
-            var dict = new Dictionary<DateTime, EntryRowModel?>();
-            dict = possibleDates.ToDictionary(e => e.Date, e => (EntryRowModel)null);
+            var dict = new Dictionary<DateTime, EntryRowModelWithID?>();
+            dict = possibleDates.ToDictionary(e => e.Date, e => (EntryRowModelWithID)null);
 
             foreach (var entry in entries)
             {
@@ -72,11 +74,11 @@
             var sorted = dict.OrderBy(e => e);
 
             // Create list to return
-            var completeEntries = new List<EntryRowModel>();
-            foreach(KeyValuePair<DateTime, EntryRowModel?> entry in dict)
+            var completeEntries = new List<EntryRowModelWithID>();
+            foreach(KeyValuePair<DateTime, EntryRowModelWithID?> entry in dict)
             {
                 var e = entry.Value == null
-                    ? new EntryRowModel { Date = entry.Key }
+                    ? new EntryRowModelWithID { Date = entry.Key }
                     : entry.Value;
 
                 completeEntries.Add(e);

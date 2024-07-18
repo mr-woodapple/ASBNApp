@@ -1,4 +1,6 @@
-﻿using ASBNApp.Frontend.Model;
+﻿using ASBNApp.Frontend.Helpers;
+using ASBNApp.Frontend.Model;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -9,23 +11,23 @@ namespace ASBNApp.Frontend.Services
     {
         /// <summary>
         /// Sends an OData request for the desired date.
-        /// If the response object is null, return an empty EntryRowModel for the given day.
+        /// If the response object is null, return an empty EntryRowModelWithID for the given day.
         /// </summary>
         /// <param name="date"></param>
-        /// <returns><see cref="EntryRowModel"/></returns>
-        public async Task<EntryRowModel> GetDay(DateTime? date)
+        /// <returns><see cref="EntryRowModelWithID"/></returns>
+        public async Task<EntryRowModelWithID> GetDay(DateTime? date)
         {
             try
             {
                 var json = await httpClient.GetStringAsync($"/odata/Entry?$filter=Date eq {date?.ToString("yyyy-MM-dd")}");
-                var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModel>>(json);
+                var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
                 
-                return odata.value.FirstOrDefault() ?? new EntryRowModel{ Date = (DateTime)date };
+                return odata.value.FirstOrDefault() ?? new EntryRowModelWithID{ Date = (DateTime)date };
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine($"HttpsRequestException catched: {ex.Message}");
-                return new EntryRowModel { Date = (DateTime)date };
+                return new EntryRowModelWithID { Date = (DateTime)date };
             }
         }
 
@@ -34,18 +36,18 @@ namespace ASBNApp.Frontend.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<EntryRowModel>> GetWeek(DateTime? startDate, DateTime? endDate)
+        public async Task<List<EntryRowModelWithID>> GetWeek(DateTime? startDate, DateTime? endDate)
         {
             try
             {
                 var json = await httpClient.GetStringAsync($"/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
-                var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModel>>(json);
+                var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
 
                 return odata.value;
             }
             catch (Exception ex)
             {
-                return new List<EntryRowModel>();
+                return new List<EntryRowModelWithID>();
             }
         }
 
@@ -65,22 +67,54 @@ namespace ASBNApp.Frontend.Services
             }
         }
 
-        public async Task<bool> SaveDay(EntryRowModel entry)
+        public async Task<bool> SaveDay(EntryRowModelWithID entry)
         {
-            var json = JsonSerializer.Serialize(entry);
+            var json = JsonSerializer.Serialize(entry as EntryRowModel);
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await httpClient.PostAsync($"/odata/Entry", content);
 
-            return response.IsSuccessStatusCode ? true : false;
+            if (entry.Id == null)
+            {
+                HttpResponseMessage response = await httpClient.PostAsync($"/odata/Entry", content);
+                return response.IsSuccessStatusCode;
+            }
+            else
+            {
+                HttpResponseMessage response = await httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+                return response.IsSuccessStatusCode;
+            }
         }
 
-        public async Task<bool> SaveWeek(IEnumerable<EntryRowModel> entries)
+        public async Task SaveWeek(IEnumerable<EntryRowModelWithID> entries)
         {
-            var json = JsonSerializer.Serialize(entries);
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await httpClient.PostAsync($"/api/Entries/PostEntries", content);
+            // - Build logic here that only saves the entries that aren't "null"
+            // - POST entries without an ID property
+            // - PUT / PATCH entries with an ID property
 
-            return response.IsSuccessStatusCode ? true : false;
+            foreach(var entry in entries)
+            {
+                if(string.IsNullOrWhiteSpace(entry.Location))
+                {
+                    break;
+                }
+
+                // Serialize to EntryRowModelWithID to get rid of the ID property 
+                var json = JsonSerializer.Serialize(entry as EntryRowModel);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                if (entry.Id == null)
+                {
+                    // POST
+                    HttpResponseMessage response = await httpClient.PostAsync($"/odata/Entry", content);
+                }
+                else
+                {
+                    // PATCH
+                    HttpResponseMessage response = await httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+                    //return response.IsSuccessStatusCode ? true : false;
+                }
+            }
+
+            // return message hinzufügen
         }
 
 

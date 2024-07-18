@@ -24,11 +24,11 @@ public class PDFExportHandler
     /// </summary>
     /// <param name="src">Bytestream making the template PDF available</param>
     /// <param name="dest">Stream handling the edited PDF</param>
-    /// <param name="rows">EntryRowModel with the data to export</param>
+    /// <param name="rows">EntryRowModelWithID with the data to export</param>
     /// <param name="week">Int holding the week number to export data for</param>
     /// <param name="year">Int holding the year number to export data for</param>
     /// <returns>Task</returns>
-    public async Task GeneratePDF(byte[] src, Stream dest, IEnumerable<EntryRowModel> rows, Settings settings, int? week, int? year)
+    public async Task GeneratePDF(byte[] src, Stream dest, IEnumerable<EntryRowModelWithID> rows, Settings settings, int? week, int? year)
     {
         try
         {
@@ -87,7 +87,7 @@ public class PDFExportHandler
     /// <param name="fieldLocation">Int that links the enum to the field in the pdf</param>
     /// <param name="row">EntryModelRow to get data from</param>
     /// <param name="document">PdfDocument to edit</param>
-    private void WriteData(ASBNPdfFields fieldDate, ASBNPdfFields fieldNote, ASBNPdfFields fieldHours, ASBNPdfFields fieldLocation, EntryRowModel row, PdfDocument document)
+    private void WriteData(ASBNPdfFields fieldDate, ASBNPdfFields fieldNote, ASBNPdfFields fieldHours, ASBNPdfFields fieldLocation, EntryRowModelWithID row, PdfDocument document)
     {
         FillField(document, fieldDate, row.Date.ToString("dd.MM.yyyy"));
         FillField(document, fieldNote, row.Note);

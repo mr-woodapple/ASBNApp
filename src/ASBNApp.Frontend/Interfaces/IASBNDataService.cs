@@ -6,13 +6,13 @@ using ASBNApp.Frontend.Model;
 
 interface IASBNDataService
 {
-    public Task<List<EntryRowModel>> GetWeek(DateTime? startDate, DateTime? endDate);
+    public Task<List<EntryRowModelWithID>> GetWeek(DateTime? startDate, DateTime? endDate);
 
-    public Task<bool> SaveWeek(IEnumerable<EntryRowModel> entries);
+    public Task SaveWeek(IEnumerable<EntryRowModelWithID> entries);
 
-    public Task<EntryRowModel> GetDay(DateTime? date);
+    public Task<EntryRowModelWithID> GetDay(DateTime? date);
 
-    public Task<bool> SaveDay(EntryRowModel entry);
+    public Task<bool> SaveDay(EntryRowModelWithID entry);
 
     public Settings? GetSettings();
 

@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ASBNApp.DataAPI.Models;
 using ASBNApp.DataAPI.Context;
-using ASBNApp.DataAPI.Models;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Formatter;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.AspNetCore.OData.Deltas;
 
 namespace ASBNApp.DataAPI.Controllers
 {
@@ -37,11 +38,19 @@ namespace ASBNApp.DataAPI.Controllers
 
         [EnableQuery]
         [HttpPatch]
-        public ActionResult Patch([FromBody] Entry entry)
+        public ActionResult Patch([FromRoute] int key, [FromBody] Delta<Entry> delta)
         {
-            throw new NotImplementedException();
+            var entry = _context.Entry.SingleOrDefault(d => d.Id == key);
 
-            // return Updated(entry);
+            if (entry == null)
+            {
+                return NotFound();
+            }
+
+            delta.Patch(entry);
+            _context.SaveChanges();
+
+            return Updated(entry);
         }
     }
 }

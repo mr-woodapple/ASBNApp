@@ -42,7 +42,7 @@
 
 
 @code {
-    private List<EntryRowModel> rows = new();
+    private List<EntryRowModelWithID> rows = new();
     private List<WorkLocationHours> _workLocationHours = new();
 
     protected override void OnInitialized()
@@ -100,13 +100,15 @@
     {
         // TODO: Might wanna change this to check the return of dataService? 
         // if task.success, show success snackbar, if not error snackbar
-        if (await dataService.SaveWeek(rows))
-        {
-            Snackbar.Add("That's your data saved!", Severity.Success);
-        }
-        else
-        {
-            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
-        }
+        // if (await dataService.SaveWeek(rows))
+        // {
+        //     Snackbar.Add("That's your data saved!", Severity.Success);
+        // }
+        // else
+        // {
+        //     Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
+        // }
+
+        await dataService.SaveWeek(rows);
     }
 }
