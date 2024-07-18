@@ -31,7 +31,7 @@
     {
         @foreach (var entry in rows)
         {
-            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" WorkLocationHours="_workLocationHours" />
+            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" WorkLocationHours="_workLocationHours" OnItemDeleted="RefreshView" />
         }
     }
 
@@ -91,6 +91,16 @@
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
 
+    /// <summary>
+    /// Called to be called from child component to delete individual entries.
+    /// </summary>
+    /// <param name="Id">The ID of the component to be deleted.</param>
+    private void RefreshView(int Id)
+    {
+        rows.Remove(rows.FirstOrDefault(e => e.Id == Id));
+        rows = MainViewWeekHelper.GetCompleteWeek(rows, SelectedWeek, SelectedYear);
+        StateHasChanged();
+    }
 
     /// <summary>
     /// Triggers the DataService to save the edited data, also trigger
@@ -100,15 +110,13 @@
     {
         // TODO: Might wanna change this to check the return of dataService? 
         // if task.success, show success snackbar, if not error snackbar
-        // if (await dataService.SaveWeek(rows))
-        // {
-        //     Snackbar.Add("That's your data saved!", Severity.Success);
-        // }
-        // else
-        // {
-        //     Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
-        // }
-
-        await dataService.SaveWeek(rows);
+        if (await dataService.SaveWeek(rows))
+        {
+            Snackbar.Add("That's your data saved!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
+        }
     }
 }

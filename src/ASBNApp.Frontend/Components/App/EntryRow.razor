@@ -2,6 +2,8 @@
 
 @using ASBNApp.Frontend.Model;
 @inject IASBNDataService dataService;
+@inject IDialogService dialogService;
+
 
 <MudPaper Outlined="true" Class="pa-5 ma-5">
     <MudGrid>
@@ -37,7 +39,27 @@
 
         @* Location hours input *@
         <MudItem xs="3">
-            <MudNumericField @bind-Value="Entry.Hours" Label="Select hours" Min="0" Format="N1" />
+            <MudStack Row>
+                <MudNumericField @bind-Value="Entry.Hours" Label="Select hours" Min="0" Format="N1" />
+                
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight">
+                    @if(!string.IsNullOrWhiteSpace(Entry.Note))
+                    {
+                        <MudMenuItem OnClick="DeleteEntry">
+                            <div class="d-flex align-center">
+                                <MudIcon Icon="@Icons.Material.Filled.Delete" Title="Delete" />
+                                <MudText Typo="Typo.button" Class="ps-4">Delete entry</MudText>
+                            </div>
+                        </MudMenuItem>
+                    }
+                    else
+                    {
+                        <MudMenuItem Disabled>
+                            <MudText>No action available.</MudText>
+                        </MudMenuItem>
+                    }
+                </MudMenu>
+            </MudStack>
         </MudItem>
 
         @* Text *@
@@ -56,7 +78,7 @@
     [Parameter]
     public EntryRowModelWithID Entry { get; set; }
     [Parameter]
-    public EventCallback<EntryRowModelWithID> OnUpdate { get; set; }
+    public EventCallback<int> OnItemDeleted { get; set; }
 
 
     // Week & year variables to set min and max values for the date picker
@@ -109,7 +131,36 @@
     }
 
     /// <summary>
-    /// Updates min and max dates for the date picker in a given week
+    /// Show confirmation dialog, if user confirms this calls the dataService to 
+    /// delete the entry and then update the local list of Entries.
+    /// </summary>
+    /// <returns></returns>
+    private async Task DeleteEntry()
+    {
+        var dialogCancelled = await OpenConfirmationDialogAsync();
+        if (dialogCancelled) { return; }
+
+        bool success = await dataService.DeleteDay(Entry.Id);
+        if (success)
+        {
+            OnItemDeleted.InvokeAsync((int)Entry.Id);
+        }
+    }
+
+    /// <summary>
+    /// Handles creating a confirmation dialog, returns the result as bool.
+    /// </summary>
+    /// <returns>True if the user cancelled the popup, false if not.</returns>
+    private async Task<bool> OpenConfirmationDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = await dialogService.ShowAsync<DeleteEntryConfirmationDialog>("Are you sure?", options);
+        var result = await dialog.Result;
+        return result.Cancelled;
+    }
+
+    /// <summary>
+    /// Updates min and max dates for the date picker in a given week.
     /// </summary>
     private void UpdateMinMaxDates()
     {

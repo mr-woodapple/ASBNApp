@@ -1,0 +1,25 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">Delete Entry?</MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText Typo="Typo.body1">
+            Do you really want to delete this entry? This action cannot be undone.
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick="Submit">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private void Cancel() => MudDialog.Cancel();
+}

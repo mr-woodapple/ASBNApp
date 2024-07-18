@@ -2,6 +2,7 @@
 using ASBNApp.Frontend.Model;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.Json;
 
@@ -13,8 +14,8 @@ namespace ASBNApp.Frontend.Services
         /// Sends an OData request for the desired date.
         /// If the response object is null, return an empty EntryRowModelWithID for the given day.
         /// </summary>
-        /// <param name="date"></param>
-        /// <returns><see cref="EntryRowModelWithID"/></returns>
+        /// <param name="date">Date to request data for.</param>
+        /// <returns>A single <see cref="EntryRowModelWithID"/> object.</returns>
         public async Task<EntryRowModelWithID> GetDay(DateTime? date)
         {
             try
@@ -36,6 +37,12 @@ namespace ASBNApp.Frontend.Services
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Get all entries for a given timeframe.
+        /// </summary>
+        /// <param name="startDate">First day in the week.</param>
+        /// <param name="endDate">Last day in the week.</param>
+        /// <returns>List of <see cref="EntryRowModelWithID"/> objects.</returns>
         public async Task<List<EntryRowModelWithID>> GetWeek(DateTime? startDate, DateTime? endDate)
         {
             try
@@ -51,6 +58,10 @@ namespace ASBNApp.Frontend.Services
             }
         }
 
+        /// <summary>
+        /// Get all available <see cref="WorkLocationHours"/> objects.
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<WorkLocationHours>> GetWorkLocationHours()
         {
             try
@@ -67,6 +78,12 @@ namespace ASBNApp.Frontend.Services
             }
         }
 
+        /// <summary>
+        /// Handles saving data for a day. Will use POST or PATCH depending
+        /// on the value for Id, if = null: POST, if != null: PATCH.
+        /// </summary>
+        /// <param name="entry">The <see cref="EntryRowModelWithID"/> to save.</param>
+        /// <returns>True for success, false for error during saving.</returns>
         public async Task<bool> SaveDay(EntryRowModelWithID entry)
         {
             var json = JsonSerializer.Serialize(entry as EntryRowModel);
@@ -84,39 +101,53 @@ namespace ASBNApp.Frontend.Services
             }
         }
 
-        public async Task SaveWeek(IEnumerable<EntryRowModelWithID> entries)
-        {
-            // - Build logic here that only saves the entries that aren't "null"
-            // - POST entries without an ID property
-            // - PUT / PATCH entries with an ID property
 
+        public async Task<bool> DeleteDay(int? id)
+        {
+            if(id == null) { return false; }
+
+            HttpResponseMessage response = await httpClient.DeleteAsync($"/odata/Entry({id})");
+            return response.IsSuccessStatusCode;
+        }
+
+
+
+        /// <summary>
+        /// Handles saving data for an entire week.
+        /// 
+        /// Only saves entries where the <see cref="EntryRowModelWithID.Note"/> != null, 
+        /// using POST / PATCH on the value for Id (if = null use POST, if != null use PATCH).
+        /// </summary>
+        /// <param name="entries">List of <see cref="EntryRowModelWithID"/>s to save.</param>
+        /// <returns>True if success, false if error during saving.</returns>
+        /// <exception cref="Exception">Throw exception if week wasn't saved successfully.</exception>
+        public async Task<bool> SaveWeek(IEnumerable<EntryRowModelWithID> entries)
+        {
             foreach(var entry in entries)
             {
                 if(string.IsNullOrWhiteSpace(entry.Location))
                 {
-                    break;
+                    Console.WriteLine($"Nothing to save here, skipping entry for date {entry.Date}.");
+                    continue;
                 }
 
-                // Serialize to EntryRowModelWithID to get rid of the ID property 
+                // Serialize to EntryRowModel to get rid of the ID property 
                 var json = JsonSerializer.Serialize(entry as EntryRowModel);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                if (entry.Id == null)
+                HttpResponseMessage response = (entry.Id == null) 
+                    ? await httpClient.PostAsync($"/odata/Entry", content)
+                    : await httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+                
+                if(!response.IsSuccessStatusCode)
                 {
-                    // POST
-                    HttpResponseMessage response = await httpClient.PostAsync($"/odata/Entry", content);
-                }
-                else
-                {
-                    // PATCH
-                    HttpResponseMessage response = await httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
-                    //return response.IsSuccessStatusCode ? true : false;
+                    return false;
+                    throw new Exception($"Week only saved partially, couldn't save anything after entry with {entry.Date}.");
                 }
             }
 
-            // return message hinzufügen
+            return true;
         }
-
 
         public Task<bool> SaveSettings(Settings settings)
         {

@@ -49,8 +49,22 @@ namespace ASBNApp.DataAPI.Controllers
 
             delta.Patch(entry);
             _context.SaveChanges();
-
             return Updated(entry);
+        }
+
+        [EnableQuery]
+        [HttpDelete]
+        public ActionResult Delete([FromRoute] int key)
+        {
+            var entry = _context.Entry.SingleOrDefault(d => d.Id == key);
+
+            if (entry != null)
+            {
+                _context.Entry.Remove(entry);
+            }
+
+            _context.SaveChanges();
+            return NoContent();
         }
     }
 }
