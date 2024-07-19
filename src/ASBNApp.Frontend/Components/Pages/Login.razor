@@ -1,0 +1,92 @@
+﻿@page "/login"
+@layout IndexLayout
+
+@inject AuthHandler authHandler;
+
+@using ASBNApp.Frontend.Services
+
+
+<MudContainer Class="mt-5">
+	<MudPaper Outlined Class="pa-10">
+		<MudText Typo="Typo.h3" Class="mb-5">Sign in.</MudText>
+		<MudText Typo="Typo.subtitle1">Sign in to create, view and export your entries!</MudText>
+
+		<MudItem Class="my-10">
+			<MudTextField @bind-Value="EMailValue" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
+			<MudTextField @bind-Value="PasswordValue" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
+						  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+		</MudItem>
+
+		<MudButton Disabled="@_isLoggingIn" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogin">
+			@if (_isLoggingIn)
+			{
+				<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+				<MudText Class="ms-2">Signing in...</MudText>
+			}
+			else
+			{
+				<MudText>Sign in </MudText>
+			}
+		</MudButton>
+
+		<MudItem Class="mt-5">
+			<MudText>
+				Don't have an account yet?
+				<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
+			</MudText>
+		</MudItem>
+		
+	</MudPaper>
+</MudContainer>
+
+
+@code {
+	public string EMailValue { get; set; }
+	public string PasswordValue { get; set; }
+
+	// Variables for the password input
+	private bool _isVisible;
+	private InputType _passwordInputType = InputType.Password;
+	private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+	/// <summary>
+	/// Toggle the password input between hidden and visibile
+	/// </summary>
+	private void TogglePasswordInputMode()
+	{
+		if(_isVisible)
+		{
+			_isVisible = false;
+			_passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+			_passwordInputType = InputType.Password;
+		}
+		else
+		{
+			_isVisible = true;
+			_passwordInputIcon = Icons.Material.Filled.Visibility;
+			_passwordInputType = InputType.Text;
+		}
+	}
+
+	private bool _isLoggingIn;
+
+
+	/// <summary>
+	/// Handles calling the actual auth service.
+	/// </summary>
+	/// <returns></returns>
+	private async Task HandleLogin()
+	{
+		_isLoggingIn = true;
+
+		var loginData = new LoginWrapper
+			{
+				EMail = EMailValue,
+				Password = PasswordValue
+			};
+		await authHandler.Login(loginData);
+
+		// Handle what happens on login failure
+		//_isLoggingIn = false;
+	}
+}

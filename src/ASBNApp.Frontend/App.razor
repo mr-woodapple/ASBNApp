@@ -8,7 +8,16 @@
     <NotFound>
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+
+            <MudPaper Elevation="0" Class="ma-10">
+                <MudAlert Severity="Severity.Info">
+                    <MudText>
+                        Sorry, there's nothing at this address.
+                        <MudLink Href="/" Underline="Underline.Always">Back to home!</MudLink>
+                    </MudText>
+                </MudAlert>
+            </MudPaper>
+            
         </LayoutView>
     </NotFound>
 </Router>
