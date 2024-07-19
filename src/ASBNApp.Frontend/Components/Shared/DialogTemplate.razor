@@ -1,8 +1,4 @@
 ﻿<MudDialog>
-    <TitleContent>
-        <MudText Typo="Typo.h6">@HeaderText</MudText>
-    </TitleContent>
-
     <DialogContent>
         <MudText Typo="Typo.body1">@ContentText</MudText>
     </DialogContent>
@@ -17,9 +13,6 @@
 @code {
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
-
-    [Parameter]
-    public string HeaderText { get; set; }
 
     [Parameter]
     public string ContentText { get; set; }

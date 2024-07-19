@@ -155,13 +155,12 @@
     {
         var parameters = new DialogParameters<DialogTemplate>
         {
-            { x => x.HeaderText, "Delete entry?" },
             { x => x.ContentText, $"Do you really want to delete the entry for {Entry.Date.DayOfWeek} ({Entry.Date.ToShortDateString()})? This process cannot be undone." },
             { x => x.ButtonText, "Delete" },
             { x => x.Color, Color.Error }
         };
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog = await dialogService.ShowAsync<DialogTemplate>("Delete", parameters, options);
+        var dialog = await dialogService.ShowAsync<DialogTemplate>("Delete entry?", parameters, options);
         var result = await dialog.Result;
         return result.Cancelled;
     }
