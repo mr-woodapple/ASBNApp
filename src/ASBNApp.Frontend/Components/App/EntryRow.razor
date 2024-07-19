@@ -119,7 +119,7 @@
     }
     DateHandler dateHandler = new DateHandler();
 
-    // Min & max values
+    // Min & max values for the date picker.
     private DateTime? _minDateValue;
     private DateTime? _maxDateValue;
 
@@ -153,8 +153,15 @@
     /// <returns>True if the user cancelled the popup, false if not.</returns>
     private async Task<bool> OpenConfirmationDialogAsync()
     {
+        var parameters = new DialogParameters<DialogTemplate>
+        {
+            { x => x.HeaderText, "Delete entry?" },
+            { x => x.ContentText, $"Do you really want to delete the entry for {Entry.Date.DayOfWeek} ({Entry.Date.ToShortDateString()})? This process cannot be undone." },
+            { x => x.ButtonText, "Delete" },
+            { x => x.Color, Color.Error }
+        };
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog = await dialogService.ShowAsync<DeleteEntryConfirmationDialog>("Are you sure?", options);
+        var dialog = await dialogService.ShowAsync<DialogTemplate>("Delete", parameters, options);
         var result = await dialog.Result;
         return result.Cancelled;
     }
