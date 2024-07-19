@@ -38,12 +38,15 @@
     public int? SelectedYear { get; set; }
     [Parameter]
     public EventCallback<int?> SelectedYearChanged { get; set; }
+    [Parameter]
+    public EventCallback SelectedDateChanged { get; set; }
 
     // Single place to trigger the callbacks
     public void TriggerAllCallbacks()
     {
         SelectedWeekChanged.InvokeAsync(SelectedWeek);
         SelectedYearChanged.InvokeAsync(SelectedYear);
+        SelectedDateChanged.InvokeAsync();
     }
 
     DateHandler dateHandler = new DateHandler();
@@ -110,7 +113,7 @@
     }
 
     // Updated SelectedYear & Selected Week from the pill selector
-    public void UpdateFromWeekPicker(int option) 
+    public void UpdateFromWeekPicker(int option)
     {
         // this week selected
         if (option == 0)
@@ -119,9 +122,9 @@
             SelectedYear = DateTime.Now.Year;
         }
         // next week selected
-        else 
+        else
         {
-            if(SelectedWeek == 52) 
+            if (SelectedWeek == 52)
             {
                 SelectedWeek = 1;
                 SelectedYear++;

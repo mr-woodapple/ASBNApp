@@ -14,35 +14,60 @@
 <PageTitle>Export</PageTitle>
 
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
+	@* Check if the browser supports exporting a file *@
+	@if(!_isSupported)
+	{
+		<UnsupportedBrowserHelp />
+	}
+	else
+	{
+		@* Header space *@
+		<MudItem Elevation="0" Class="my-10">
+			<MudText Typo="Typo.h3" Class="mb-5">Let's get this exported!</MudText>
+			<MudText Typo="Typo.subtitle1">Attention: You still need to manually sign these (if required by your company).</MudText>
+		</MudItem>
 
-	@* Header space *@
-	<MudItem Elevation="0" Class="my-10">
-		<MudText Typo="Typo.h3" Class="mb-5">Let's get this exported!</MudText>
-		<MudText Typo="Typo.subtitle1">Attention: You still need to manually sign these (if required by your company).</MudText>
-	</MudItem>
+		<MudPaper Outlined="true" Class="mt-5 pa-5">
+			<MudGrid>
 
-	<MudPaper Outlined="true" Class="mt-5 pa-5">
-		<MudGrid>
+				<MudItem xs="12">
+					<MudText Typo="Typo.body2">Select a week to export data for:</MudText>
+					@* Add pill selector for weeks here *@
+					<PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" SelectedDateChanged="GetData"/>
+				</MudItem>
 
-			<MudItem xs="12">
-				<MudText Typo="Typo.body2">Select a week to export data for:</MudText>
-				@* Add pill selector for weeks here *@
-				<PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" />
-			</MudItem>
-
-			<MudItem xs="12">
-				<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">Export Data</MudButton>
-			</MudItem>
-
-		</MudGrid>
-	</MudPaper>
+				<MudItem xs="12">
+					@if(_tooManyEntries)
+					{
+						<MudAlert Severity="Severity.Error">
+							<b>Cannot export a week with more than 5 entries.</b> Please delete entries from the week view before exporting.
+						</MudAlert>
+					}
+					else
+					{
+						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">Export Data</MudButton>
+					}
+				</MudItem>
+			</MudGrid>
+		</MudPaper>
+	}
+	
 </MudContainer>
 
 
 @code {
-	// Variables to bind to the child component
+	private bool _isSupported;
+	private bool _tooManyEntries;
+	List<EntryRowModelWithID>? rows;
+
+	// Variables to bind to the child week picker
 	public int? SelectedWeek { get; set; }
 	public int? SelectedYear { get; set; }
+
+	protected override void OnInitialized()
+	{
+		GetData();
+	}
 
 
 	// As soon as we finished loading the page, get the required fonts
@@ -50,9 +75,12 @@
 	{
 		if (firstRender)
 		{
-			Fonts font = await fontServices.LoadFonts();
+			// Check if the browser supports the FileSystemAccess API
+			_isSupported = await FileSystemAccessService.IsSupportedAsync();
+			StateHasChanged();
 
 			// Implement a custom font resolver (we do seem to need one, yes ^^)
+			Fonts font = await fontServices.LoadFonts();
 			try
 			{
 				GlobalFontSettings.FontResolver = new CustomFontResolver(font);
@@ -64,13 +92,31 @@
 		}
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	private async Task GetData()
+	{
+		var startDate = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+		var endDate = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+		rows = await dataService.GetWeek(startDate, endDate);
+
+		_tooManyEntries = (rows.Count > 5) ? true : false;
+	}
+
 
 	// Export PDF for the variables SelectedWeek & SeletedYear
 	private async void ExportData()
 	{
 		// Get Data we want to generate the pdf from
-		//IEnumerable<EntryRowModelWithID> rows = dataService.GetWeek(SelectedYear, SelectedWeek);
 		//Settings settings = dataService.GetSettings();
+
+		// TODO: To be removed, only for debugging purposes!
+		Model.Settings settings = new()
+		{
+			Username = "Max Mustermann",
+		};
 
 		// Handles exporting the PDF
 		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
@@ -91,7 +137,7 @@
 			using (var outputStream = await fileHandle.CreateWritableAsync())
 			{
 				// Hand data over to the PDF handling class
-				//await pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
+				await pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
 
 				// Close the stream and write file to disk
 				await outputStream.CloseAsync();

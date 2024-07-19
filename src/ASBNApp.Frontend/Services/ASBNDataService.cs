@@ -1,8 +1,4 @@
-﻿using ASBNApp.Frontend.Helpers;
-using ASBNApp.Frontend.Model;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http.Json;
-using System.Reflection.Metadata.Ecma335;
+﻿using ASBNApp.Frontend.Model;
 using System.Text;
 using System.Text.Json;
 
