@@ -4,6 +4,7 @@ using ASBNApp.DataAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASBNApp.DataAPI.Migrations
 {
     [DbContext(typeof(ASBNAppContext))]
-    partial class ASBNAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240719121300_UpdatedDbContext")]
+    partial class UpdatedDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,11 +57,11 @@ namespace ASBNApp.DataAPI.Migrations
 
             modelBuilder.Entity("ASBNApp.DataAPI.Models.WorkLocation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<float?>("Hours")
                         .HasColumnType("real");
@@ -66,13 +69,7 @@ namespace ASBNApp.DataAPI.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
+                    b.HasKey("ID");
 
                     b.ToTable("WorkLocation");
                 });
@@ -311,17 +308,6 @@ namespace ASBNApp.DataAPI.Migrations
                     b.HasOne("ASBNApp.DataAPI.Models.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("ASBNApp.DataAPI.Models.WorkLocation", b =>
-                {
-                    b.HasOne("ASBNApp.DataAPI.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Owner");
                 });

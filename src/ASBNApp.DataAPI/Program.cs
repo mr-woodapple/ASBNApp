@@ -1,5 +1,6 @@
 using ASBNApp.DataAPI.Context;
 using ASBNApp.DataAPI.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
@@ -11,6 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Identity stuff
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<User>()
+    .AddEntityFrameworkStores<ASBNAppContext>();
+
 
 // Setting up the database
 var config = new ConfigurationBuilder()
@@ -32,6 +39,7 @@ builder.Services.AddCors(options =>
 
 // Create the EDM models
 var modelBuilder = new ODataConventionModelBuilder();
+modelBuilder.EntitySet<User>("User");
 modelBuilder.EntitySet<Entry>("Entry");
 modelBuilder.EntitySet<WorkLocation>("WorkLocation");
 
@@ -46,15 +54,6 @@ builder.Services.AddDbContext<ASBNAppContext>(
 // Finalizing
 var app = builder.Build();
 
-
-// Seed database if no data is present
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    SeedEntries.Initialize(services);
-    SeedWorkLocations.Initialize(services);
-}
-
 app.UseCors("AllowASBNAppFrontend");
 
 // Configure the HTTP request pipeline.
@@ -66,6 +65,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.MapIdentityApi<User>();
 app.MapControllers();
 
 

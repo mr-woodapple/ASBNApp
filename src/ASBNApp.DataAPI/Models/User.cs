@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace ASBNApp.DataAPI.Models
 {
-    public class UserSettings
+    public class User : IdentityUser
     {
-        public int Id { get; set; } // the user this belongs to
-
-        public string? Username { get; set; }
         public string? Profession { get; set; }
         public string? LegalRepresentitive { get; set; }
         public string? Company { get; set; }
