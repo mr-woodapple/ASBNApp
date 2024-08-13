@@ -39,7 +39,7 @@ namespace ASBNApp.Frontend.Services
 		/// </summary>
 		/// <param name="httpClientFactory">Factory to retrieve auth client.</param>
 		public CookieAuthenticationService(IHttpClientFactory httpClientFactory)
-			=> _httpClient = httpClientFactory.CreateClient("Auth");
+			=> _httpClient = httpClientFactory.CreateClient("BackendClient");
 
 
 		public async Task LoginAsync(UserAccount userAccount)

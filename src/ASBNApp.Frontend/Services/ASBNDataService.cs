@@ -4,19 +4,25 @@ using System.Text.Json;
 
 namespace ASBNApp.Frontend.Services
 {
-    public class ASBNDataService(HttpClient httpClient) : IASBNDataService
+    public class ASBNDataService : IASBNDataService
     {
-        /// <summary>
-        /// Sends an OData request for the desired date.
-        /// If the response object is null, return an empty EntryRowModelWithID for the given day.
-        /// </summary>
-        /// <param name="date">Date to request data for.</param>
-        /// <returns>A single <see cref="EntryRowModelWithID"/> object.</returns>
-        public async Task<EntryRowModelWithID> GetDay(DateTime? date)
+        private readonly HttpClient _httpClient;
+
+		public ASBNDataService(IHttpClientFactory httpClientFactory)
+			=> _httpClient = httpClientFactory.CreateClient("BackendClient");
+
+
+		/// <summary>
+		/// Sends an OData request for the desired date.
+		/// If the response object is null, return an empty EntryRowModelWithID for the given day.
+		/// </summary>
+		/// <param name="date">Date to request data for.</param>
+		/// <returns>A single <see cref="EntryRowModelWithID"/> object.</returns>
+		public async Task<EntryRowModelWithID> GetDay(DateTime? date)
         {
             try
             {
-                var json = await httpClient.GetStringAsync($"/odata/Entry?$filter=Date eq {date?.ToString("yyyy-MM-dd")}");
+                var json = await _httpClient.GetStringAsync($"/odata/Entry?$filter=Date eq {date?.ToString("yyyy-MM-dd")}");
                 var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
                 
                 return odata.value.FirstOrDefault() ?? new EntryRowModelWithID{ Date = (DateTime)date };
@@ -43,7 +49,7 @@ namespace ASBNApp.Frontend.Services
         {
             try
             {
-                var json = await httpClient.GetStringAsync($"/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
+                var json = await _httpClient.GetStringAsync($"/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
                 var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
 
                 return odata.value;
@@ -62,7 +68,7 @@ namespace ASBNApp.Frontend.Services
         {
             try
             {
-                var json = await httpClient.GetStringAsync($"/odata/WorkLocation");
+                var json = await _httpClient.GetStringAsync($"/odata/WorkLocation");
                 var odata = JsonSerializer.Deserialize<ODataBase<WorkLocationHours>>(json);
 
                 return odata.value;
@@ -87,12 +93,12 @@ namespace ASBNApp.Frontend.Services
 
             if (entry.Id == null)
             {
-                HttpResponseMessage response = await httpClient.PostAsync($"/odata/Entry", content);
+                HttpResponseMessage response = await _httpClient.PostAsync($"/odata/Entry", content);
                 return response.IsSuccessStatusCode;
             }
             else
             {
-                HttpResponseMessage response = await httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+                HttpResponseMessage response = await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
                 return response.IsSuccessStatusCode;
             }
         }
@@ -102,7 +108,7 @@ namespace ASBNApp.Frontend.Services
         {
             if(id == null) { return false; }
 
-            HttpResponseMessage response = await httpClient.DeleteAsync($"/odata/Entry({id})");
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"/odata/Entry({id})");
             return response.IsSuccessStatusCode;
         }
 
@@ -132,8 +138,8 @@ namespace ASBNApp.Frontend.Services
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = (entry.Id == null) 
-                    ? await httpClient.PostAsync($"/odata/Entry", content)
-                    : await httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+                    ? await _httpClient.PostAsync($"/odata/Entry", content)
+                    : await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
                 
                 if(!response.IsSuccessStatusCode)
                 {

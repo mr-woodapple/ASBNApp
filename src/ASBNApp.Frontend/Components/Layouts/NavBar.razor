@@ -4,5 +4,15 @@
     <MudButton Href="/app" Color="Color.Inherit" Class="me-5">Start</MudButton>
     <MudButton Href="export" Color="Color.Inherit">Export</MudButton>
     <MudSpacer />
+
+    <AuthorizeView>
+        <Authorized>
+            <MudText>Logged in.</MudText>
+        </Authorized>
+        <NotAuthorized>
+            Not logged in!
+        </NotAuthorized>
+    </AuthorizeView>
+
     <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
 </MudAppBar>

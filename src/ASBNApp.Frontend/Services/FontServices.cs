@@ -5,20 +5,17 @@
 
 public class FontServices
 {
-    // Constructor & DI variables
-    public FontServices(HttpClient httpClient)
-    {
-        this._httpClient = httpClient;
-    }
+	// Registering the httpClient
+	private readonly HttpClient _httpClient;
 
-    private readonly HttpClient _httpClient;
+	public FontServices(IHttpClientFactory httpClientFactory)
+			=> _httpClient = httpClientFactory.CreateClient("FrontendClient");
 
-
-    /// <summary>
-    /// Wrapper to handle loading fonts
-    /// </summary>
-    /// <returns>Fonts object including all available fonts</returns>
-    public async Task<Fonts> LoadFonts()
+	/// <summary>
+	/// Wrapper to handle loading fonts
+	/// </summary>
+	/// <returns>Fonts object including all available fonts</returns>
+	public async Task<Fonts> LoadFonts()
     {
         Fonts fonts = new Fonts()
         {

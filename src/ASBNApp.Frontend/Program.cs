@@ -17,16 +17,11 @@ builder.Services.AddMudServices();
 
 // Adding dependcy injection services
 builder.Services.AddScoped<IASBNDataService, ASBNDataService>();
+builder.Services.AddScoped<FontServices>();
 builder.Services.AddSingleton<DateHandler>();
 
 // Making the FileSystemAccess package available to everyone
 builder.Services.AddFileSystemAccessService();
-
-// Adding base HttpClients
-// TODO: Simplify these into two clients, one for the base adress and one for the backend!
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddHttpClient<FontServices>(client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-builder.Services.AddHttpClient<IASBNDataService, ASBNDataService>(client => client.BaseAddress = new Uri("https://localhost:7148"));
 
 
 // Identity related stuff:
@@ -43,12 +38,16 @@ builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationServ
 builder.Services.AddScoped(
 	sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
 
-// Configure client for auth interactions
+// Configure client for auth/backend interactions
 builder.Services.AddHttpClient(
-	"Auth",
+	"BackendClient",
 	client => client.BaseAddress = new Uri("https://localhost:7148"))
 	.AddHttpMessageHandler<CookieHandler>();
 
+// Configure frontend client
+builder.Services.AddHttpClient(
+	"FrontendClient",
+	client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 // Add Logger
 builder.Services.AddLogging();
