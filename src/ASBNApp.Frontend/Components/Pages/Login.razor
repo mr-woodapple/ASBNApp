@@ -1,43 +1,57 @@
 ﻿@page "/login"
 @layout IndexLayout
 
-@inject AuthHandler authHandler;
+@inject IAccountManagement Acct
 
-@using ASBNApp.Frontend.Services
+@using ASBNApp.Frontend.Services;
 
+<AuthorizeView>
+	<Authorized>
+		<MudContainer Class="mt-5">
 
-<MudContainer Class="mt-5">
-	<MudPaper Outlined Class="pa-10">
-		<MudText Typo="Typo.h3" Class="mb-5">Sign in.</MudText>
-		<MudText Typo="Typo.subtitle1">Sign in to create, view and export your entries!</MudText>
+			<MudPaper Outlined Class="pa-10">
+				<MudText Typo="Typo.h3" Class="mb-5">You're signed in.</MudText>
+			</MudPaper>
+		</MudContainer>
+	</Authorized>
+	<NotAuthorized>
+		<MudContainer Class="mt-5">
 
-		<MudItem Class="my-10">
-			<MudTextField @bind-Value="EMailValue" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
-			<MudTextField @bind-Value="PasswordValue" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
-						  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
-		</MudItem>
+			<MudPaper Outlined Class="pa-10">
+				<MudText Typo="Typo.h3" Class="mb-5">Sign in.</MudText>
+				<MudText Typo="Typo.subtitle1">Sign in to create, view and export your entries!</MudText>
 
-		<MudButton Disabled="@_isLoggingIn" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogin">
-			@if (_isLoggingIn)
-			{
-				<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-				<MudText Class="ms-2">Signing in...</MudText>
-			}
-			else
-			{
-				<MudText>Sign in </MudText>
-			}
-		</MudButton>
+				<MudItem Class="my-10">
+					<MudTextField @bind-Value="EMailValue" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
+					<MudTextField @bind-Value="PasswordValue" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
+								  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+				</MudItem>
 
-		<MudItem Class="mt-5">
-			<MudText>
-				Don't have an account yet?
-				<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
-			</MudText>
-		</MudItem>
-		
-	</MudPaper>
-</MudContainer>
+				<MudButton Disabled="@_isLoggingIn" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogin">
+					@if (_isLoggingIn)
+					{
+						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						<MudText Class="ms-2">Signing in...@context.User.Identity?.Name</MudText>
+					}
+					else
+					{
+						<MudText>Sign in </MudText>
+					}
+				</MudButton>
+
+				<MudItem Class="mt-5">
+					<MudText>
+						Don't have an account yet?
+						<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
+					</MudText>
+				</MudItem>
+
+			</MudPaper>
+		</MudContainer>
+	</NotAuthorized>
+	
+</AuthorizeView>
+
 
 
 @code {
@@ -68,6 +82,7 @@
 		}
 	}
 
+	// Variable to update UI states with
 	private bool _isLoggingIn;
 
 
@@ -79,14 +94,15 @@
 	{
 		_isLoggingIn = true;
 
-		var loginData = new LoginWrapper
+		var loginData = new UserAccount
 			{
 				EMail = EMailValue,
 				Password = PasswordValue
 			};
-		await authHandler.Login(loginData);
+		await Acct.LoginAsync(loginData);
 
-		// Handle what happens on login failure
-		//_isLoggingIn = false;
+		// TODO: Handle what happens on login failure
+
+		_isLoggingIn = false;
 	}
 }

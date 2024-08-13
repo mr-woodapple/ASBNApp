@@ -8,16 +8,17 @@ using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Identity stuff
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
+builder.Services.AddAuthorizationBuilder();
+builder.Services.AddIdentityCore<User>()
+	.AddEntityFrameworkStores<ASBNAppContext>()
+	.AddApiEndpoints();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Identity stuff
-builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<User>()
-    .AddEntityFrameworkStores<ASBNAppContext>();
-
 
 // Setting up the database
 var config = new ConfigurationBuilder()
@@ -31,9 +32,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowASBNAppFrontend", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("https://localhost:5227")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -54,6 +56,7 @@ builder.Services.AddDbContext<ASBNAppContext>(
 // Finalizing
 var app = builder.Build();
 
+// Set CORS policy
 app.UseCors("AllowASBNAppFrontend");
 
 // Configure the HTTP request pipeline.
@@ -64,9 +67,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapIdentityApi<User>();
 app.MapControllers();
-
 
 app.Run();
