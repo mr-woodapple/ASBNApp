@@ -2,6 +2,8 @@
 @layout IndexLayout
 
 @inject IAccountManagement Acct
+@inject NavigationManager navigationManager;
+@inject AuthenticationStateProvider authenticationStateProvider
 
 @using ASBNApp.Frontend.Services;
 
@@ -63,6 +65,10 @@
 	private InputType _passwordInputType = InputType.Password;
 	private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
 
+	// Variable to update UI states with
+	private bool _isLoggingIn;
+
+
 	/// <summary>
 	/// Toggle the password input between hidden and visibile
 	/// </summary>
@@ -82,9 +88,17 @@
 		}
 	}
 
-	// Variable to update UI states with
-	private bool _isLoggingIn;
-
+	/// <summary>
+	/// Check if the user is already logged in, if so continue to the app
+	/// </summary>
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+		if (authState.User.Identity.IsAuthenticated)
+		{
+			navigationManager.NavigateTo("/app");
+		}
+	}
 
 	/// <summary>
 	/// Handles calling the actual auth service.
@@ -99,10 +113,15 @@
 				EMail = EMailValue,
 				Password = PasswordValue
 			};
-		await Acct.LoginAsync(loginData);
+		bool result = await Acct.LoginAsync(loginData);
 
 		// TODO: Handle what happens on login failure
 
 		_isLoggingIn = false;
+
+		if (result)
+		{
+			navigationManager.NavigateTo("/app");
+		}
 	}
 }

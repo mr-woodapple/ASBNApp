@@ -11,7 +11,7 @@ namespace ASBNApp.Frontend.Services
 		/// <param name="email">User's email.</param>
 		/// <param name="password">User's password.</param>
 		/// <returns>The result of the request serialized to <see cref="FormResult"/>.</returns>
-		Task LoginAsync(UserAccount userAccount);
+		Task<bool> LoginAsync(UserAccount userAccount);
 
 		/// <summary>
 		/// Log out the logged in user.

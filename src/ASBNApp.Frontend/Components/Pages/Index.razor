@@ -1,7 +1,7 @@
 ﻿@*  Main view to load if no data is present.
     The user then can select a file he already has or create a new one *@
 
-@page "/start"
+@page "/"
 @layout IndexLayout
 
 @* Keep the square brackets to add info where the log originated from *@
@@ -21,12 +21,11 @@
             <MudImage Src="./images/Logo-Rect-Orange-Light.png" style="width: 50%" />
             <MudText Typo="Typo.body1" Class="mt-5">
                 This app makes writing your mandatory apprenticeship report as simple
-                as possible. And all of that, while beeing completely free,
-                without any user account.
+                as possible. And all of that, while beeing completely free.
             </MudText>
             <MudText Typo="Typo.body1" Class="mt-5">
-                Your data will be stored in a text file, that stays on your PC - you need to bring that with you every time you use the app.
-                Start using the app by creating a new file!
+                Your data is safely stored in the cloud. You can export PDF files from your data at every time and upload them
+                anywhere else if necessary.
             </MudText>
 
             <MudButton Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" Class="mt-10"
@@ -39,9 +38,10 @@
             <MudPaper Class="pa-10" Elevation="2">
                 <MudStack>
                     <MudText Typo="Typo.h6">Get started!</MudText>
-                    <MudText Typo="Typo.body1">Create a new file if you don't have yet or open an existing one.</MudText>
-
-                    @* // TODO: Create new call to action (probably to login) *@
+                    <MudText Typo="Typo.body1">Login to your existing account or create a new one to get started.</MudText>
+                    <MudSpacer />
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true" href="/register">Create new Account</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" href="/login">Login</MudButton>
                 </MudStack>
             </MudPaper>
         </MudItem>
