@@ -1,0 +1,51 @@
+﻿@page "/logout"
+@layout IndexLayout
+
+@inject IAccountManagement Acct
+
+@using ASBNApp.Frontend.Services;
+
+<AuthorizeView>
+	<Authorized>
+		<MudContainer Class="mt-5">
+
+			<MudPaper Outlined Class="pa-10">
+				<MudText Typo="Typo.h3" Class="mb-5">You're logged in.</MudText>
+				<MudButton Disabled="@_isLoggingOut" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogout">
+					@if (_isLoggingOut)
+					{
+						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						<MudText Class="ms-2">Logging out...@context.User.Identity?.Name</MudText>
+					}
+					else
+					{
+						<MudText>Log out</MudText>
+					}
+				</MudButton>
+			</MudPaper>
+		</MudContainer>
+	</Authorized>
+	<NotAuthorized>
+		<MudContainer Class="mt-5">
+
+			<MudPaper Outlined Class="pa-10">
+				<MudText Typo="Typo.h3" Class="mb-5">You're signed out.</MudText>
+				
+			</MudPaper>
+		</MudContainer>
+	</NotAuthorized>
+
+</AuthorizeView>
+
+
+
+@code {
+	private bool _isLoggingOut;
+
+	private async Task HandleLogout()
+	{
+		_isLoggingOut = true;
+		await Acct.LogoutAsync();
+		_isLoggingOut = false;
+	}
+}

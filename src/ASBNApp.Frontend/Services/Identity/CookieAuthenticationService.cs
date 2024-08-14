@@ -42,6 +42,23 @@ namespace ASBNApp.Frontend.Services
 			=> _httpClient = httpClientFactory.CreateClient("BackendClient");
 
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="email"></param>
+		/// <param name="password"></param>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public Task<FormResult> RegisterAsync(string email, string password)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="userAccount"></param>
+		/// <returns></returns>
 		public async Task LoginAsync(UserAccount userAccount)
 		{
 			var json = JsonSerializer.Serialize(userAccount);
@@ -57,6 +74,24 @@ namespace ASBNApp.Frontend.Services
 			return;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="NotImplementedException"></exception>
+		public async Task LogoutAsync()
+		{
+			const string Empty = "{}";
+			var emptyContent = new StringContent(Empty, Encoding.UTF8, "application/json");
+			await _httpClient.PostAsync("logout", emptyContent);
+			
+			NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override async Task<AuthenticationState> GetAuthenticationStateAsync()
 		{
 			_authenticated = false;
@@ -97,23 +132,14 @@ namespace ASBNApp.Frontend.Services
 			return new AuthenticationState(user);
 		}
 
-		// Only used when logging out
+		/// <summary>
+		/// Only used when logging out.
+		/// </summary>
+		/// <returns></returns>
 		public async Task<bool> CheckAuthenticatedAsync()
 		{
 			await GetAuthenticationStateAsync();
 			return _authenticated;
-		}
-
-		
-
-		public Task LogoutAsync()
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<FormResult> RegisterAsync(string email, string password)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
