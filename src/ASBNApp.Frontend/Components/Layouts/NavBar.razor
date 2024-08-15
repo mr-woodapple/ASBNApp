@@ -7,11 +7,8 @@
 
     <AuthorizeView>
         <Authorized>
-            <MudText>Logged in.</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Href="/logout" />
         </Authorized>
-        <NotAuthorized>
-            Not logged in!
-        </NotAuthorized>
     </AuthorizeView>
 
     <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
