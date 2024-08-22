@@ -5,54 +5,47 @@
 <MudContainer Class="mt-5">
 
 	<MudPaper Outlined Class="pa-10">
-		@if(_isRegistered)
-		{
-			
-		}
-		else
-		{
-			<MudText Typo="Typo.h3" Class="mb-5">Create your account!</MudText>
-			<MudText Typo="Typo.subtitle1">Get started by creating your account now.</MudText>
 
-			<MudItem Class="my-10">
-				<MudTextField @bind-Value="_emailValue" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
-				<MudTextField @bind-Value="_passwordValue" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
-							  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
-				<MudTextField @bind-Value="_passwordRepeatedValue" Label="Repeat Password *" Variant="Variant.Text" InputType="_passwordInputType"
-							  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
-			</MudItem>
+		<MudText Typo="Typo.h3" Class="mb-5">Create your account!</MudText>
+		<MudText Typo="Typo.subtitle1">Get started by creating your account now.</MudText>
 
-			<MudButton Disabled="@_isRegistering" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleRegistering">
-				@if (_isRegistering)
-				{
-					<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-					<MudText Class="ms-2">Creating your account...</MudText>
-				}
-				else
-				{
-					<MudText>Create account</MudText>
-				}
-			</MudButton>
+		<MudItem Class="my-10">
+			<EditForm @Model="registerAccountModel">
+				<MudTextField @bind-Value="registerAccountModel.EMail" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
+				<MudTextField @bind-Value="registerAccountModel.Password" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
+								Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+				<MudTextField @bind-Value="registerAccountModel.PasswordRepeated" Label="Repeat Password *" Variant="Variant.Text" InputType="_passwordInputType"
+								Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+			</EditForm>
+		</MudItem>
 
-			<MudItem Class="mt-5">
-				<MudText>
-					Already have an account?
-					<MudLink Href="/login" Underline="Underline.Always">Sign in here!</MudLink>
-				</MudText>
-			</MudItem>
-		}
+		<MudButton Disabled="@_isRegistering" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleRegistering">
+			@if (_isRegistering)
+			{
+				<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+				<MudText Class="ms-2">Creating your account...</MudText>
+			}
+			else
+			{
+				<MudText>Create account</MudText>
+			}
+		</MudButton>
+
+		<MudItem Class="mt-5">
+			<MudText>
+				Already have an account?
+				<MudLink Href="/login" Underline="Underline.Always">Sign in here!</MudLink>
+			</MudText>
+		</MudItem>
+
 		
-
 	</MudPaper>
 </MudContainer>
 
 
 @code {
-	private bool _isRegistered;
 	private bool _isRegistering;
-	private string _emailValue { get; set; }
-	private string _passwordValue { get; set; }
-	private string _passwordRepeatedValue { get; set; }
+	RegisterAccountForm registerAccountModel = new RegisterAccountForm();
 
 	// Variables for the password input
 	private bool _isVisible;
@@ -81,6 +74,8 @@
 	private async Task HandleRegistering()
 	{
 		// Check if both password are identical & if we have a valid E-Mail
+
+		// Show validation errors from the backend in a list
 		return;
 	}
 }
