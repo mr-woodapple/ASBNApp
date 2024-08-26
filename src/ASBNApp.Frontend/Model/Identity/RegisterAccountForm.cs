@@ -9,7 +9,7 @@ namespace ASBNApp.Frontend.Model
 	{
 		[Required]
 		[EmailAddress]
-		public string EMail { get; set; }
+		public string Email { get; set; }
 
 		[Required]
 		[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}", ErrorMessage = "Your password needs to have at least 8 characters, one upper case character, one number and one special character.")]

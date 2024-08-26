@@ -49,9 +49,13 @@ namespace ASBNApp.Frontend.Services
 		/// <param name="password"></param>
 		/// <returns></returns>
 		/// <exception cref="NotImplementedException"></exception>
-		public Task<FormResult> RegisterAsync(string email, string password)
+		public async Task<HttpResponseMessage> RegisterAsync(UserAccount userAccount)
 		{
-			throw new NotImplementedException();
+			var json = JsonSerializer.Serialize(userAccount);
+			var content = new StringContent(json, Encoding.UTF8, "application/json");
+			HttpResponseMessage response = await _httpClient.PostAsync("/register", content);
+
+			return response;
 		}
 
 		/// <summary>
@@ -62,7 +66,7 @@ namespace ASBNApp.Frontend.Services
 		public async Task<bool> LoginAsync(UserAccount userAccount)
 		{
 			var json = JsonSerializer.Serialize(userAccount);
-			StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+			var content = new StringContent(json, Encoding.UTF8, "application/json");
 			HttpResponseMessage response = await _httpClient.PostAsync("/login?useCookies=true", content);
 
 			if (response.IsSuccessStatusCode)

@@ -1,6 +1,12 @@
 ﻿@page "/register"
 @layout IndexLayout
 
+@inject IAccountManagement Acct
+
+@using ASBNApp.Frontend.Model.Identity
+@using ASBNApp.Frontend.Services;
+@using System.Text.Json
+
 
 <MudContainer Class="mt-5">
 
@@ -10,12 +16,17 @@
 		<MudText Typo="Typo.subtitle1">Get started by creating your account now.</MudText>
 
 		<MudItem Class="my-10">
-			<EditForm @Model="registerAccountModel">
-				<MudTextField @bind-Value="registerAccountModel.EMail" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
-				<MudTextField @bind-Value="registerAccountModel.Password" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
-								Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
-				<MudTextField @bind-Value="registerAccountModel.PasswordRepeated" Label="Repeat Password *" Variant="Variant.Text" InputType="_passwordInputType"
-								Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+			<EditForm Model="registerAccountModel">
+				<DataAnnotationsValidator />
+				<MudTextField @bind-Value="registerAccountModel.Email" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" For="@(() => registerAccountModel.Email)"/>
+				
+				
+				<MudTextField @bind-Value="registerAccountModel.Password" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType" For="@(() => registerAccountModel.Password)"
+						Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+
+
+				<MudTextField @bind-Value="registerAccountModel.PasswordRepeated" Label="Repeat Password *" Variant="Variant.Text" InputType="_passwordInputType" For="@(() => registerAccountModel.PasswordRepeated)"
+						Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
 			</EditForm>
 		</MudItem>
 
@@ -73,9 +84,21 @@
 
 	private async Task HandleRegistering()
 	{
-		// Check if both password are identical & if we have a valid E-Mail
+		_isRegistering = true;
 
+		var data = new UserAccount()
+			{
+				EMail = registerAccountModel.Email,
+				Password = registerAccountModel.Password
+			};
+
+		var response = await Acct.RegisterAsync(data);
+		var test = await response.Content.ReadAsStringAsync();
+		var res = JsonSerializer.Deserialize<RegisterAccountBadRequest>(test);
 		// Show validation errors from the backend in a list
+
+		//var testData = res.Errors["Items"][0];
+
 		return;
 	}
 }
