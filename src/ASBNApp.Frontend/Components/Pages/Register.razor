@@ -2,10 +2,11 @@
 @layout IndexLayout
 
 @inject IAccountManagement Acct
+@inject NavigationManager navigationManager;
 
 @using ASBNApp.Frontend.Model.Identity
 @using ASBNApp.Frontend.Services;
-@using System.Text.Json
+@using System.Text.Json;
 
 
 <MudContainer Class="mt-5">
@@ -16,21 +17,43 @@
 		<MudText Typo="Typo.subtitle1">Get started by creating your account now.</MudText>
 
 		<MudItem Class="my-10">
-			<EditForm Model="registerAccountModel">
-				<DataAnnotationsValidator />
-				<MudTextField @bind-Value="registerAccountModel.Email" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" For="@(() => registerAccountModel.Email)"/>
+			<MudForm Model="registerAccountModel" @ref="@form" Validation="@(registerAccountValidator.ValidateValue)">
+
+
+				<MudTextField Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email"
+							  @bind-Value="registerAccountModel.Email" For="@(() => registerAccountModel.Email)" Immediate="true"/>
 				
 				
 				<MudTextField @bind-Value="registerAccountModel.Password" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType" For="@(() => registerAccountModel.Password)"
-						Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+							  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" Immediate="true" />
 
 
 				<MudTextField @bind-Value="registerAccountModel.PasswordRepeated" Label="Repeat Password *" Variant="Variant.Text" InputType="_passwordInputType" For="@(() => registerAccountModel.PasswordRepeated)"
-						Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
-			</EditForm>
+							  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" Immediate="true" />
+
+
+			</MudForm>
 		</MudItem>
 
-		<MudButton Disabled="@_isRegistering" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleRegistering">
+		<MudItem Outlined>
+			@* Show API validation errors here *@
+			@if (ValidationErrors.Count > 0)
+			{
+				<MudStack Row AlignItems="AlignItems.Center">
+					<MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
+					<MudText Typo="Typo.h6">@ValidationErrors.Count error(s) occured during registration. Please fix them and try again! </MudText>
+				</MudStack>
+				
+				@foreach (var entry in ValidationErrors)
+				{
+					<MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2"> @entry </MudAlert>
+				}
+			}
+		</MudItem>
+		
+
+
+		<MudButton Disabled="@_isRegistering" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="@(async () => await HandleRegistering())">
 			@if (_isRegistering)
 			{
 				<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
@@ -56,7 +79,12 @@
 
 @code {
 	private bool _isRegistering;
+	MudForm form;
 	RegisterAccountForm registerAccountModel = new RegisterAccountForm();
+	RegisterAccountFluentValidator registerAccountValidator = new RegisterAccountFluentValidator();
+
+	// Handle errors from the API
+	List<string>? ValidationErrors { get; set; } = new();
 
 	// Variables for the password input
 	private bool _isVisible;
@@ -82,23 +110,47 @@
 		}
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	private async Task HandleRegistering()
 	{
-		_isRegistering = true;
+		await form.Validate();
 
-		var data = new UserAccount()
+		if (form.IsValid)
+		{
+			_isRegistering = true;
+
+			var data = new UserAccount()
+				{
+					EMail = registerAccountModel.Email,
+					Password = registerAccountModel.Password
+				};
+
+			var response = await Acct.RegisterAsync(data);
+			var jsonResponse = await response.Content.ReadAsStringAsync();
+
+			// Show validation errors from the backend in a list
+			if (!response.IsSuccessStatusCode)
 			{
-				EMail = registerAccountModel.Email,
-				Password = registerAccountModel.Password
-			};
+				var registerAccountResponse = JsonSerializer.Deserialize<RegisterAccountBadRequest>(jsonResponse);
 
-		var response = await Acct.RegisterAsync(data);
-		var test = await response.Content.ReadAsStringAsync();
-		var res = JsonSerializer.Deserialize<RegisterAccountBadRequest>(test);
-		// Show validation errors from the backend in a list
+				foreach(var error in registerAccountResponse.errors)
+				{
+					ValidationErrors.Add(error.Value[0]);
+				}
 
-		//var testData = res.Errors["Items"][0];
+				_isRegistering = false;
+				return;
+			}
+			else
+			{
+				// Forward to login page
+				navigationManager.NavigateTo("/login");
 
-		return;
+				// TODO: Make this the user login automatically!
+			}			
+		}
 	}
 }
