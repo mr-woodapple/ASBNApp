@@ -34,9 +34,17 @@ namespace ASBNApp.Frontend.Services
             }
         }
 
-        public Settings? GetSettings()
+        /// <summary>
+        /// Returns a <see cref="Settings"/> object to be displayed on the settings page (for example).
+        /// </summary>
+        /// <returns><see cref="Settings"/> object.</returns>
+        public async Task<Settings> GetSettings()
         {
-            throw new NotImplementedException();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var json = await _httpClient.GetStringAsync("/api/Settings");
+            var formattedData = JsonSerializer.Deserialize<Settings>(json, options);
+
+            return formattedData;
         }
 
         /// <summary>

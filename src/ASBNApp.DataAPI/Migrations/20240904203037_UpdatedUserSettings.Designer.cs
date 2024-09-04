@@ -4,6 +4,7 @@ using ASBNApp.DataAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASBNApp.DataAPI.Migrations
 {
     [DbContext(typeof(ASBNAppContext))]
-    partial class ASBNAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240904203037_UpdatedUserSettings")]
+    partial class UpdatedUserSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -288,8 +291,8 @@ namespace ASBNApp.DataAPI.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<DateTime>("ApprenticeshipStartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("ApprenticeshipStartDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Company")
                         .HasColumnType("nvarchar(max)");

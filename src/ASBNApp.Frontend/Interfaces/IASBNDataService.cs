@@ -13,7 +13,7 @@ interface IASBNDataService
     public Task<bool> SaveDay(EntryRowModelWithID entry);
     public Task<bool> DeleteDay(int? id);
 
-    public Settings? GetSettings();
+    public Task<Settings> GetSettings();
     public Task<bool> SaveSettings(Settings settings);
 
     public Task<List<WorkLocationHours>> GetWorkLocationHours();
