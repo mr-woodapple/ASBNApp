@@ -3,11 +3,12 @@ also manage editing states & update parent component if necessary. *@
 
 @using ASBNApp.Frontend.Model;
 
+@inject IASBNDataService dataService;
 
 <MudPaper Elevation="0" Class="mb-5">
 
     <MudGrid>
-        @foreach(var entry in WorkLocationHours)
+        @foreach(var entry in workLocationHours)
         {
             <MudItem xs="7">
                 <MudTextField @bind-Value="entry.Location" Label="Work location:" Variant="Variant.Outlined"/>
@@ -38,9 +39,9 @@ also manage editing states & update parent component if necessary. *@
 @code {
     // Two way binding
     [Parameter]
-    public List<WorkLocationHours>? WorkLocationHours { get; set; }
+    public List<WorkLocationHoursWithID>? workLocationHours { get; set; }
     [Parameter]
-    public EventCallback<List<WorkLocationHours>?> WorkLocationHoursChanged { get; set; }
+    public EventCallback<List<WorkLocationHoursWithID>?> WorkLocationHoursChanged { get; set; }
 
     // Text field ref
     private MudTextField<string> NewLocationTextField { get; set; }
@@ -55,7 +56,7 @@ also manage editing states & update parent component if necessary. *@
         if (_newWorkLocation != null && _newWorkHours != null)
         {
             // Add new entry & clear inputs
-            WorkLocationHours.Add(new WorkLocationHours()
+            workLocationHours.Add(new WorkLocationHoursWithID()
             {
                 Location = _newWorkLocation,
                 Hours = _newWorkHours
@@ -65,7 +66,7 @@ also manage editing states & update parent component if necessary. *@
             _newWorkHours = null;
 
             // Update parent component
-            WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
+            WorkLocationHoursChanged.InvokeAsync(workLocationHours);
         }
         else 
         {
@@ -73,9 +74,18 @@ also manage editing states & update parent component if necessary. *@
         }
     }
 
-    private void DeleteWorkLocationHoursEntry(WorkLocationHours entry)
+    private void DeleteWorkLocationHoursEntry(WorkLocationHoursWithID entry)
     {
-        WorkLocationHours.Remove(entry);
-        WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
+        // Remove entry that is not in database, so Id isn't set.
+        if(entry.Id == null)
+        {
+            workLocationHours.Remove(entry);
+            WorkLocationHoursChanged.InvokeAsync(workLocationHours);
+        }
+        else
+        {
+            dataService.DeleteWorkLocationHours(entry);
+        }
+        // WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
     }
 }

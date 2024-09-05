@@ -19,10 +19,10 @@
 
         @* Location selector *@
         <MudItem xs="3">
-            @if (WorkLocationHours.Count != 0)
+            @if (workLocationHours.Count != 0)
             {
                 <MudSelect T="string" Value="Entry.Location" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
-                    @foreach (var entry in WorkLocationHours)
+                    @foreach (var entry in workLocationHours)
                     {
                         <MudSelectItem Value="entry.Location"/>
                     }                    
@@ -72,7 +72,7 @@
 
 @code {
     [Parameter]
-    public List<WorkLocationHours> WorkLocationHours { get; set; }
+    public List<WorkLocationHoursWithID> workLocationHours { get; set; }
 
     // Dealing with two way binding
     [Parameter]
@@ -188,7 +188,7 @@
     public void UpdateWorkHoursFromLocation(string? location) {
         if (!string.IsNullOrEmpty(location))
         {
-            foreach (var item in WorkLocationHours)
+            foreach (var item in workLocationHours)
             {
                 if (location == item.Location)
                 {

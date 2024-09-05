@@ -16,7 +16,7 @@
         @* Select location *@
         <MudItem xs="6">
             <MudText Typo="Typo.body2">I was working from...</MudText>
-            <PillSelectorLocation WorkLocationHours="WorkLocationHours" @bind-SelectedLocation="SelectedLocation" />
+            <PillSelectorLocation WorkLocationHours="workLocationHours" @bind-SelectedLocation="SelectedLocation" />
         </MudItem>
         <MudItem xs="6">
             <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
@@ -70,7 +70,7 @@
     public string? Note;
     public int? Id;
 
-    List<WorkLocationHours> WorkLocationHours { get; set; }
+    List<WorkLocationHoursWithID> workLocationHours { get; set; }
 
 
     protected override void OnInitialized()
@@ -85,7 +85,7 @@
     /// </summary>
     public async Task GetWorkLocationData()
     {
-        WorkLocationHours = await dataService.GetWorkLocationHours();
+        workLocationHours = await dataService.GetWorkLocationHours();
         StateHasChanged();
     }
 
@@ -97,7 +97,7 @@
     {
         // Filter list for the matching string in SelectedLocation,
         // set corresponding hours value to Hours
-        foreach (var entry in WorkLocationHours)
+        foreach (var entry in workLocationHours)
         {
             if (entry.Location == SelectedLocation) { Hours = entry.Hours; }
         }

@@ -47,7 +47,7 @@
                     <MudText Typo="Typo.body2" Class="mb-3">
                         <b>My working hours & locations:</b>
                     </MudText>
-                    <ShowEditWorkLocationHours @bind-WorkLocationHours="workLocationHours" />
+                    <ShowEditWorkLocationHours @bind-workLocationHours="workLocationHours" />
                 </MudItem>
 
                 <MudItem xs="12">
@@ -94,7 +94,7 @@
 
 @code {
     public Model.Settings? settings { get; set; }
-    public List<WorkLocationHours> workLocationHours { get; set; } = new();
+    public List<WorkLocationHoursWithID> workLocationHours { get; set; } = new();
 
 
     // TO BE REMOVED
@@ -140,15 +140,15 @@
     /// </summary>
     public async void SaveData()
     {
-        if (await dataService.SaveSettings(settings))
-        //if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
+        //if (await dataService.SaveSettings(settings))
+        if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
         {
             // Show dialog if successful
             Snackbar.Add("That's your data saved!", Severity.Success);
         }
         else
         {
-            Snackbar.Add("There was an error saving you data - please allow saving changes if prompted.", Severity.Error);
+            Snackbar.Add("There was an error saving you data, please try again.", Severity.Error);
         }
     }
 

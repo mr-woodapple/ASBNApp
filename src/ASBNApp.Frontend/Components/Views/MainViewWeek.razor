@@ -31,7 +31,7 @@
     {
         @foreach (var entry in rows)
         {
-            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" WorkLocationHours="_workLocationHours" OnItemDeleted="RefreshView" />
+            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" workLocationHours="_workLocationHours" OnItemDeleted="RefreshView" />
         }
     }
 
@@ -43,7 +43,7 @@
 
 @code {
     private List<EntryRowModelWithID> rows = new();
-    private List<WorkLocationHours> _workLocationHours = new();
+    private List<WorkLocationHoursWithID> _workLocationHours = new();
 
     protected override void OnInitialized()
     {

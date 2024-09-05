@@ -51,7 +51,7 @@ else if (WorkLocationHours.Count != 0)
     private List<MudChip> availableChips { get; set; } = new();
 
     [Parameter]
-    public List<WorkLocationHours>? WorkLocationHours { get; set; }
+    public List<WorkLocationHoursWithID>? WorkLocationHours { get; set; }
 
 
     // Run this on after the first render to pre-set the selected chip

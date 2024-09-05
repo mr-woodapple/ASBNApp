@@ -38,8 +38,8 @@ namespace ASBNApp.DataAPI.Controllers
 
             // TODO: Remove anything the user might have added from the frontend, 
             // only accept the user provided by the backend.
-            var currentUser = await userManager.GetUserAsync(User);
-            entry.Owner = currentUser;
+            var user = await userManager.GetUserAsync(User);
+            entry.Owner = user;
 
             _context.Entry.Add(entry);
             _context.SaveChanges();

@@ -69,26 +69,6 @@ namespace ASBNApp.Frontend.Services
         }
 
         /// <summary>
-        /// Get all available <see cref="WorkLocationHours"/> objects.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<WorkLocationHours>> GetWorkLocationHours()
-        {
-            try
-            {
-                var json = await _httpClient.GetStringAsync($"/odata/WorkLocation");
-                var odata = JsonSerializer.Deserialize<ODataBase<WorkLocationHours>>(json);
-
-                return odata.value;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"HttpsRequestException catched: {ex.Message}");
-                return new List<WorkLocationHours>();
-            }
-        }
-
-        /// <summary>
         /// Handles saving data for a day. Will use POST or PATCH depending
         /// on the value for Id, if = null: POST, if != null: PATCH.
         /// </summary>
@@ -152,7 +132,7 @@ namespace ASBNApp.Frontend.Services
                 if(!response.IsSuccessStatusCode)
                 {
                     return false;
-                    throw new Exception($"Week only saved partially, couldn't save anything after entry with {entry.Date}.");
+                    throw new Exception($"Week only saved partially, couldn't save anything after entry from {entry.Date}.");
                 }
             }
 
@@ -174,9 +154,48 @@ namespace ASBNApp.Frontend.Services
         }
 
 
+		/// <summary>
+		/// Get all available <see cref="WorkLocationHours"/> objects.
+		/// </summary>
+		/// <returns></returns>
+		public async Task<List<WorkLocationHoursWithID>> GetWorkLocationHours()
+		{
+			try
+			{
+				var json = await _httpClient.GetStringAsync($"/odata/WorkLocation");
+				var odata = JsonSerializer.Deserialize<ODataBase<WorkLocationHoursWithID>>(json);
 
+				return odata.value;
+			}
+			catch (HttpRequestException ex)
+			{
+				Console.WriteLine($"HttpsRequestException catched: {ex.Message}");
+				return new List<WorkLocationHoursWithID>();
+			}
+		}
 
-        public Task<bool> SaveWorkLocationHours(List<WorkLocationHours> workLocationHours)
+		public async Task<bool> SaveWorkLocationHours(List<WorkLocationHoursWithID> workLocationHours)
+        {
+            foreach (var entry in workLocationHours)
+            {
+                var json = JsonSerializer.Serialize(entry as WorkLocationHours);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+				HttpResponseMessage response = (entry.Id == null)
+					? await _httpClient.PostAsync("/odata/WorkLocation", content)
+					: await _httpClient.PatchAsync($"/odata/WorkLocation({entry.Id})", content);
+
+				if (!response.IsSuccessStatusCode)
+				{
+					return false;
+					throw new Exception($"Work locations only saved partially, couldn't save anything after entry with location {entry.Location}.");
+				}
+			}
+
+            return true;
+        }
+
+        public Task<bool> DeleteWorkLocationHours(WorkLocationHoursWithID workLocationHoursWithID)
         {
             throw new NotImplementedException();
         }
