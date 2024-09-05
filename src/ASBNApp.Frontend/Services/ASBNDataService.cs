@@ -195,9 +195,12 @@ namespace ASBNApp.Frontend.Services
             return true;
         }
 
-        public Task<bool> DeleteWorkLocationHours(WorkLocationHoursWithID workLocationHoursWithID)
+        public async Task<bool> DeleteWorkLocationHours(int? id)
         {
-            throw new NotImplementedException();
+			if (id == null) { return false; }
+
+			HttpResponseMessage response = await _httpClient.DeleteAsync($"/odata/WorkLocation({id})");
+			return response.IsSuccessStatusCode;
         }
     }
 }

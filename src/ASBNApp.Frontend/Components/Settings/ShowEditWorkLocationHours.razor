@@ -84,8 +84,8 @@ also manage editing states & update parent component if necessary. *@
         }
         else
         {
-            dataService.DeleteWorkLocationHours(entry);
+            dataService.DeleteWorkLocationHours(entry.Id);
+            WorkLocationHoursChanged.InvokeAsync(workLocationHours);
         }
-        // WorkLocationHoursChanged.InvokeAsync(WorkLocationHours);
     }
 }

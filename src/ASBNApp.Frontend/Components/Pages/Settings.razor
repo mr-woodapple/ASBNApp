@@ -130,9 +130,10 @@
     }
 
     // Load work location data
-    public void LoadWorkLocationHoursData()
+    public async Task LoadWorkLocationHoursData()
     {
-        //workLocationHours = dataService.GetWorkLocationHours();
+        workLocationHours = await dataService.GetWorkLocationHours();
+        StateHasChanged();
     }
 
     /// <summary>
@@ -140,7 +141,6 @@
     /// </summary>
     public async void SaveData()
     {
-        //if (await dataService.SaveSettings(settings))
         if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
         {
             // Show dialog if successful
@@ -159,5 +159,6 @@
     private async Task SetDateToToday()
     {
         await _startDatePicker.GoToDate(DateTime.Today);
+        _startDatePicker.Close();
     }
 }
