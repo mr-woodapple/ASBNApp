@@ -14,7 +14,7 @@
 
         @if(settings == null)
         {
-            
+            <SettingsSkeleton />
         }
         else
         {
@@ -140,15 +140,8 @@
     /// </summary>
     public async void SaveData()
     {
-        // Assign variables
-        settings.Username = username;
-        settings.Profession = selectedApprenticeship;
-        settings.LegalRepresentitive = legalRepresentitive;
-        settings.Company = company;
-        settings.School = school;
-        settings.ApprenticeshipStartDate = (DateTime)apprenticeshipStartDate;
-
-        if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
+        if (await dataService.SaveSettings(settings))
+        //if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
         {
             // Show dialog if successful
             Snackbar.Add("That's your data saved!", Severity.Success);

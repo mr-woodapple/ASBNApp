@@ -97,7 +97,7 @@ namespace ASBNApp.Frontend.Services
         public async Task<bool> SaveDay(EntryRowModelWithID entry)
         {
             var json = JsonSerializer.Serialize(entry as EntryRowModel);
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             if (entry.Id == null)
             {
@@ -143,10 +143,10 @@ namespace ASBNApp.Frontend.Services
 
                 // Serialize to EntryRowModel to get rid of the ID property 
                 var json = JsonSerializer.Serialize(entry as EntryRowModel);
-                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = (entry.Id == null) 
-                    ? await _httpClient.PostAsync($"/odata/Entry", content)
+                    ? await _httpClient.PostAsync("/odata/Entry", content)
                     : await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
                 
                 if(!response.IsSuccessStatusCode)
@@ -159,10 +159,22 @@ namespace ASBNApp.Frontend.Services
             return true;
         }
 
-        public Task<bool> SaveSettings(Settings settings)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        public async Task<bool> SaveSettings(Settings settings)
         {
-            throw new NotImplementedException();
+            var json = JsonSerializer.Serialize(settings);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PatchAsync("/api/Settings", content);
+            return response.IsSuccessStatusCode;
         }
+
+
+
 
         public Task<bool> SaveWorkLocationHours(List<WorkLocationHours> workLocationHours)
         {
