@@ -1,4 +1,10 @@
 ﻿@* Nav Bar item *@
+
+@inject IAccountManagement Acct
+@inject NavigationManager navigationManager
+
+@using ASBNApp.Frontend.Services;
+
 <MudAppBar>
     <MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Class="me-10" Alt="ASBN App Logo"/>
     <MudButton Href="/app" Color="Color.Inherit" Class="me-5">Start</MudButton>
@@ -7,9 +13,30 @@
 
     <AuthorizeView>
         <Authorized>
-            <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Href="/logout" />
+            @if (_isLoggingOut)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+            }
+            else
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="HandleLogout" />
+            }
         </Authorized>
     </AuthorizeView>
 
     <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
 </MudAppBar>
+
+
+@code 
+{
+    private bool _isLoggingOut;
+
+    private async Task HandleLogout()
+    {
+        _isLoggingOut = true;
+        await Acct.LogoutAsync();
+        navigationManager.NavigateTo("/");
+        _isLoggingOut = false;
+    }
+}
