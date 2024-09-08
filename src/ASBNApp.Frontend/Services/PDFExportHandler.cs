@@ -108,7 +108,7 @@ public class PDFExportHandler
         // Add information to the header
         FillField(document, ASBNPdfFields.Username, settings.Username);
         FillField(document, ASBNPdfFields.HeaderProfession, settings.Profession);
-        FillField(document, ASBNPdfFields.HeaderApprenticeYear, dateHandler.CalculateApprenticeshipYear(settings.ApprenticeshipStartDate).ToString());
+        FillField(document, ASBNPdfFields.HeaderApprenticeYear, dateHandler.CalculateApprenticeshipYear(settings.ApprenticeshipStartDate).ToString("yyyy-MM-dd"));
         FillField(document, ASBNPdfFields.HeaderTimeperiod, dateHandler.GetFirstDateOfWeek((int)week, (int)year).ToString("dd.MM.") + " - " + dateHandler.GetLastDateOfWeek((int)week, (int)year).ToString("dd.MM.yyyy"));
         FillField(document, ASBNPdfFields.HeaderCalendarWeek, week.ToString());
 

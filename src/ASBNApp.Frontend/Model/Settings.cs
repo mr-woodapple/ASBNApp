@@ -12,5 +12,5 @@ public class Settings {
 	public string? LegalRepresentitive { get; set; }
 	public string? Company { get; set; }
 	public string? School { get; set; }
-	public DateTime ApprenticeshipStartDate { get; set; }
+	public DateTime? ApprenticeshipStartDate { get; set; }
 }

@@ -95,11 +95,13 @@ public class DateHandler {
     /// </summary>
     /// <param name="startDate">User specified DateTime</param>
     /// <returns>Int representing the current year.</returns>
-    public int CalculateApprenticeshipYear(DateTime startDate)
+    public int CalculateApprenticeshipYear(DateTime? startDate)
     {
-        DateTime today = DateTime.Now;
-        var diff = today - startDate;
+        if (startDate == null) return 0;
 
-        return (diff.Days / 365) + 1;
+		DateTime today = DateTime.Now;
+		var diff = today - (DateTime)startDate;
+
+		return (diff.Days / 365) + 1;
     }
 }

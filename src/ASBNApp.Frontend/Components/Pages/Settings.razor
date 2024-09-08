@@ -10,8 +10,13 @@
 <PageTitle>Settings</PageTitle>
 
 <MudContainer Class="mt-5 mb-15" MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudPaper Outlined="true" Class="pa-5">
 
+    <MudItem Elevation="0" Class="my-10">
+        <MudText Typo="Typo.h3" Class="mb-5">Settings</MudText>
+        <MudText Typo="Typo.subtitle1">Add or update your personal details here.</MudText>
+    </MudItem>
+
+    <MudPaper Outlined="true" Class="pa-5">
         @if(settings == null)
         {
             <SettingsSkeleton />
@@ -19,12 +24,6 @@
         else
         {
             <MudGrid>
-
-                @* Header with username, required for the output pdf *@
-                <MudItem xs="12">
-                    <HeaderLargeEditeable @bind-EditeableHeader="settings.GivenName" />
-                </MudItem>
-
                 @* Info message to why this is important *@
                 <MudItem xs="12">
                     <MudAlert Severity="Severity.Normal">
@@ -32,9 +31,24 @@
                     </MudAlert>
                 </MudItem>
 
-                @* Choose your apprenticeship from a pre-defined list *@
+                @* Add the users given name, surname & select the apprenticeship *@
                 <MudItem xs="12">
-                    <MudSelect @bind-Value="@selectedApprenticeship" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter" HelperText="This will be shown on your exported documents.">
+                    <MudText Typo="Typo.body2" Class="mb-3">
+                        <b>My name and apprenticeship:</b>
+                    </MudText>
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="@settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="@settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
+                </MudItem>
+
+                @* Choose the apprenticeship from a pre-defined list *@
+                <MudItem xs="12">
+                    <MudSelect @bind-Value="@settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter" 
+                               HelperText="This will be shown as your profession on your exported documents.">
                         @foreach (var entry in Data.Professions.Apprenticeships)
                         {
                             <MudSelectItem Value="@entry" />
@@ -58,26 +72,27 @@
                     <MudGrid>
                         @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
                         <MudItem xs="6">
-                            <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="apprenticeshipStartDate">
+                            <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="settings.ApprenticeshipStartDate" AutoClose>
                                 <PickerActions>
-                                    <MudButton Color="Color.Primary" OnClick="SetDateToToday">Today</MudButton>
+                                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _startDatePicker.Close(false))">Cancel</MudButton>
+                                    <MudButton Color="Color.Primary" OnClick="SetToRecentStartDate">Recent start date</MudButton>
                                 </PickerActions>
                             </MudDatePicker>
                         </MudItem>
 
                         @* Specify your legal representative (if applicable) *@
                         <MudItem xs="6">
-                            <MudTextField @bind-Value="legalRepresentitive" Label="Enter your legal representitive..." Variant="Variant.Text" HelperText="Required for students below 18 years." />
+                            <MudTextField @bind-Value="settings.LegalRepresentitive" Label="Enter your legal representitive..." Variant="Variant.Text" HelperText="Required for students below 18 years." />
                         </MudItem>
 
                         @* Add company name here, required for the output pdf *@
                         <MudItem xs="6">
-                            <MudTextField @bind-Value="company" Label="Company name..." Variant="Variant.Text" HelperText="Name of the company you're working at." />
+                            <MudTextField @bind-Value="settings.Company" Label="Company name..." Variant="Variant.Text" HelperText="Name of the company you're working at." />
                         </MudItem>
 
                         @* Add school name here, required for the output pdf *@
                         <MudItem xs="6">
-                            <MudTextField @bind-Value="school" Label="School name..." Variant="Variant.Text" HelperText="Name of the school you're going to." />
+                            <MudTextField @bind-Value="settings.School" Label="School name..." Variant="Variant.Text" HelperText="Name of the school you're going to." />
                         </MudItem>
                     </MudGrid>
                 </MudItem>
@@ -87,7 +102,6 @@
                 </MudItem>
             </MudGrid>
         }
-        
     </MudPaper>
 </MudContainer>
 
@@ -96,18 +110,7 @@
     public Model.Settings? settings { get; set; }
     public List<WorkLocationHoursWithID> workLocationHours { get; set; } = new();
 
-
-    // TO BE REMOVED
-    public string? username { get; set; }
-    public string? selectedApprenticeship { get; set; }
-    public string? legalRepresentitive { get; set; }
-    public string? company { get; set; }
-    public string? school { get; set; }
-    public DateTime? apprenticeshipStartDate { get; set; }
-
-
-
-
+    // Reference to the date picker
     private MudDatePicker _startDatePicker { get; set; }
 
     /// <summary>
@@ -154,11 +157,19 @@
 
     /// <summary>
     /// Helper message to get the current date.
+    /// If we're before the 1st september, calculate year - 1 to get the last years start date.
     /// </summary>
     /// <returns>Task</returns>
-    private async Task SetDateToToday()
+    private async Task SetToRecentStartDate()
     {
-        await _startDatePicker.GoToDate(DateTime.Today);
+        DateTime currentDate = DateTime.Now;
+        DateTime septemberFirst = new DateTime(currentDate.Year, 9, 1);
+
+        var year = currentDate > septemberFirst
+            ? currentDate.Year
+            : currentDate.Year - 1;
+
+        await _startDatePicker.GoToDate(DateTime.Parse($"01-09-{year}"));
         _startDatePicker.Close();
     }
 }

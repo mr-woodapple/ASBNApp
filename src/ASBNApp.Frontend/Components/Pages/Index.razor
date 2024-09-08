@@ -6,7 +6,6 @@
 
 @* Keep the square brackets to add info where the log originated from *@
 @inject ILogger<NavBar> Logger;
-@inject IFileSystemAccessService FileSystemAccessService;
 @inject IASBNDataService dataService;
 
 @using KristofferStrube.Blazor.FileSystem;
@@ -48,3 +47,8 @@
 
     </MudGrid>
 </MudContainer>
+
+@code {
+    // TODO: Add check to see if the user is authenticated, if so log him in
+    // and forward to the /app page
+}

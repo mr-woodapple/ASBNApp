@@ -19,12 +19,16 @@
             }
             else
             {
-                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="HandleLogout" />
+                <MudTooltip Text="Logout">
+                    <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="HandleLogout" />
+                </MudTooltip>
             }
         </Authorized>
     </AuthorizeView>
 
-    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
+    <MudTooltip Text="Settings">
+        <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
+    </MudTooltip>
 </MudAppBar>
 
 
