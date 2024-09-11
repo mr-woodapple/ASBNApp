@@ -15,7 +15,7 @@
 <PageTitle>Export</PageTitle>
 
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
-	@* Check if the browser supports exporting a file *@
+	@* Check if the browser supports exporting a file, if not show info *@
 	@if(!_isSupported)
 	{
 		<UnsupportedBrowserHelp />
@@ -47,7 +47,17 @@
 					}
 					else
 					{
-						<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">Export Data</MudButton>
+						<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">
+							@if(_isExporting)
+							{
+								<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+								<MudText Class="ms-2">Exporting report...</MudText>
+							}
+							else
+							{
+								<MudText>Export Data</MudText>
+							}
+						</MudButton>
 					}
 				</MudItem>
 			</MudGrid>
@@ -60,6 +70,7 @@
 @code {
 	private bool _isSupported = true;
 	private bool _tooManyEntries;
+	private bool _isExporting;
 	List<EntryRowModelWithID>? rows;
 
 	// Variables to bind to the child week picker
@@ -95,9 +106,9 @@
 	}
 
 	/// <summary>
-	/// 
+	/// Get entries for the selected time period, required before export because 
+	/// a warning is displayed if there are more than 5 entries per week (as the pdf can't hold more).
 	/// </summary>
-	/// <returns></returns>
 	private async Task GetData()
 	{
 		var startDate = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
@@ -107,18 +118,13 @@
 		_tooManyEntries = (rows.Count > 5) ? true : false;
 	}
 
-
 	// Export PDF for the variables SelectedWeek & SeletedYear
-	private async void ExportData()
+	private async Task ExportData()
 	{
-		// Get Data we want to generate the pdf from
-		//Settings settings = dataService.GetSettings();
+		_isExporting = true;
 
-		// TODO: To be removed, only for debugging purposes!
-		Model.Settings settings = new()
-		{
-			Username = "Max Mustermann",
-		};
+		// Get Data we want to generate the pdf from
+		Model.Settings settings = await dataService.GetSettings();
 
 		// Handles exporting the PDF
 		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
@@ -149,7 +155,9 @@
 		}
 		catch (Exception e)
 		{
-			Snackbar.Add($"Failed to create your PDF file. Error: {e.Message}", Severity.Error);
+			Snackbar.Add($"Failed to create your PDF file, please try again.", Severity.Error);
 		}
+
+		_isExporting = false;
 	}
 }
