@@ -74,7 +74,7 @@ also manage editing states & update parent component if necessary. *@
         }
     }
 
-    private void DeleteWorkLocationHoursEntry(WorkLocationHoursWithID entry)
+    private async Task DeleteWorkLocationHoursEntry(WorkLocationHoursWithID entry)
     {
         // Remove entry that is not in database, so Id isn't set.
         if(entry.Id == null)
@@ -84,7 +84,8 @@ also manage editing states & update parent component if necessary. *@
         }
         else
         {
-            dataService.DeleteWorkLocationHours(entry.Id);
+            await dataService.DeleteWorkLocationHours(entry.Id);
+            workLocationHours.Remove(entry);
             WorkLocationHoursChanged.InvokeAsync(workLocationHours);
         }
     }

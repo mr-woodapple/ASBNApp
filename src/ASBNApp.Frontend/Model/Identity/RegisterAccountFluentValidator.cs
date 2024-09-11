@@ -11,18 +11,21 @@ namespace ASBNApp.Frontend.Model.Identity
 		{
 			RuleFor(x => x.Email)
 				.NotEmpty()
+				.WithMessage("E-Mail cannot be empty!")
 				.EmailAddress()
 				.WithName("E-Mail")
 				.WithMessage("E-Mail needs to be in a valid format (e.g. info@mail.com)!");
 
 			RuleFor(x => x.Password)
 				.NotEmpty()
+				.WithMessage("Password cannot be empty!")
 				.Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}")
 				.WithName("Password")
 				.WithMessage("Password needs to be min 8 characters, contains at least 1 uppercase letter, 1 lowercase letter, 1 number and one special character.");
 
 			RuleFor(x => x.PasswordRepeated)
 				.NotEmpty()
+				.WithMessage("Please repeat your password!")
 				.Equal(x => x.Password)
 				.WithName("Repeated password")
 				.WithMessage("Passwords do not match!");

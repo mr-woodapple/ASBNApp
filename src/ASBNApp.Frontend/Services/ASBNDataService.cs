@@ -79,16 +79,11 @@ namespace ASBNApp.Frontend.Services
             var json = JsonSerializer.Serialize(entry as EntryRowModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            if (entry.Id == null)
-            {
-                HttpResponseMessage response = await _httpClient.PostAsync($"/odata/Entry", content);
-                return response.IsSuccessStatusCode;
-            }
-            else
-            {
-                HttpResponseMessage response = await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
-                return response.IsSuccessStatusCode;
-            }
+            HttpResponseMessage response = (entry.Id == null)
+                ? await _httpClient.PostAsync($"/odata/Entry", content)
+                : await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+
+            return response.IsSuccessStatusCode;
         }
 
 
@@ -115,7 +110,7 @@ namespace ASBNApp.Frontend.Services
         {
             foreach(var entry in entries)
             {
-                if(string.IsNullOrWhiteSpace(entry.Location))
+                if(string.IsNullOrWhiteSpace(entry.Note))
                 {
                     Console.WriteLine($"Nothing to save here, skipping entry for date {entry.Date}.");
                     continue;
@@ -125,11 +120,11 @@ namespace ASBNApp.Frontend.Services
                 var json = JsonSerializer.Serialize(entry as EntryRowModel);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = (entry.Id == null) 
+                HttpResponseMessage response = (entry.Id == null)
                     ? await _httpClient.PostAsync("/odata/Entry", content)
                     : await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
-                
-                if(!response.IsSuccessStatusCode)
+
+                if (!response.IsSuccessStatusCode)
                 {
                     return false;
                     throw new Exception($"Week only saved partially, couldn't save anything after entry from {entry.Date}.");
@@ -181,14 +176,14 @@ namespace ASBNApp.Frontend.Services
                 var json = JsonSerializer.Serialize(entry as WorkLocationHours);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-				HttpResponseMessage response = (entry.Id == null)
-					? await _httpClient.PostAsync("/odata/WorkLocation", content)
-					: await _httpClient.PatchAsync($"/odata/WorkLocation({entry.Id})", content);
+                HttpResponseMessage response = (entry.Id == null)
+                    ? await _httpClient.PostAsync("/odata/WorkLocation", content)
+                    : await _httpClient.PatchAsync($"/odata/WorkLocation({entry.Id})", content);
 
-				if (!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
 				{
+					Console.WriteLine($"""Work locations only saved partially, couldn't save anything after entry for location "{entry.Location}".""");
 					return false;
-					throw new Exception($"Work locations only saved partially, couldn't save anything after entry with location {entry.Location}.");
 				}
 			}
 

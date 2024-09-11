@@ -21,11 +21,13 @@ namespace ASBNApp.DataAPI.Controllers
 			_userManager = userManager;
         }
 
+
         [HttpGet]
         [EnableQuery]
-        public ActionResult<IEnumerable<WorkLocation>> Get()
+        public async Task<ActionResult<IEnumerable<WorkLocation>>> Get()
         {
-            return Ok(_context.WorkLocation);
+			var currentUser = await _userManager.GetUserAsync(User);
+			return Ok(_context.WorkLocation.Where(e => e.Owner.Id == currentUser.Id));
         }
 
         [HttpPost]
@@ -43,11 +45,11 @@ namespace ASBNApp.DataAPI.Controllers
 
         [HttpPatch]
         [EnableQuery]
-        public async Task<ActionResult> Patch([FromRoute] int key, [FromBody] Delta<Entry> delta)
+        public async Task<ActionResult> Patch([FromRoute] int key, [FromBody] Delta<WorkLocation> delta)
         {
             try
             {
-				var entry = _context.Entry.SingleOrDefault(d => d.Id == key);
+				var entry = _context.WorkLocation.SingleOrDefault(d => d.Id == key);
 				delta.Patch(entry);
 				_context.SaveChanges();
 				return Updated(entry);
