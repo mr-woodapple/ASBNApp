@@ -9,15 +9,17 @@
 
 <PageTitle>ASBNApp</PageTitle>
 
-@if(_conditionChecked)
-{
-    <MudLayout>
-        <NavBar />
-        <MudMainContent>
+
+<MudLayout>
+    <NavBar />
+    <MudMainContent>
+        @if (_conditionChecked)
+        {
             @Body
-        </MudMainContent>
-    </MudLayout>
-}
+        }
+    </MudMainContent>
+</MudLayout>
+
 
 
 @code{

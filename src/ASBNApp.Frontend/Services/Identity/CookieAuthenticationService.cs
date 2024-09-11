@@ -63,7 +63,7 @@ namespace ASBNApp.Frontend.Services
 		/// </summary>
 		/// <param name="userAccount"></param>
 		/// <returns></returns>
-		public async Task<bool> LoginAsync(UserAccount userAccount)
+		public async Task<HttpResponseMessage> LoginAsync(UserAccount userAccount)
 		{
 			var json = JsonSerializer.Serialize(userAccount);
 			var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -75,7 +75,7 @@ namespace ASBNApp.Frontend.Services
 				NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 			}
 
-			return response.IsSuccessStatusCode;
+			return response;
 		}
 
 		/// <summary>

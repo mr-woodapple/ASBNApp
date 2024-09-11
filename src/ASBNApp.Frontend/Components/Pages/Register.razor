@@ -17,20 +17,14 @@
 
 		<MudItem Class="my-10">
 			<MudForm Model="registerAccountModel" @ref="@form" Validation="@(registerAccountValidator.ValidateValue)">
-
-
 				<MudTextField Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email"
 							  @bind-Value="registerAccountModel.Email" For="@(() => registerAccountModel.Email)" Immediate="true"/>
-				
-				
+
 				<MudTextField @bind-Value="registerAccountModel.Password" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType" For="@(() => registerAccountModel.Password)"
 							  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" Immediate="true" />
 
-
 				<MudTextField @bind-Value="registerAccountModel.PasswordRepeated" Label="Repeat Password *" Variant="Variant.Text" InputType="_passwordInputType" For="@(() => registerAccountModel.PasswordRepeated)"
 							  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" Immediate="true" />
-
-
 			</MudForm>
 		</MudItem>
 
