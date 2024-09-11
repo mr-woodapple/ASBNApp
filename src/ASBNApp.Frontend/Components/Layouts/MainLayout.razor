@@ -9,24 +9,35 @@
 
 <PageTitle>ASBNApp</PageTitle>
 
-<MudLayout>
-    <NavBar />
-    <MudMainContent>
-        @Body
-    </MudMainContent> 
-</MudLayout>
+@if(_conditionChecked)
+{
+    <MudLayout>
+        <NavBar />
+        <MudMainContent>
+            @Body
+        </MudMainContent>
+    </MudLayout>
+}
+
 
 @code{
+    private bool _conditionChecked;
+
     /// <summary>
-    /// If the user isn't logged in, return to the index page.
+    /// Decide what page to show based on if the user is logged in or not.
     /// </summary>
-    protected override async Task OnInitializedAsync()
+    protected override async void OnInitialized()
     {
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        
+        _conditionChecked = true;
+
         if(!authState.User.Identity.IsAuthenticated)
         {
             navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            navigationManager.NavigateTo("/app");
         }
     }
 }

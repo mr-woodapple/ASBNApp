@@ -7,12 +7,13 @@
 
 <MudAppBar>
     <MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Class="me-10" Alt="ASBN App Logo"/>
-    <MudButton Href="/app" Color="Color.Inherit" Class="me-5">Start</MudButton>
-    <MudButton Href="export" Color="Color.Inherit">Export</MudButton>
-    <MudSpacer />
 
     <AuthorizeView>
         <Authorized>
+            <MudButton Href="/app" Color="Color.Inherit" Class="me-5">Start</MudButton>
+            <MudButton Href="export" Color="Color.Inherit">Export</MudButton>
+            <MudSpacer />
+
             @if (_isLoggingOut)
             {
                 <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
@@ -23,12 +24,11 @@
                     <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="HandleLogout" />
                 </MudTooltip>
             }
+            <MudTooltip Text="Settings">
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
+            </MudTooltip>
         </Authorized>
     </AuthorizeView>
-
-    <MudTooltip Text="Settings">
-        <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
-    </MudTooltip>
 </MudAppBar>
 
 
