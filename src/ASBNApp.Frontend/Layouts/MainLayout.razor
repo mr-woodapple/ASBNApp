@@ -13,10 +13,7 @@
 <MudLayout>
     <NavBar />
     <MudMainContent>
-        @if (_conditionChecked)
-        {
-            @Body
-        }
+        @Body
     </MudMainContent>
 </MudLayout>
 
@@ -26,7 +23,7 @@
     private bool _conditionChecked;
 
     /// <summary>
-    /// Decide what page to show based on if the user is logged in or not.
+    /// Redirect the user to the login page if he's not logged in.
     /// </summary>
     protected override async void OnInitialized()
     {
@@ -36,10 +33,6 @@
         if(!authState.User.Identity.IsAuthenticated)
         {
             navigationManager.NavigateTo("/");
-        }
-        else
-        {
-            navigationManager.NavigateTo("/app");
         }
     }
 }

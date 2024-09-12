@@ -17,13 +17,13 @@
     </MudItem>
 
     <MudPaper Outlined="true" Class="pa-5">
-        @if(settings == null)
-        {
-            <SettingsSkeleton />
-        }
-        else
-        {
-            <MudGrid>
+        <MudGrid>
+            @if(settings == null)
+            {
+                <SettingsSkeleton />
+            }
+            else
+            {
                 @* Info message to why this is important *@
                 <MudItem xs="12">
                     <MudAlert Severity="Severity.Normal">
@@ -47,21 +47,13 @@
 
                 @* Choose the apprenticeship from a pre-defined list *@
                 <MudItem xs="12">
-                    <MudSelect @bind-Value="@settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter" 
-                               HelperText="This will be shown as your profession on your exported documents.">
+                    <MudSelect @bind-Value="@settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter"
+                                HelperText="This will be shown as your profession on your exported documents.">
                         @foreach (var entry in Data.Professions.Apprenticeships)
                         {
                             <MudSelectItem Value="@entry" />
                         }
                     </MudSelect>
-                </MudItem>
-
-                @* Specify your working locations and the hours for each location *@
-                <MudItem xs="12">
-                    <MudText Typo="Typo.body2" Class="mb-3">
-                        <b>My working hours & locations:</b>
-                    </MudText>
-                    <ShowEditWorkLocationHours @bind-workLocationHours="workLocationHours" />
                 </MudItem>
 
                 <MudItem xs="12">
@@ -96,12 +88,29 @@
                         </MudItem>
                     </MudGrid>
                 </MudItem>
+            }
 
-                <MudItem xs="12">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
-                </MudItem>
-            </MudGrid>
-        }
+
+            @* Specify your working locations and the hours for each location *@
+            <MudItem xs="12">
+                <MudText Typo="Typo.body2" Class="mb-3">
+                    <b>My working hours & locations:</b>
+                </MudText>
+
+                @if(!_hasLoadedWorkLocationHours)
+                {
+                    <WorkLocationHoursSkeleton />
+                }
+                else
+                {
+                    <WorkLocationHours @bind-workLocationHours="workLocationHours" />
+                }
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
+            </MudItem>
+        </MudGrid>
     </MudPaper>
 </MudContainer>
 
@@ -109,6 +118,7 @@
 @code {
     public Model.Settings? settings { get; set; }
     public List<WorkLocationHoursWithID> workLocationHours { get; set; } = new();
+    private bool _hasLoadedWorkLocationHours;
 
     // Reference to the date picker
     private MudDatePicker _startDatePicker { get; set; }
@@ -136,6 +146,7 @@
     public async Task LoadWorkLocationHoursData()
     {
         workLocationHours = await dataService.GetWorkLocationHours();
+        _hasLoadedWorkLocationHours = true;
         StateHasChanged();
     }
 

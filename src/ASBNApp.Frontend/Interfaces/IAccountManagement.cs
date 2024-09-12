@@ -1,6 +1,6 @@
 ﻿using ASBNApp.Frontend.Model;
 
-namespace ASBNApp.Frontend.Services
+namespace ASBNApp.Frontend.Interfaces
 {
 	public interface IAccountManagement
 	{

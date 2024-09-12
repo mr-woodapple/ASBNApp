@@ -1,11 +1,12 @@
-﻿@*  Main view to load if no data is present.
-    The user then can select a file he already has or create a new one *@
+﻿@*  Index view to show if the user isn't logged in. *@
 
 @page "/"
 
 @* Keep the square brackets to add info where the log originated from *@
 @inject ILogger<NavBar> Logger;
 @inject IASBNDataService dataService;
+@inject NavigationManager navigationManager;
+@inject AuthenticationStateProvider authenticationStateProvider;
 
 @using KristofferStrube.Blazor.FileSystem;
 
@@ -15,11 +16,11 @@
 <MudContainer Class="pt-0" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudGrid Class="pa-5 align-content-center" Style="min-height: 100vh">
 
-        <MudItem xs="12" lg="6" Class="align-content-center">
+        <MudItem xs="12" lg="6">
             <MudImage Src="./images/Logo-Rect-Orange-Light.png" style="width: 50%" />
             <MudText Typo="Typo.body1" Class="mt-5">
                 This app makes writing your mandatory apprenticeship report as simple
-                as possible. And all of that, while beeing completely free.
+                as possible. And all of that, while being completely free.
             </MudText>
             <MudText Typo="Typo.body1" Class="mt-5">
                 Your data is safely stored in the cloud. You can export PDF files from your data at every time and upload them
@@ -32,7 +33,7 @@
             </MudButton>
         </MudItem>
 
-        <MudItem xs="12" lg="6">
+        <MudItem xs="12" lg="6" Class="align-content-center">
             <MudPaper Class="pa-10" Elevation="2">
                 <MudStack>
                     <MudText Typo="Typo.h6">Get started!</MudText>
@@ -47,7 +48,18 @@
     </MudGrid>
 </MudContainer>
 
+
 @code {
-    // TODO: Add check to see if the user is authenticated, if so log him in
-    // and forward to the /app page
+    /// <summary>
+    /// Redirect the user to the /app page if he's  logged in.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            navigationManager.NavigateTo("/app");
+        }
+    }
 }

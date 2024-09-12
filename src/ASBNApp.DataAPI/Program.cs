@@ -24,7 +24,6 @@ builder.Services.AddSwaggerGen();
 var config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
     .AddJsonFile("appsettings.json")
-    .AddUserSecrets<Program>()
     .Build();
 
 // Configuring CORS
@@ -33,7 +32,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowASBNAppFrontend", builder =>
     {
         builder.WithOrigins("https://localhost:5227")
-            .AllowAnyHeader()
+			.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });

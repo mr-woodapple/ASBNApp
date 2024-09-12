@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using KristofferStrube.Blazor.FileSystemAccess;
 using MudBlazor.Services;
+using ASBNApp.Frontend.Interfaces;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -32,7 +33,7 @@ builder.Services.AddTransient<CookieHandler>();
 builder.Services.AddAuthorizationCore();
 
 // Register the custom state provider
-builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CookieAccountManagement>();
 
 // Register the account management interface
 builder.Services.AddScoped(

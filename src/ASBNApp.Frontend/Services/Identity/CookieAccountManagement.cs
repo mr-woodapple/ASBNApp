@@ -3,6 +3,7 @@ using System.Text.Json;
 using ASBNApp.Frontend.Model;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
+using ASBNApp.Frontend.Interfaces;
 
 
 namespace ASBNApp.Frontend.Services
@@ -10,7 +11,7 @@ namespace ASBNApp.Frontend.Services
 	/// <summary>
 	/// Handles cookie-based authentication and provides information about the auth state.
 	/// </summary>
-	public class CookieAuthenticationService : AuthenticationStateProvider, IAccountManagement
+	public class CookieAccountManagement : AuthenticationStateProvider, IAccountManagement
 	{
 		/// <summary>
 		/// Map the JavaScript-formatted properties to C#-formatted classes.
@@ -38,7 +39,7 @@ namespace ASBNApp.Frontend.Services
 		/// Create a new instance of the auth provider.
 		/// </summary>
 		/// <param name="httpClientFactory">Factory to retrieve auth client.</param>
-		public CookieAuthenticationService(IHttpClientFactory httpClientFactory)
+		public CookieAccountManagement(IHttpClientFactory httpClientFactory)
 			=> _httpClient = httpClientFactory.CreateClient("BackendClient");
 
 
@@ -126,7 +127,7 @@ namespace ASBNApp.Frontend.Services
 
 					// If we need roles, these could be added to the claim here.
 
-					var id = new ClaimsIdentity(claims, nameof(CookieAuthenticationService));
+					var id = new ClaimsIdentity(claims, nameof(CookieAccountManagement));
 					user = new ClaimsPrincipal(id);
 					_authenticated = true;
 				}
