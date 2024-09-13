@@ -5,8 +5,6 @@
 @* Keep the square brackets to add info where the log originated from *@
 @inject ILogger<NavBar> Logger;
 @inject IASBNDataService dataService;
-@inject NavigationManager navigationManager;
-@inject AuthenticationStateProvider authenticationStateProvider;
 
 @using KristofferStrube.Blazor.FileSystem;
 
@@ -47,19 +45,3 @@
 
     </MudGrid>
 </MudContainer>
-
-
-@code {
-    /// <summary>
-    /// Redirect the user to the /app page if he's  logged in.
-    /// </summary>
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            navigationManager.NavigateTo("/app");
-        }
-    }
-}
