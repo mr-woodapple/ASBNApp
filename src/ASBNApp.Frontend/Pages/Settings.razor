@@ -67,7 +67,8 @@
                             <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="settings.ApprenticeshipStartDate" AutoClose>
                                 <PickerActions>
                                     <MudButton Class="mr-auto align-self-start" OnClick="@(() => _startDatePicker.Close(false))">Cancel</MudButton>
-                                    <MudButton Color="Color.Primary" OnClick="SetToRecentStartDate">Recent start date</MudButton>
+                                    <MudButton Class="mr-auto align-self-start" OnClick="SetToRecentStartDate">Recent start date</MudButton>
+                                    <MudButton Color="Color.Primary" OnClick="@(() => _startDatePicker.Close())">Ok</MudButton>
                                 </PickerActions>
                             </MudDatePicker>
                         </MudItem>

@@ -59,7 +59,7 @@
             SelectedYear = ((DateTime)value).Year;
             isDatePickerOverlayVisible = false;
 
-            TriggerAllCallbacks();
+            TriggerAllCallbacks(SelectedWeek, SelectedYear);
         }
     }
 
@@ -69,17 +69,16 @@
     {
         SelectedWeek = dateHandler.GetCurrentWeekOfYear();
         SelectedYear = DateTime.Now.Year;
-        TriggerAllCallbacks();
 
         // Set value for the date picker
         date = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
     }
 
     // Single place to trigger the callbacks
-    public async void TriggerAllCallbacks()
+    public async void TriggerAllCallbacks(int? week, int? year)
     {
-        await SelectedWeekChanged.InvokeAsync(SelectedWeek);
-        await SelectedYearChanged.InvokeAsync(SelectedYear);
+        await SelectedWeekChanged.InvokeAsync(week);
+        await SelectedYearChanged.InvokeAsync(year);
         // Callback to the parent component
         await OnCallback.Invoke();
     }
@@ -110,7 +109,7 @@
             SelectedWeek++;
         }
 
-        TriggerAllCallbacks();
+        TriggerAllCallbacks(SelectedWeek, SelectedYear);
     }
 
     public void SelectPreviousWeek()
@@ -125,6 +124,6 @@
             SelectedWeek--;
         }
 
-        TriggerAllCallbacks();
+        TriggerAllCallbacks(SelectedWeek, SelectedYear);
     }
 }

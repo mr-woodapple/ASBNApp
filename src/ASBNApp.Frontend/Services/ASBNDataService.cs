@@ -80,7 +80,7 @@ namespace ASBNApp.Frontend.Services
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = (entry.Id == null)
-                ? await _httpClient.PostAsync($"/odata/Entry", content)
+                ? await _httpClient.PostAsync("/odata/Entry", content)
                 : await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
 
             return response.IsSuccessStatusCode;
@@ -126,8 +126,8 @@ namespace ASBNApp.Frontend.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return false;
-                    throw new Exception($"Week only saved partially, couldn't save anything after entry from {entry.Date}.");
+					Console.WriteLine($"Week only saved partially, couldn't save entry for {entry.Date} and following.");
+					return false;
                 }
             }
 

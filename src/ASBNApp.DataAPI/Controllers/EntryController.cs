@@ -36,8 +36,6 @@ namespace ASBNApp.DataAPI.Controllers
         {
             // TODO: Add validation here? (For example check that the strings lenght is ok, etc.)
 
-            // TODO: Remove anything the user might have added from the frontend, 
-            // only accept the user provided by the backend.
             var user = await userManager.GetUserAsync(User);
             entry.Owner = user;
 
