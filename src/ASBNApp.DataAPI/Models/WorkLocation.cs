@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ASBNApp.DataAPI.Models
+﻿namespace ASBNApp.DataAPI.Models
 {
     /// <summary>
     /// Holds the name and the hours for a location.

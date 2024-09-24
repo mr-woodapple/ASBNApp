@@ -116,15 +116,15 @@ namespace ASBNApp.Frontend.Services
                     continue;
                 }
 
-                // Serialize to EntryRowModel to get rid of the ID property 
-                var json = JsonSerializer.Serialize(entry as EntryRowModel);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+				// Serialize to EntryRowModel to get rid of the ID property 
+				var json = JsonSerializer.Serialize(entry as EntryRowModel);
+				var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = (entry.Id == null)
-                    ? await _httpClient.PostAsync("/odata/Entry", content)
-                    : await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+				HttpResponseMessage response = (entry.Id == null)
+					? await _httpClient.PostAsync("/odata/Entry", content)
+					: await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
 
-                if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
                 {
 					Console.WriteLine($"Week only saved partially, couldn't save entry for {entry.Date} and following.");
 					return false;

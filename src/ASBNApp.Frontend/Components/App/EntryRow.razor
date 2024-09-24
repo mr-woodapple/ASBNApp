@@ -107,13 +107,13 @@
     }
 
 
-    private DateTime? _date;
+    private DateTime _date;
     private DateTime? date 
     { 
         get => _date; 
         set 
         {
-            _date = value;
+            _date = (DateTime)value;
             Entry.Date = (DateTime)value;
         }
     }
