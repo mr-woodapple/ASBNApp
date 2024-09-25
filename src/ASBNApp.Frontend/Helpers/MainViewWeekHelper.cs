@@ -77,9 +77,19 @@ namespace ASBNApp.Frontend.Helpers
             var completeEntries = new List<EntryRowModelWithID>();
             foreach(KeyValuePair<DateTime, EntryRowModelWithID?> entry in dict)
             {
-                var e = entry.Value == null
-                    ? new EntryRowModelWithID { Date = entry.Key }
-                    : entry.Value;
+                EntryRowModelWithID e;
+
+                if(entry.Value == null)
+                {
+                    DateTime date = entry.Key;
+                    date = DateTime.SpecifyKind(date, DateTimeKind.Local);
+
+                    e = new EntryRowModelWithID { Date = date };
+                }
+                else
+                {
+                    e = entry.Value;
+                }
 
                 completeEntries.Add(e);
             }
