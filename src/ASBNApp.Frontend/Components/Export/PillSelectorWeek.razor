@@ -7,7 +7,7 @@
         </MudChip>
 
         <MudChip Text="purple" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(1); })">
-            Next Week (Week @(_currentWeek + 1))
+            Previous Week (Week @(_currentWeek - 1))
         </MudChip>
 
         <MudChip Text="purple" Color="Color.Primary" OnClick="OpenDatePickerOverlay">
@@ -42,10 +42,10 @@
     public EventCallback SelectedDateChanged { get; set; }
 
     // Single place to trigger the callbacks
-    public void TriggerAllCallbacks()
+    public void TriggerAllCallbacks(int? week, int? year)
     {
-        SelectedWeekChanged.InvokeAsync(SelectedWeek);
-        SelectedYearChanged.InvokeAsync(SelectedYear);
+        SelectedWeekChanged.InvokeAsync(week);
+        SelectedYearChanged.InvokeAsync(year);
         SelectedDateChanged.InvokeAsync();
     }
 
@@ -60,7 +60,7 @@
     {
         SelectedWeek = dateHandler.GetCurrentWeekOfYear();
         SelectedYear = DateTime.Now.Year;
-        TriggerAllCallbacks();
+        TriggerAllCallbacks(SelectedWeek, SelectedYear);
 
         date = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
         _currentWeek = dateHandler.GetCurrentWeekOfYear();
@@ -88,7 +88,7 @@
             SelectedYear = ((DateTime)value).Year;
             isDatePickerOverlayVisible = false;
 
-            TriggerAllCallbacks();
+            TriggerAllCallbacks(SelectedWeek, SelectedYear);
         }
     }
 
@@ -109,7 +109,7 @@
     public void UpdateWeekFromSelector()
     {
         // Update variables with extracted year and week from the WeekFormatInput string
-        TriggerAllCallbacks();
+        TriggerAllCallbacks(SelectedWeek, SelectedYear);
     }
 
     // Updated SelectedYear & Selected Week from the pill selector
@@ -121,15 +121,19 @@
             SelectedWeek = dateHandler.GetCurrentWeekOfYear();
             SelectedYear = DateTime.Now.Year;
         }
-        // next week selected
+        // previous week selected
         else
         {
-            if (SelectedWeek == 52)
+            if (SelectedWeek == 1)
             {
-                SelectedWeek = 1;
-                SelectedYear++;
+                SelectedWeek = 52;
+                SelectedYear--;
+            }
+            else
+            {
+                SelectedWeek--;
             }
         }
-        TriggerAllCallbacks();
+        TriggerAllCallbacks(SelectedWeek, SelectedYear);
     }
 }
