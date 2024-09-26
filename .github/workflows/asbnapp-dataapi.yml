@@ -80,8 +80,8 @@ jobs:
           name: .net-app
 
       - uses: azure/login@v2
-        	with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
