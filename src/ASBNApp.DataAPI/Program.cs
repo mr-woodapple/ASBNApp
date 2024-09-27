@@ -20,18 +20,12 @@ builder.Services.AddIdentityCore<User>()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Setting up the database
-var config = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json")
-    .Build();
-
 // Configuring CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowASBNAppFrontend", builder =>
+    options.AddPolicy("AllowASBNAppFrontend", b =>
     {
-        builder.WithOrigins(config.GetValue<string>("FrontendUrl"))
+        b.WithOrigins(builder.Configuration.GetValue<string>("FrontendUrl"))
 			.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -50,7 +44,7 @@ builder.Services.AddControllers().AddOData(
         modelBuilder.GetEdmModel()));
 
 builder.Services.AddDbContext<ASBNAppContext>(
-    options => options.UseSqlServer(config.GetConnectionString("Default")));
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 // Finalizing
 var app = builder.Build();
