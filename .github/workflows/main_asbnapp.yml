@@ -17,10 +17,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
-          include-prerelease: true
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
@@ -29,7 +28,7 @@ jobs:
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
@@ -45,20 +44,20 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: .net-app
       
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_306DB48D6F1E47959869F41346770276 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7C469663151D4B688E9B8F402481EDF5 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1B28F225A32D4F58A526A32250E8BA16 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_788D925C103047E1BABE4740FFB4BB2A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_37D66C376D944F86A483551C317ADC04 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_46DC2CCF9EEE4823BD346A1141261E7E }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'asbnapp'
           slot-name: 'Production'
