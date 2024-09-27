@@ -31,7 +31,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowASBNAppFrontend", builder =>
     {
-        builder.WithOrigins("https://localhost:5227")
+        builder.WithOrigins(config.GetValue<string>("FrontendUrl"))
 			.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

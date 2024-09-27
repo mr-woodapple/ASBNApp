@@ -1,4 +1,5 @@
 using ASBNApp.Frontend;
+using ASBNApp.Frontend.Interfaces;
 using ASBNApp.Frontend.Services;
 using ASBNApp.Frontend.Services.Identity;
 using Microsoft.AspNetCore.Components.Web;
@@ -6,12 +7,18 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using KristofferStrube.Blazor.FileSystemAccess;
 using MudBlazor.Services;
-using ASBNApp.Frontend.Interfaces;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+
+// Loading the appsettings.json
+using (var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+{
+	var responseStream = await httpClient.GetStreamAsync("appsettings.json");
+	builder.Configuration.AddJsonStream(responseStream);
+}
 
 // MudBlazor
 builder.Services.AddMudServices();
@@ -42,7 +49,7 @@ builder.Services.AddScoped(
 // Configure client for auth/backend interactions
 builder.Services.AddHttpClient(
 	"BackendClient",
-	client => client.BaseAddress = new Uri("https://localhost:7148"))
+	client => client.BaseAddress = new Uri(builder.Configuration["ApiUrl"] ?? "https://localhost:7148"))
 	.AddHttpMessageHandler<CookieHandler>();
 
 // Configure frontend client
