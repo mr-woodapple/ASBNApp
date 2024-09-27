@@ -49,7 +49,7 @@ builder.Services.AddScoped(
 // Configure client for auth/backend interactions
 builder.Services.AddHttpClient(
 	"BackendClient",
-	client => client.BaseAddress = new Uri(builder.Configuration["ApiUrl"] ?? "https://localhost:7148"))
+	client => client.BaseAddress = new Uri(builder.Configuration["ApiUrl"]))
 	.AddHttpMessageHandler<CookieHandler>();
 
 // Configure frontend client
