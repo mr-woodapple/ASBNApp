@@ -35,12 +35,17 @@ namespace ASBNApp.Frontend.Services
 		/// </summary>
 		private readonly HttpClient _httpClient;
 
+		private readonly IConfiguration config;
+
 		/// <summary>
 		/// Create a new instance of the auth provider.
 		/// </summary>
 		/// <param name="httpClientFactory">Factory to retrieve auth client.</param>
-		public CookieAccountManagement(IHttpClientFactory httpClientFactory)
-			=> _httpClient = httpClientFactory.CreateClient("BackendClient");
+		public CookieAccountManagement(IHttpClientFactory httpClientFactory, IConfiguration config)
+		{
+			_httpClient = httpClientFactory.CreateClient("BackendClient");
+			this.config = config;
+		}
 
 
 		/// <summary>
@@ -104,7 +109,8 @@ namespace ASBNApp.Frontend.Services
 
 			try
 			{
-				var userResponse = await _httpClient.GetAsync("https://localhost:7148/manage/info");
+				var infoURL = String.Concat(config.GetValue<string>("ApiUrl"), "/manage/info");
+				var userResponse = await _httpClient.GetAsync(infoURL);
 				userResponse.EnsureSuccessStatusCode();
 
 				// user is authenticated,so let's build their authenticated identity
