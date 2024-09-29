@@ -15,7 +15,7 @@ namespace ASBNApp.Frontend.Services.Identity
 		/// <returns>The <see cref="HttpResponseMessage"/>.</returns>
 		protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 		{
-			// include cookies!
+			// Include cookies for each request!
 			request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
 			request.Headers.Add("X-Requested-With", ["XMLHttpRequest"]);
 

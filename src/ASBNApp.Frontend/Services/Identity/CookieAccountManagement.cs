@@ -35,7 +35,7 @@ namespace ASBNApp.Frontend.Services
 		/// </summary>
 		private readonly HttpClient _httpClient;
 
-		private readonly IConfiguration config;
+		private readonly IConfiguration _config;
 
 		/// <summary>
 		/// Create a new instance of the auth provider.
@@ -44,12 +44,12 @@ namespace ASBNApp.Frontend.Services
 		public CookieAccountManagement(IHttpClientFactory httpClientFactory, IConfiguration config)
 		{
 			_httpClient = httpClientFactory.CreateClient("BackendClient");
-			this.config = config;
+			_config = config;
 		}
 
 
 		/// <summary>
-		/// 
+		/// TODO
 		/// </summary>
 		/// <param name="email"></param>
 		/// <param name="password"></param>
@@ -65,7 +65,7 @@ namespace ASBNApp.Frontend.Services
 		}
 
 		/// <summary>
-		/// 
+		/// TODO
 		/// </summary>
 		/// <param name="userAccount"></param>
 		/// <returns></returns>
@@ -85,7 +85,7 @@ namespace ASBNApp.Frontend.Services
 		}
 
 		/// <summary>
-		/// 
+		/// TODO
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="NotImplementedException"></exception>
@@ -99,7 +99,7 @@ namespace ASBNApp.Frontend.Services
 		}
 
 		/// <summary>
-		/// 
+		/// TODO
 		/// </summary>
 		/// <returns></returns>
 		public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -109,7 +109,7 @@ namespace ASBNApp.Frontend.Services
 
 			try
 			{
-				var infoURL = String.Concat(config.GetValue<string>("ApiUrl"), "/manage/info");
+				var infoURL = String.Concat(_config.GetValue<string>("ApiUrl"), "/manage/info");
 				var userResponse = await _httpClient.GetAsync(infoURL);
 				userResponse.EnsureSuccessStatusCode();
 

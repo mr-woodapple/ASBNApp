@@ -23,9 +23,9 @@ builder.Services.AddSwaggerGen();
 // Configuring CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowASBNAppFrontend", b =>
+    options.AddPolicy("AllowASBNAppFrontend", policy =>
     {
-        b.WithOrigins(builder.Configuration.GetValue<string>("FrontendUrl"))
+        policy.WithOrigins(builder.Configuration.GetValue<string>("FrontendUrl"))
 			.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -52,7 +52,7 @@ var app = builder.Build();
 // Set CORS policy
 app.UseCors("AllowASBNAppFrontend");
 
-// Configure the HTTP request pipeline.
+// Enable Swagger for local development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
