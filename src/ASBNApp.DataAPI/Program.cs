@@ -44,7 +44,7 @@ builder.Services.AddControllers().AddOData(
         modelBuilder.GetEdmModel()));
 
 builder.Services.AddDbContext<ASBNAppContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection")));
 
 // Finalizing
 var app = builder.Build();
