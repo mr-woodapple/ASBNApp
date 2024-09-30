@@ -49,6 +49,11 @@ builder.Services.AddDbContext<ASBNAppContext>(
 // Finalizing
 var app = builder.Build();
 
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    Secure = CookieSecurePolicy.SameAsRequest
+});
+
 // Set CORS policy
 app.UseCors("AllowASBNAppFrontend");
 
