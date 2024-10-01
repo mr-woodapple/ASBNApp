@@ -22,7 +22,7 @@ namespace ASBNApp.Frontend.Services
         {
             try
             {
-                var json = await _httpClient.GetStringAsync($"/odata/Entry?$filter=Date eq {date?.ToString("yyyy-MM-dd")}");
+                var json = await _httpClient.GetStringAsync($"/api/odata/Entry?$filter=Date eq {date?.ToString("yyyy-MM-dd")}");
                 var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
                 
                 return odata.value.FirstOrDefault() ?? new EntryRowModelWithID{ Date = (DateTime)date };
