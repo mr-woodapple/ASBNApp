@@ -54,10 +54,10 @@ jobs:
 
       # Not in use right now, could be re-activated at a later stage if required (but since I don't run any checks on the build output, there's no need for it here).
       # - name: Build with dotnet
-      #   run: dotnet build src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -c Release -r win-x64
+      #   run: dotnet build src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -c Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -r win-x64 src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

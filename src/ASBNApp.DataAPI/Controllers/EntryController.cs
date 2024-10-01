@@ -27,7 +27,7 @@ namespace ASBNApp.DataAPI.Controllers
         public async Task<ActionResult<IEnumerable<Entry>>> Get()
         {
             var currentUser = await userManager.GetUserAsync(User);
-            return Ok(_context.Entry.Where(e => e.Owner.Id == currentUser.Id));
+            return Ok(_context.LogEntry.Where(e => e.Owner.Id == currentUser.Id));
         }
 
         [EnableQuery]
@@ -39,7 +39,7 @@ namespace ASBNApp.DataAPI.Controllers
             var user = await userManager.GetUserAsync(User);
             entry.Owner = user;
 
-            _context.Entry.Add(entry);
+            _context.LogEntry.Add(entry);
             _context.SaveChanges();
             return Created(entry);
         }
@@ -48,7 +48,7 @@ namespace ASBNApp.DataAPI.Controllers
         [HttpPatch]
         public ActionResult Patch([FromRoute] int key, [FromBody] Delta<Entry> delta)
         {
-            var entry = _context.Entry.SingleOrDefault(d => d.Id == key);
+            var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
 
             if (entry == null)
             {
@@ -64,11 +64,11 @@ namespace ASBNApp.DataAPI.Controllers
         [HttpDelete]
         public ActionResult Delete([FromRoute] int key)
         {
-            var entry = _context.Entry.SingleOrDefault(d => d.Id == key);
+            var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
 
             if (entry != null)
             {
-                _context.Entry.Remove(entry);
+                _context.LogEntry.Remove(entry);
             }
 
             _context.SaveChanges();
