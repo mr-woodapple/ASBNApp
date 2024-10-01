@@ -20,9 +20,9 @@
 name: ASBNApp DataAPI Azure Deployment
 
 env:
-  AZURE_WEBAPP_NAME: asbnapp-api-prod    # set this to the name of your Azure Web App
-  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '8'                 # set this to the .NET Core version to use
+  AZURE_WEBAPP_NAME: asbnapp-api-prod   # set this to the name of your Azure Web App
+  AZURE_WEBAPP_PACKAGE_PATH: '.'        # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '8'                   # set this to the .NET Core version to use
 
 on:
   push:
@@ -53,10 +53,10 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build with dotnet
-        run: dotnet build src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj --configuration Release
+        run: dotnet build src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -c Release -r win-x64
 
       - name: dotnet publish
-        run: dotnet publish -c Release src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp --no-build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
