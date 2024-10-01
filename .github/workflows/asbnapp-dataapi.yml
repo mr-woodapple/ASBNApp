@@ -53,10 +53,10 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build with dotnet
-        run: dotnet build src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -c Release -r win-x64 --no-restore
+        run: dotnet build src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -c Release -r win-x64
 
       - name: dotnet publish
-        run: dotnet publish -c Release src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp --no-build
+        run: dotnet publish -c Release src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
