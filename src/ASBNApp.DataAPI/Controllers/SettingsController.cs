@@ -10,7 +10,7 @@ namespace ASBNApp.DataAPI.Controllers
 	/// </summary>
 	[Authorize]
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	public class SettingsController : ControllerBase
 	{
 		private readonly UserManager<User> userManager;

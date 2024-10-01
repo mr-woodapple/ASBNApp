@@ -1,0 +1,9 @@
+{
+  "routes": [
+    {
+      // Routes all routes prefixed with /api to another URL, effectively using the Static Web App as a reverse proxy
+      "route": "/api/*",
+      "rewrite": "https://asbnapp-api-prod.azurewebsites.net/api/{*rest}"
+    }
+  ]
+}

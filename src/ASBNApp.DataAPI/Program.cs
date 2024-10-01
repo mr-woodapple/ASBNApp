@@ -1,5 +1,6 @@
 using ASBNApp.DataAPI.Context;
 using ASBNApp.DataAPI.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +67,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UsePathBase(new PathString("/api"));
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

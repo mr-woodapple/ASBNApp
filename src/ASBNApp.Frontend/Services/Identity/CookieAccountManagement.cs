@@ -59,7 +59,7 @@ namespace ASBNApp.Frontend.Services
 		{
 			var json = JsonSerializer.Serialize(userAccount);
 			var content = new StringContent(json, Encoding.UTF8, "application/json");
-			HttpResponseMessage response = await _httpClient.PostAsync("/register", content);
+			HttpResponseMessage response = await _httpClient.PostAsync("/api/register", content);
 
 			return response;
 		}
@@ -73,7 +73,7 @@ namespace ASBNApp.Frontend.Services
 		{
 			var json = JsonSerializer.Serialize(userAccount);
 			var content = new StringContent(json, Encoding.UTF8, "application/json");
-			HttpResponseMessage response = await _httpClient.PostAsync("/login?useCookies=true", content);
+			HttpResponseMessage response = await _httpClient.PostAsync("/api/login?useCookies=true", content);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -93,7 +93,7 @@ namespace ASBNApp.Frontend.Services
 		{
 			const string Empty = "{}";
 			var emptyContent = new StringContent(Empty, Encoding.UTF8, "application/json");
-			await _httpClient.PostAsync("logout", emptyContent);
+			await _httpClient.PostAsync("/api/logout", emptyContent);
 			
 			NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 		}
@@ -109,7 +109,7 @@ namespace ASBNApp.Frontend.Services
 
 			try
 			{
-				var infoURL = String.Concat(_config.GetValue<string>("ApiUrl"), "/manage/info");
+				var infoURL = String.Concat(_config.GetValue<string>("ApiUrl"), "/api/manage/info");
 				var userResponse = await _httpClient.GetAsync(infoURL);
 				userResponse.EnsureSuccessStatusCode();
 

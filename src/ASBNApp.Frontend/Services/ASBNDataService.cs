@@ -57,7 +57,7 @@ namespace ASBNApp.Frontend.Services
         {
             try
             {
-                var json = await _httpClient.GetStringAsync($"/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
+                var json = await _httpClient.GetStringAsync($"/api/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
                 var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
 
                 return odata.value;
@@ -80,8 +80,8 @@ namespace ASBNApp.Frontend.Services
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = (entry.Id == null)
-                ? await _httpClient.PostAsync("/odata/Entry", content)
-                : await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+                ? await _httpClient.PostAsync("/api/odata/Entry", content)
+                : await _httpClient.PatchAsync($"/api/odata/Entry({entry.Id})", content);
 
             return response.IsSuccessStatusCode;
         }
@@ -91,7 +91,7 @@ namespace ASBNApp.Frontend.Services
         {
             if(id == null) { return false; }
 
-            HttpResponseMessage response = await _httpClient.DeleteAsync($"/odata/Entry({id})");
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/odata/Entry({id})");
             return response.IsSuccessStatusCode;
         }
 
@@ -121,8 +121,8 @@ namespace ASBNApp.Frontend.Services
 				var content = new StringContent(json, Encoding.UTF8, "application/json");
 
 				HttpResponseMessage response = (entry.Id == null)
-					? await _httpClient.PostAsync("/odata/Entry", content)
-					: await _httpClient.PatchAsync($"/odata/Entry({entry.Id})", content);
+					? await _httpClient.PostAsync("/api/odata/Entry", content)
+					: await _httpClient.PatchAsync($"/api/odata/Entry({entry.Id})", content);
 
 				if (!response.IsSuccessStatusCode)
                 {
@@ -157,7 +157,7 @@ namespace ASBNApp.Frontend.Services
 		{
 			try
 			{
-				var json = await _httpClient.GetStringAsync($"/odata/WorkLocation");
+				var json = await _httpClient.GetStringAsync($"/api/odata/WorkLocation");
 				var odata = JsonSerializer.Deserialize<ODataBase<WorkLocationHoursWithID>>(json);
 
 				return odata.value;
@@ -177,8 +177,8 @@ namespace ASBNApp.Frontend.Services
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = (entry.Id == null)
-                    ? await _httpClient.PostAsync("/odata/WorkLocation", content)
-                    : await _httpClient.PatchAsync($"/odata/WorkLocation({entry.Id})", content);
+                    ? await _httpClient.PostAsync("/api/odata/WorkLocation", content)
+                    : await _httpClient.PatchAsync($"/api/odata/WorkLocation({entry.Id})", content);
 
                 if (!response.IsSuccessStatusCode)
 				{
@@ -194,7 +194,7 @@ namespace ASBNApp.Frontend.Services
         {
 			if (id == null) { return false; }
 
-			HttpResponseMessage response = await _httpClient.DeleteAsync($"/odata/WorkLocation({id})");
+			HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/odata/WorkLocation({id})");
 			return response.IsSuccessStatusCode;
         }
     }
