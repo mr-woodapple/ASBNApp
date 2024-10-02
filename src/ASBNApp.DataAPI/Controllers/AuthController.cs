@@ -22,7 +22,6 @@ namespace ASBNApp.DataAPI.Controllers
 			if (empty is not null)
 			{
 				await signInManager.SignOutAsync();
-				HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
 				return Results.Ok();
 			}
 
