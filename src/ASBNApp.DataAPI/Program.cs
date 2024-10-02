@@ -24,7 +24,6 @@ builder.Services.AddSwaggerGen();
 // Configure cookie policy
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.SameSite = SameSiteMode.None; // Allows cross-site cookie usage
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensure cookies are sent over HTTPS
 });
 
