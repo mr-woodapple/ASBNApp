@@ -1,6 +1,4 @@
 ﻿using ASBNApp.DataAPI.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,11 +22,7 @@ namespace ASBNApp.DataAPI.Controllers
 			if (empty != null)
 			{
 				await signInManager.SignOutAsync();
-				Response.Cookies.Delete(".AspNetCore.Identity.Application");
-				return SignOut(new AuthenticationProperties
-				{
-					RedirectUri = "/"
-				}, CookieAuthenticationDefaults.AuthenticationScheme);
+				return Ok();
 			}
 
 			return Unauthorized();

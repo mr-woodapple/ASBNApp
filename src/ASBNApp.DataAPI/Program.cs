@@ -24,6 +24,7 @@ builder.Services.AddSwaggerGen();
 // Configure cookie policy
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.LogoutPath = "api/logout";
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensure cookies are sent over HTTPS
