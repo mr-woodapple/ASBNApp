@@ -17,15 +17,15 @@ namespace ASBNApp.DataAPI.Controllers
 		/// </summary>
 		[HttpPost]
 		[Route("/logout")]
-		public async Task<IResult> Post(SignInManager<User> signInManager, [FromBody] object empty)
+		public async Task<IActionResult> Post(SignInManager<User> signInManager, [FromBody] object empty)
 		{
 			if (empty is not null)
 			{
 				await signInManager.SignOutAsync();
-				return Results.Ok();
+				return RedirectToPage("/");
 			}
 
-			return Results.Unauthorized();
+			return Unauthorized();
 		}
 	}
 }
