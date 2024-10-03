@@ -1,4 +1,6 @@
 ﻿using ASBNApp.DataAPI.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +15,19 @@ namespace ASBNApp.DataAPI.Controllers
 	public class AuthController : ControllerBase
 	{
 		/// <summary>
-		/// If the data passend alongside the request is null, log out the user by returning unauthorized.
+		/// If the data passed alongside the request is null, log out the user by returning unauthorized.
 		/// </summary>
 		[HttpPost]
 		[Route("/logout")]
 		public async Task<IActionResult> Post(SignInManager<User> signInManager, [FromBody] object empty)
 		{
-			if (empty is not null)
+			if (empty != null)
 			{
 				await signInManager.SignOutAsync();
-				return RedirectToPage("/");
+				return SignOut(new AuthenticationProperties
+				{
+					RedirectUri = "/"
+				}, CookieAuthenticationDefaults.AuthenticationScheme);
 			}
 
 			return Unauthorized();
