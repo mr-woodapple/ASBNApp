@@ -24,6 +24,7 @@ namespace ASBNApp.DataAPI.Controllers
 			if (empty != null)
 			{
 				await signInManager.SignOutAsync();
+				Response.Cookies.Delete(".AspNetCore.Identity.Application");
 				return SignOut(new AuthenticationProperties
 				{
 					RedirectUri = "/"
