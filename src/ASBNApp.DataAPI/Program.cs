@@ -1,6 +1,5 @@
 using ASBNApp.DataAPI.Context;
 using ASBNApp.DataAPI.Models;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +19,9 @@ builder.Services.AddIdentityCore<User>()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add ApplicationInsights logging:
+builder.Services.AddApplicationInsightsTelemetry();
 
 // Configure cookie policy
 builder.Services.ConfigureApplicationCookie(options =>
