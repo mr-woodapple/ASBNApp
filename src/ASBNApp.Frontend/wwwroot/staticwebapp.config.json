@@ -4,11 +4,10 @@
       // Routes all routes prefixed with /api to another URL, effectively using the Static Web App as a reverse proxy
       "route": "/api/*",
       "rewrite": "https://asbnapp-api-prod.azurewebsites.net/api/{*rest}"
-    },
-    {
-      "route": "/*",
-      "serve": "/index.html",
-      "statusCode": 200
     }
-  ]
+  ],
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": [ "/images/*.{png,jpg,gif}", "/css/*" ]
+  }
 }
