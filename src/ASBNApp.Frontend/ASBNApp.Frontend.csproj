@@ -23,6 +23,9 @@
     <Content Update="wwwroot\pdf\Vorlage_ASBN.pdf">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\staticwebapp.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
