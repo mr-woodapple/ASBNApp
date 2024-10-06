@@ -27,6 +27,8 @@
     public async Task GetTestData()
     {
         Console.WriteLine("Getting test data...");
-        _testData = await dataService.TestAPIConnection();
+        var test = await dataService.TestAPIConnection();
+        _testData = test;
+
     }
 }

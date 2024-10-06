@@ -203,8 +203,8 @@ namespace ASBNApp.Frontend.Services
         {
             try
             {
-                var json = _httpClient.GetAsync("api/todos/1");
-                return json.Result.ToString();
+                var json = await _httpClient.GetAsync("api/todos/1");
+                return await json.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {
