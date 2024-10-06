@@ -49,7 +49,11 @@
         else
         {
             // Redirect if user is on a protected page, but not authenticated
-            if (!navigationManager.Uri.EndsWith("/login") || navigationManager.Uri.EndsWith("/register") || navigationManager.Uri.EndsWith("/"))
+            if (navigationManager.Uri.EndsWith("/login") || navigationManager.Uri.EndsWith("/register") || navigationManager.Uri.EndsWith("/test") || navigationManager.Uri.EndsWith("/"))
+            {
+                // do nothing
+            } 
+            else
             {
                 navigationManager.NavigateTo("/");
             }

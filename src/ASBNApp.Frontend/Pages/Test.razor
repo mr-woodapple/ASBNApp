@@ -1,0 +1,32 @@
+﻿@page "/test"
+
+@inject IASBNDataService dataService;
+
+
+<PageTitle>Test</PageTitle>
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
+
+    @* Header space *@
+    <MudItem>
+        <MudItem Elevation="0" Class="my-10">
+            <MudText Typo="Typo.h3" Class="mb-5">This is a test page!</MudText>
+            <MudText Typo="Typo.subtitle1">Hopefully I don't need to keep this for long...'</MudText>
+        </MudItem>
+
+        <MudButton OnClick="GetTestData"> Get Test Data </MudButton>
+        <MudText Typo="Typo.body1"> @_testData </MudText>
+    </MudItem>
+
+</MudContainer>
+
+
+@code {
+    private string? _testData;
+
+    public async Task GetTestData()
+    {
+        Console.WriteLine("Getting test data...");
+        _testData = await dataService.TestAPIConnection();
+    }
+}

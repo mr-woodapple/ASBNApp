@@ -197,5 +197,20 @@ namespace ASBNApp.Frontend.Services
 			HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/odata/WorkLocation({id})");
 			return response.IsSuccessStatusCode;
         }
+
+
+        public async Task<string> TestAPIConnection()
+        {
+            try
+            {
+                var json = _httpClient.GetAsync("api/todos/1");
+                return json.Result.ToString();
+            }
+            catch (Exception ex)
+            {
+                return string.Concat("There's been an error fetching data. Exception: ", ex.Message);
+            }
+            
+        }
     }
 }
