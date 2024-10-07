@@ -22,7 +22,7 @@ namespace ASBNApp.DataAPI.Controllers
 			if (empty != null)
 			{
 				await signInManager.SignOutAsync();
-				return SignOut();
+				return SignOut(IdentityConstants.ApplicationScheme);
 			}
 
 			return Unauthorized();
