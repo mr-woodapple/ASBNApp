@@ -1,5 +1,6 @@
 using ASBNApp.DataAPI.Context;
 using ASBNApp.DataAPI.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensure cookies are sent over HTTPS
     options.Cookie.Path = "/";
 });
@@ -42,6 +43,13 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowCredentials();
     });
+});
+
+// Set headers for reverse proxy
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+	options.ForwardedHeaders =
+		ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
 // Create the EDM models
@@ -60,6 +68,8 @@ builder.Services.AddDbContext<ASBNAppContext>(
 
 // Finalizing
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 // Set CORS policy
 app.UseCors("AllowASBNAppFrontend");

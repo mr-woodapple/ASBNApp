@@ -23,9 +23,9 @@ namespace ASBNApp.DataAPI.Controllers
 		{
 			if (empty != null)
 			{
-				//await signInManager.SignOutAsync();
+				await signInManager.SignOutAsync();
 				//Response.Cookies.Delete(".AspNetCore.Identity.Application", new CookieOptions() { Path = "/api", SameSite = SameSiteMode.Lax, Secure = true });
-				return SignOut("Identity.Application");
+				return Ok();
 			}
 
 			return Unauthorized();
