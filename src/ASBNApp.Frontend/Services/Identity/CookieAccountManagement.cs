@@ -91,8 +91,8 @@ namespace ASBNApp.Frontend.Services
 		/// <exception cref="NotImplementedException"></exception>
 		public async Task LogoutAsync()
 		{
-			const string Empty = "{}";
-			var emptyContent = new StringContent(Empty, Encoding.UTF8, "application/json");
+			const string empty = "{}";
+			var emptyContent = new StringContent(empty, Encoding.UTF8, "application/json");
 			await _httpClient.PostAsync("/api/logout", emptyContent);
 			
 			NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());

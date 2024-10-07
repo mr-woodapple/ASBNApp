@@ -1,4 +1,5 @@
 ﻿using ASBNApp.DataAPI.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace ASBNApp.DataAPI.Controllers
 			{
 				//await signInManager.SignOutAsync();
 				//Response.Cookies.Delete(".AspNetCore.Identity.Application", new CookieOptions() { Path = "/api", SameSite = SameSiteMode.Lax, Secure = true });
-				return SignOut();
+				return SignOut(CookieAuthenticationDefaults.AuthenticationScheme);
 			}
 
 			return Unauthorized();
