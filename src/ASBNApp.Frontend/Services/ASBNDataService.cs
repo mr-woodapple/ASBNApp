@@ -1,4 +1,5 @@
-﻿using ASBNApp.Frontend.Model;
+﻿using ASBNApp.Frontend.Helpers;
+using ASBNApp.Frontend.Model;
 using System.Text;
 using System.Text.Json;
 
@@ -34,90 +35,80 @@ namespace ASBNApp.Frontend.Services
             }
         }
 
-        /// <summary>
-        /// Returns a <see cref="Settings"/> object to be displayed on the settings page (for example).
-        /// </summary>
-        /// <returns><see cref="Settings"/> object.</returns>
-        public async Task<Settings> GetSettings()
-        {
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var json = await _httpClient.GetStringAsync("/api/Settings");
-            var formattedData = JsonSerializer.Deserialize<Settings>(json, options);
+		/// <summary>
+		/// Handles saving data for a day. Will use POST or PATCH depending
+		/// on the value for Id, if = null: POST, if != null: PATCH.
+		/// </summary>
+		/// <param name="entry">The <see cref="EntryRowModelWithID"/> to save.</param>
+		/// <returns>True for success, false for error during saving.</returns>
+		public async Task<bool> SaveDay(EntryRowModelWithID entry)
+		{
+			var json = JsonSerializer.Serialize(DateTimeKindHelper.SetDateTimeKindToNone(entry) as EntryRowModel);
+			var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            return formattedData;
-        }
+			HttpResponseMessage response = (entry.Id == null)
+				? await _httpClient.PostAsync("/api/odata/Entry", content)
+				: await _httpClient.PatchAsync($"/api/odata/Entry({entry.Id})", content);
 
-        /// <summary>
-        /// Get all entries for a given timeframe.
-        /// </summary>
-        /// <param name="startDate">First day in the week.</param>
-        /// <param name="endDate">Last day in the week.</param>
-        /// <returns>List of <see cref="EntryRowModelWithID"/> objects.</returns>
-        public async Task<List<EntryRowModelWithID>> GetWeek(DateTime? startDate, DateTime? endDate)
-        {
-            try
-            {
-                var json = await _httpClient.GetStringAsync($"/api/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
-                var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
+			return response.IsSuccessStatusCode;
+		}
 
-                return odata.value;
-            }
-            catch (Exception ex)
-            {
-                return new List<EntryRowModelWithID>();
-            }
-        }
+		/// <summary>
+		/// Deletes the entry for a given ID.
+		/// </summary>
+		/// <param name="id">Id of the object to be deleted.</param>
+		/// <returns>Bool, true representing success, false failure.</returns>
+		public async Task<bool> DeleteDay(int? id)
+		{
+			if (id == null) { return false; }
 
-        /// <summary>
-        /// Handles saving data for a day. Will use POST or PATCH depending
-        /// on the value for Id, if = null: POST, if != null: PATCH.
-        /// </summary>
-        /// <param name="entry">The <see cref="EntryRowModelWithID"/> to save.</param>
-        /// <returns>True for success, false for error during saving.</returns>
-        public async Task<bool> SaveDay(EntryRowModelWithID entry)
-        {
-            var json = JsonSerializer.Serialize(entry as EntryRowModel);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = (entry.Id == null)
-                ? await _httpClient.PostAsync("/api/odata/Entry", content)
-                : await _httpClient.PatchAsync($"/api/odata/Entry({entry.Id})", content);
-
-            return response.IsSuccessStatusCode;
-        }
+			HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/odata/Entry({id})");
+			return response.IsSuccessStatusCode;
+		}
 
 
-        public async Task<bool> DeleteDay(int? id)
-        {
-            if(id == null) { return false; }
+		/// <summary>
+		/// Get all entries for a given timeframe.
+		/// </summary>
+		/// <param name="startDate">First day in the week.</param>
+		/// <param name="endDate">Last day in the week.</param>
+		/// <returns>List of <see cref="EntryRowModelWithID"/> objects.</returns>
+		public async Task<List<EntryRowModelWithID>> GetWeek(DateTime? startDate, DateTime? endDate)
+		{
+			try
+			{
+				var json = await _httpClient.GetStringAsync($"/api/odata/Entry?$filter=Date ge {startDate?.ToString("yyyy-MM-dd")} and Date le {endDate?.ToString("yyyy-MM-dd")}&$orderBy=Date");
+				var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
 
-            HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/odata/Entry({id})");
-            return response.IsSuccessStatusCode;
-        }
+				return odata.value;
+			}
+			catch (Exception ex)
+			{
+				return new List<EntryRowModelWithID>();
+			}
+		}
 
-
-
-        /// <summary>
-        /// Handles saving data for an entire week.
-        /// 
-        /// Only saves entries where the <see cref="EntryRowModelWithID.Note"/> != null, 
-        /// using POST / PATCH on the value for Id (if = null use POST, if != null use PATCH).
-        /// </summary>
-        /// <param name="entries">List of <see cref="EntryRowModelWithID"/>s to save.</param>
-        /// <returns>True if success, false if error during saving.</returns>
-        /// <exception cref="Exception">Throw exception if week wasn't saved successfully.</exception>
-        public async Task<bool> SaveWeek(IEnumerable<EntryRowModelWithID> entries)
-        {
-            foreach(var entry in entries)
-            {
-                if(string.IsNullOrWhiteSpace(entry.Note))
-                {
-                    Console.WriteLine($"Nothing to save here, skipping entry for date {entry.Date}.");
-                    continue;
-                }
+		/// <summary>
+		/// Handles saving data for an entire week.
+		/// 
+		/// Only saves entries where the <see cref="EntryRowModelWithID.Note"/> != null, 
+		/// using POST / PATCH on the value for Id (if = null use POST, if != null use PATCH).
+		/// </summary>
+		/// <param name="entries">List of <see cref="EntryRowModelWithID"/>s to save.</param>
+		/// <returns>True if success, false if error during saving.</returns>
+		/// <exception cref="Exception">Throw exception if week wasn't saved successfully.</exception>
+		public async Task<bool> SaveWeek(IEnumerable<EntryRowModelWithID> entries)
+		{
+			foreach (var entry in entries)
+			{
+				if (string.IsNullOrWhiteSpace(entry.Note))
+				{
+					Console.WriteLine($"Nothing to save here, skipping entry for date {entry.Date}.");
+					continue;
+				}
 
 				// Serialize to EntryRowModel to get rid of the ID property 
-				var json = JsonSerializer.Serialize(entry as EntryRowModel);
+				var json = JsonSerializer.Serialize(DateTimeKindHelper.SetDateTimeKindToNone(entry) as EntryRowModel);
 				var content = new StringContent(json, Encoding.UTF8, "application/json");
 
 				HttpResponseMessage response = (entry.Id == null)
@@ -125,28 +116,14 @@ namespace ASBNApp.Frontend.Services
 					: await _httpClient.PatchAsync($"/api/odata/Entry({entry.Id})", content);
 
 				if (!response.IsSuccessStatusCode)
-                {
+				{
 					Console.WriteLine($"Week only saved partially, couldn't save entry for {entry.Date} and following.");
 					return false;
-                }
-            }
+				}
+			}
 
-            return true;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <returns></returns>
-        public async Task<bool> SaveSettings(Settings settings)
-        {
-            var json = JsonSerializer.Serialize(settings);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PatchAsync("/api/Settings", content);
-            return response.IsSuccessStatusCode;
-        }
+			return true;
+		}
 
 
 		/// <summary>
@@ -169,6 +146,11 @@ namespace ASBNApp.Frontend.Services
 			}
 		}
 
+		/// <summary>
+		/// Handles saving a <see cref="WorkLocationHours"/> object with the API.
+		/// </summary>
+		/// <param name="workLocationHours">The <see cref="WorkLocationHours"/> to save.</param>
+		/// <returns>Bool, true representing success, false failure.</returns>
 		public async Task<bool> SaveWorkLocationHours(List<WorkLocationHoursWithID> workLocationHours)
         {
             foreach (var entry in workLocationHours)
@@ -190,7 +172,12 @@ namespace ASBNApp.Frontend.Services
             return true;
         }
 
-        public async Task<bool> DeleteWorkLocationHours(int? id)
+		/// <summary>
+		/// Delete a <see cref="WorkLocationHours"/> entry for the given id.
+		/// </summary>
+		/// <param name="id">The id of the object to be deleted.</param>
+		/// <returns>Bool, true representing success, false failure.</returns>
+		public async Task<bool> DeleteWorkLocationHours(int? id)
         {
 			if (id == null) { return false; }
 
@@ -199,18 +186,31 @@ namespace ASBNApp.Frontend.Services
         }
 
 
-        public async Task<string> TestAPIConnection()
-        {
-            try
-            {
-                var json = await _httpClient.GetAsync("/api/todos/1");
-                return await json.Content.ReadAsStringAsync();
-            }
-            catch (Exception ex)
-            {
-                return string.Concat("There's been an error fetching data. Exception: ", ex.Message);
-            }
-            
-        }
-    }
+		/// <summary>
+		/// Returns a <see cref="Settings"/> object to be displayed on the settings page (for example).
+		/// </summary>
+		/// <returns><see cref="Settings"/> object.</returns>
+		public async Task<Settings> GetSettings()
+		{
+			var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+			var json = await _httpClient.GetStringAsync("/api/Settings");
+			var formattedData = JsonSerializer.Deserialize<Settings>(json, options);
+
+			return formattedData;
+		}
+
+		/// <summary>
+		/// Saves a <see cref="Settings"/> object by sending it off to the API.
+		/// </summary>
+		/// <param name="settings">The settings model to save.</param>
+		/// <returns>Bool, true representing success, false failure.</returns>
+		public async Task<bool> SaveSettings(Settings settings)
+		{
+			var json = JsonSerializer.Serialize(settings);
+			var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+			var response = await _httpClient.PatchAsync("/api/Settings", content);
+			return response.IsSuccessStatusCode;
+		}
+	}
 }

@@ -20,6 +20,4 @@ interface IASBNDataService
     public Task<List<WorkLocationHoursWithID>> GetWorkLocationHours();
     public Task<bool> SaveWorkLocationHours(List<WorkLocationHoursWithID> workLocationHours);
     public Task<bool> DeleteWorkLocationHours(int? id);
-
-    public Task<string> TestAPIConnection();
 }
