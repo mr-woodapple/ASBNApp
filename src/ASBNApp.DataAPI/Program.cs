@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowASBNAppFrontend", policy =>
     {
-        policy.WithOrigins(builder.Configuration.GetValue<string>("FrontendUrl"))
+        policy.WithOrigins().AllowAnyOrigin()
 			.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
