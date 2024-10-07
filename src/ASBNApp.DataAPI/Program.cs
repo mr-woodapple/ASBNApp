@@ -1,5 +1,6 @@
 using ASBNApp.DataAPI.Context;
 using ASBNApp.DataAPI.Models;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
@@ -45,11 +46,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Set headers for reverse proxy
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
+// Log http details (headers)
+builder.Services.AddHttpLogging(options =>
 {
-	options.ForwardedHeaders =
-		ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+	options.LoggingFields = HttpLoggingFields.RequestPropertiesAndHeaders;
 });
 
 // Create the EDM models
@@ -69,7 +69,17 @@ builder.Services.AddDbContext<ASBNAppContext>(
 // Finalizing
 var app = builder.Build();
 
-app.UseForwardedHeaders();
+// more forward headers stuff
+app.UseHttpLogging();
+
+app.Use(async (context, next) =>
+{
+	// Connection: RemoteIp
+	app.Logger.LogInformation("Request RemoteIp: {RemoteIpAddress}",
+		context.Connection.RemoteIpAddress);
+
+	await next(context);
+});
 
 // Set CORS policy
 app.UseCors("AllowASBNAppFrontend");
