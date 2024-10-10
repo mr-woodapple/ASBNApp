@@ -44,6 +44,7 @@
     // Single place to trigger the callbacks
     public void TriggerAllCallbacks(int? week, int? year)
     {
+        // TODO: This is not guranteeing an order of execution. Check if this is required here!
         SelectedWeekChanged.InvokeAsync(week);
         SelectedYearChanged.InvokeAsync(year);
         SelectedDateChanged.InvokeAsync();

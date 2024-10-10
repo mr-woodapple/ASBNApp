@@ -35,9 +35,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 // Configuring CORS
+const string frontendCORS = "AllowASBNAppFrontend";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowASBNAppFrontend", policy =>
+    options.AddPolicy(frontendCORS, policy =>
     {
         policy.WithOrigins(builder.Configuration.GetValue<string>("FrontendUrl"))
 			.AllowAnyHeader()
