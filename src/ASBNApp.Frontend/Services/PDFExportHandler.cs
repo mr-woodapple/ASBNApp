@@ -106,7 +106,7 @@ public class PDFExportHandler
     private void WriteAdditionalData(PdfDocument document, Settings settings, int? week, int? year)
     {
         // Add information to the header
-        FillField(document, ASBNPdfFields.Username, string.Concat(settings.GivenName, settings.Surname));
+        FillField(document, ASBNPdfFields.Username, $"{settings.GivenName} {settings.Surname}");
         FillField(document, ASBNPdfFields.HeaderProfession, settings.Profession);
         FillField(document, ASBNPdfFields.HeaderApprenticeYear, settings.ApprenticeshipStartDate != null ? dateHandler.CalculateApprenticeshipYear(settings.ApprenticeshipStartDate).ToString() : "");
         FillField(document, ASBNPdfFields.HeaderTimeperiod, dateHandler.GetFirstDateOfWeek((int)week, (int)year).ToString("dd.MM.") + " - " + dateHandler.GetLastDateOfWeek((int)week, (int)year).ToString("dd.MM.yyyy"));

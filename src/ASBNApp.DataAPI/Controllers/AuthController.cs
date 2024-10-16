@@ -16,6 +16,9 @@ namespace ASBNApp.DataAPI.Controllers
 	{
 		/// <summary>
 		/// If the data passed alongside the request is null, log out the user by returning unauthorized.
+		///
+		/// Also forcefully overwriting the AspNetCore Identity cookie, as the delete request isn't coming
+		/// through - most likely because I'm using the Azure Managed Functions API on the frontend. 
 		/// </summary>
 		[HttpPost]
 		[Route("/logout")]
@@ -24,7 +27,8 @@ namespace ASBNApp.DataAPI.Controllers
 			if (empty != null)
 			{
 				await signInManager.SignOutAsync();
-				Response.Cookies.Append(".AspNetCore.Identity.Application", String.Empty, new CookieOptions() { Path = "/", SameSite = SameSiteMode.Lax, Secure = true });
+				Response.Cookies.Append(".AspNetCore.Identity.Application", String.Empty, 
+					new CookieOptions() { Path = "/", SameSite = SameSiteMode.Lax, Secure = true });
 				return Ok();
 			}
 
