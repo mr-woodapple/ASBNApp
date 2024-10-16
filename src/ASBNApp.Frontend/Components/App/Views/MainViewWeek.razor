@@ -110,7 +110,7 @@
     {
         // TODO: Might wanna change this to check the return of dataService? 
         // if task.success, show success snackbar, if not error snackbar
-        if (await dataService.SaveWeek(rows))
+        if (await dataService.SaveEntries(rows))
         {
             Snackbar.Add("That's your data saved!", Severity.Success);
         }

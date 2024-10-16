@@ -70,18 +70,6 @@ builder.Services.AddDbContext<ASBNAppContext>(
 // Finalizing
 var app = builder.Build();
 
-// more forward headers stuff
-app.UseHttpLogging();
-
-app.Use(async (context, next) =>
-{
-	// Connection: RemoteIp
-	app.Logger.LogInformation("Request RemoteIp: {RemoteIpAddress}",
-		context.Connection.RemoteIpAddress);
-
-	await next(context);
-});
-
 // Set CORS policy
 app.UseCors("AllowASBNAppFrontend");
 

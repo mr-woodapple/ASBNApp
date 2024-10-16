@@ -89,7 +89,7 @@ namespace ASBNApp.Frontend.Services
 		}
 
 		/// <summary>
-		/// Handles saving data for an entire week.
+		/// Handles saving data for an entire week (or any time span, really).
 		/// 
 		/// Only saves entries where the <see cref="EntryRowModelWithID.Note"/> != null, 
 		/// using POST / PATCH on the value for Id (if = null use POST, if != null use PATCH).
@@ -97,7 +97,7 @@ namespace ASBNApp.Frontend.Services
 		/// <param name="entries">List of <see cref="EntryRowModelWithID"/>s to save.</param>
 		/// <returns>True if success, false if error during saving.</returns>
 		/// <exception cref="Exception">Throw exception if week wasn't saved successfully.</exception>
-		public async Task<bool> SaveWeek(IEnumerable<EntryRowModelWithID> entries)
+		public async Task<bool> SaveEntries(IEnumerable<EntryRowModelWithID> entries)
 		{
 			foreach (var entry in entries)
 			{
