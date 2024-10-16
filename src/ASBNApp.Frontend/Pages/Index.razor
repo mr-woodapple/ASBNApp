@@ -1,0 +1,47 @@
+﻿@*  Index view to show if the user isn't logged in. *@
+
+@page "/"
+
+@* Keep the square brackets to add info where the log originated from *@
+@inject ILogger<NavBar> Logger;
+@inject IASBNDataService dataService;
+
+@using KristofferStrube.Blazor.FileSystem;
+
+
+<PageTitle>Start</PageTitle>
+
+<MudContainer Class="pt-0" MaxWidth="MaxWidth.ExtraExtraLarge">
+    <MudGrid Class="pa-5 align-content-center" Style="min-height: 100vh">
+
+        <MudItem xs="12" lg="6">
+            <MudImage Src="./images/Logo-Rect-Orange-Light.png" style="width: 50%" />
+            <MudText Typo="Typo.body1" Class="mt-5">
+                This app makes writing your mandatory apprenticeship report as simple
+                as possible. And all of that, while being completely free.
+            </MudText>
+            <MudText Typo="Typo.body1" Class="mt-5">
+                Your data is safely stored in the cloud. You can export PDF files from your data at every time and upload them
+                anywhere else if necessary.
+            </MudText>
+
+            <MudButton Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" Class="mt-10"
+                       Variant="Variant.Outlined" EndIcon="@Icons.Custom.Brands.GitHub" Color="Color.Primary" Style="text-transform:none">
+                View on GitHub
+            </MudButton>
+        </MudItem>
+
+        <MudItem xs="12" lg="6" Class="align-content-center">
+            <MudPaper Class="pa-10" Elevation="2">
+                <MudStack>
+                    <MudText Typo="Typo.h6">Get started!</MudText>
+                    <MudText Typo="Typo.body1">Login to your existing account or create a new one to get started.</MudText>
+                    <MudSpacer />
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true" href="/register">Create new Account</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" href="/login">Login</MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>

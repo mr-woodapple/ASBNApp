@@ -1,0 +1,164 @@
+@page "/export"
+
+@inject IHttpClientFactory httpClientFactory;
+@inject DateHandler dateHandler;
+@inject FontServices fontServices;
+@inject IASBNDataService dataService;
+@inject IFileSystemAccessService FileSystemAccessService;
+@inject ISnackbar Snackbar;
+
+@using ASBNApp.Frontend.Helpers
+@using PdfSharp.Fonts;
+@using KristofferStrube.Blazor.FileSystem;
+
+
+<PageTitle>Export</PageTitle>
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
+	@* Check if the browser supports exporting a file, if not show info *@
+	@if(!_isSupported)
+	{
+		<UnsupportedBrowserHelp />
+	}
+	else
+	{
+		@* Header space *@
+		<MudItem Elevation="0" Class="my-10">
+			<MudText Typo="Typo.h3" Class="mb-5">Let's get this exported!</MudText>
+			<MudText Typo="Typo.subtitle1">Attention: You still need to manually sign these (if required by your company).</MudText>
+		</MudItem>
+
+		<MudPaper Outlined="true" Class="mt-5 pa-5">
+			<MudGrid>
+
+				<MudItem xs="12">
+					<MudText Typo="Typo.body2">Select a week to export data for:</MudText>
+					@* Add pill selector for weeks here *@
+					<PillSelectorWeek @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" SelectedDateChanged="GetData"/>
+				</MudItem>
+
+				<MudItem xs="12">
+					@if(_tooManyEntries)
+					{
+						<MudAlert Severity="Severity.Error">
+							<b>Cannot export a week with more than 5 entries.</b> 
+							Please delete entries from the week view before exporting.
+						</MudAlert>
+					}
+					else
+					{
+						<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">
+							@if(_isExporting)
+							{
+								<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+								<MudText Class="ms-2">Exporting report...</MudText>
+							}
+							else
+							{
+								<MudText>Export Data</MudText>
+							}
+						</MudButton>
+					}
+				</MudItem>
+			</MudGrid>
+		</MudPaper>
+	}
+	
+</MudContainer>
+
+
+@code {
+	private bool _isSupported = true;
+	private bool _tooManyEntries;
+	private bool _isExporting;
+	List<EntryRowModelWithID>? rows;
+
+	// Variables to bind to the child week picker
+	public int? SelectedWeek { get; set; }
+	public int? SelectedYear { get; set; }
+
+	protected override void OnInitialized()
+	{
+		GetData();
+	}
+
+
+	// As soon as we finished loading the page, get the required fonts
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			// Check if the browser supports the FileSystemAccess API
+			_isSupported = await FileSystemAccessService.IsSupportedAsync();
+			StateHasChanged();
+
+			// Implement a custom font resolver (we do seem to need one, yes ^^)
+			// And yes, this is even working with the font not being in the repo.
+			Fonts font = await fontServices.LoadFonts();
+			try
+			{
+				GlobalFontSettings.FontResolver = new CustomFontResolver(font);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Get entries for the selected time period, required before export because 
+	/// a warning is displayed if there are more than 5 entries per week (as the pdf can't hold more).
+	/// </summary>
+	private async Task GetData()
+	{
+		var startDate = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+		var endDate = dateHandler.GetLastDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+		rows = MainViewWeekHelper.GetCompleteWeek(await dataService.GetWeek(startDate, endDate), SelectedWeek, SelectedYear);
+
+		_tooManyEntries = (rows.Count > 5) ? true : false;
+	}
+
+	// Export PDF for the variables SelectedWeek & SeletedYear
+	private async Task ExportData()
+	{
+		_isExporting = true;
+
+		// Get Data we want to generate the pdf from
+		Model.Settings settings = await dataService.GetSettings();
+
+		// Handles exporting the PDF
+		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
+
+		// Open the pdf template file in a bytestream
+		var _httpClient = httpClientFactory.CreateClient("FrontendClient");
+		byte[] fileBytes = await _httpClient.GetByteArrayAsync("pdf/Vorlage_ASBN.pdf");
+
+		try
+		{
+			// Get fileHandle for the output PDF
+			var options = new SaveFilePickerOptionsStartInFileSystemHandle()
+				{
+					SuggestedName = $"Export-Week{SelectedWeek}-{SelectedYear}",
+					Types = Data.FilePickerAcceptTypes.fileTypePDF
+				};
+
+			FileSystemFileHandle? fileHandle = await FileSystemAccessService.ShowSaveFilePickerAsync(options);
+			using (var outputStream = await fileHandle.CreateWritableAsync())
+			{
+				// Hand data over to the PDF handling class
+				await pdfHandler.GeneratePDF(fileBytes, outputStream, rows, settings, SelectedWeek, SelectedYear);
+
+				// Close the stream and write file to disk
+				await outputStream.CloseAsync();
+				Snackbar.Add("Your PDF just finished exporting!", Severity.Success);
+			}
+		}
+		catch (Exception e)
+		{
+			Snackbar.Add($"Failed to create your PDF file, please try again.", Severity.Error);
+		}
+
+		_isExporting = false;
+	}
+}

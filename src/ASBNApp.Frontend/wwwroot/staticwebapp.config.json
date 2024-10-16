@@ -1,0 +1,7 @@
+{
+  // Required for handling navigation on SPA (cannot work with routes such as /app for example).
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": [ "/images/*.{png,jpg,gif}", "/css/*" ]
+  }
+}

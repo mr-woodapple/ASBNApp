@@ -1,0 +1,137 @@
+﻿@page "/login"
+
+@inject IAccountManagement Acct
+@inject NavigationManager navigationManager;
+@inject AuthenticationStateProvider authenticationStateProvider
+
+@using ASBNApp.Frontend.Interfaces
+@using ASBNApp.Frontend.Services;
+@using System.Text.Json
+
+<AuthorizeView>
+	<Authorized>
+		<MudContainer Class="mt-5">
+
+			<MudPaper Outlined Class="pa-10">
+				<MudText Typo="Typo.h3" Class="mb-5">You're signed in.</MudText>
+			</MudPaper>
+		</MudContainer>
+	</Authorized>
+	<NotAuthorized>
+		<MudContainer Class="mt-5">
+
+			<MudPaper Outlined Class="pa-10">
+				<MudText Typo="Typo.h3" Class="mb-5">Sign in.</MudText>
+				<MudText Typo="Typo.subtitle1">Sign in to create, view and export your entries!</MudText>
+
+				<MudItem Class="my-10">
+					<MudTextField @bind-Value="EMailValue" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
+					<MudTextField @bind-Value="PasswordValue" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
+								  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+				</MudItem>
+
+				@* Show validation errors *@
+				@if (_loginAttemptFailed)
+				{
+					<MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2">Failed to login, please check your e-mail and password before trying again!</MudAlert>
+				}
+
+				<MudButton Disabled="@_isLoggingIn" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogin">
+					@if (_isLoggingIn)
+					{
+						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						<MudText Class="ms-2">Signing in...</MudText>
+					}
+					else
+					{
+						<MudText>Sign in </MudText>
+					}
+				</MudButton>
+
+				<MudItem Class="mt-5">
+					<MudText>
+						Don't have an account yet?
+						<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
+					</MudText>
+				</MudItem>
+
+			</MudPaper>
+		</MudContainer>
+	</NotAuthorized>
+</AuthorizeView>
+
+
+
+@code {
+	public string EMailValue { get; set; }
+	public string PasswordValue { get; set; }
+
+	// Variables for the password input
+	private bool _isVisible;
+	private InputType _passwordInputType = InputType.Password;
+	private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+	// Variable to update UI states with
+	private bool _isLoggingIn;
+
+	// Handle errors from the API
+	private bool _loginAttemptFailed;
+
+	/// <summary>
+	/// Toggle the password input between hidden and visibile
+	/// </summary>
+	private void TogglePasswordInputMode()
+	{
+		if(_isVisible)
+		{
+			_isVisible = false;
+			_passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+			_passwordInputType = InputType.Password;
+		}
+		else
+		{
+			_isVisible = true;
+			_passwordInputIcon = Icons.Material.Filled.Visibility;
+			_passwordInputType = InputType.Text;
+		}
+	}
+
+	/// <summary>
+	/// Check if the user is already logged in, if so continue to the app
+	/// </summary>
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+		if (authState.User.Identity.IsAuthenticated)
+		{
+			navigationManager.NavigateTo("/app");
+		}
+	}
+
+	/// <summary>
+	/// Handles calling the actual auth service.
+	/// </summary>
+	/// <returns></returns>
+	private async Task HandleLogin()
+	{
+		_isLoggingIn = true;
+
+		var loginData = new UserAccount
+			{
+				EMail = EMailValue,
+				Password = PasswordValue
+			};
+		var response = await Acct.LoginAsync(loginData);
+		_isLoggingIn = false;
+
+		// Handle what happens depending on the result of the login attempt
+		if(response.IsSuccessStatusCode)
+		{
+			navigationManager.NavigateTo("/app");
+		}
+		else
+		{
+			_loginAttemptFailed = true;
+		}
+	}
+}
