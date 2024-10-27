@@ -162,7 +162,7 @@
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var dialog = await dialogService.ShowAsync<DialogTemplate>("Delete entry?", parameters, options);
         var result = await dialog.Result;
-        return result.Cancelled;
+        return result.Canceled;
     }
 
     /// <summary>

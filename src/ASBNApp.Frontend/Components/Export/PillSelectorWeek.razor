@@ -1,16 +1,16 @@
 @* Simple chip selector component for weeks *@
 
 <MudStack Row="true">
-    <MudChipSet Filter="true" Mandatory="true">
-        <MudChip Text="purple" Default="true" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(0); })">
+    <MudChipSet T="string" Filter="true" Mandatory="true">
+        <MudChip T="string" Text="purple" Default="true" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(0); })">
             Current Week (Week @_currentWeek)
         </MudChip>
 
-        <MudChip Text="purple" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(1); })">
+        <MudChip T="string" Text="purple" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(1); })">
             Previous Week (Week @(_currentWeek - 1))
         </MudChip>
 
-        <MudChip Text="purple" Color="Color.Primary" OnClick="OpenDatePickerOverlay">
+        <MudChip T="string" Text="purple" Color="Color.Primary" OnClick="OpenDatePickerOverlay">
             Pick Custom Week (Week @SelectedWeek) &nbsp;
             <MudIcon Icon="@Icons.Material.Rounded.CalendarMonth" Color="Color.Surface" />
         </MudChip>
@@ -95,13 +95,13 @@
 
     public void CancelPicker()
     {
-        _picker.Close(false);
+        _picker.CloseAsync(false);
         isDatePickerOverlayVisible = false;
     }
 
     public void SetPickerToCurrentWeek()
     {
-        _picker.Close();
+        _picker.CloseAsync();
         date = DateTime.Now;
     }
 
