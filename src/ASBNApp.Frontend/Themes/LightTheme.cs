@@ -18,7 +18,7 @@ public static class LightTheme
             {
                 Default = new Default()
                 {
-                    FontFamily = new[] { "Inter" }
+                    FontFamily = ["Inter"]
                 }
             }
         };
