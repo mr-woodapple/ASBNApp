@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASBNApp.DataAPI.Controllers
 {
@@ -39,9 +40,17 @@ namespace ASBNApp.DataAPI.Controllers
             var user = await userManager.GetUserAsync(User);
             entry.Owner = user;
 
-            _context.LogEntry.Add(entry);
-            _context.SaveChanges();
-            return Created(entry);
+            // Check if the user has data for this day present, if so this shouldn't be a POST
+            if (await _context.LogEntry.AnyAsync(d => d.Date == entry.Date && d.Owner == entry.Owner))
+            {
+                return Conflict($"Already data available for {entry.Date.Date}, this should be a PATCH request. Request aborted.");
+            }
+            else 
+            {
+				_context.LogEntry.Add(entry);
+				_context.SaveChanges();
+				return Created(entry);
+			} 
         }
 
         [EnableQuery]
