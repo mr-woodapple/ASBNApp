@@ -21,7 +21,7 @@ else if (WorkLocationHours.Count == 0)
 }
 else if (WorkLocationHours.Count != 0)
 {
-    <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
+    <MudChipSet T="string" @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
         @foreach (var entry in WorkLocationHours)
         {
             <MudChip @ref=ChipRef Text="@entry.Location" Color="Color.Primary"
@@ -46,9 +46,9 @@ else if (WorkLocationHours.Count != 0)
     [Parameter]
     public EventCallback<string?> SelectedLocationChanged { get; set; }
 
-    private MudChip? selectedChip { get; set; }
-    private MudChip ChipRef { set => availableChips.Add(value); }
-    private List<MudChip> availableChips { get; set; } = new();
+    private MudChip<string>? selectedChip { get; set; }
+    private MudChip<string> ChipRef { set => availableChips.Add(value); }
+    private List<MudChip<string>> availableChips { get; set; } = new();
 
     [Parameter]
     public List<WorkLocationHoursWithID>? WorkLocationHours { get; set; }

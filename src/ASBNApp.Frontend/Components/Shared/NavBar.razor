@@ -7,17 +7,10 @@
 @using ASBNApp.Frontend.Interfaces;
 
 <MudAppBar>
-    <AuthorizeView>
-        <NotAuthorized>
-            <MudLink Href="/">
-                <MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
-            </MudLink>
-        </NotAuthorized>
+    <MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
 
+    <AuthorizeView>
         <Authorized>
-            <MudLink Href="/app">
-                <MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
-            </MudLink>
             <MudButton Href="/app" Color="Color.Inherit" Class="ms-10 me-5">Start</MudButton>
             <MudButton Href="export" Color="Color.Inherit">Export</MudButton>
             <MudSpacer />

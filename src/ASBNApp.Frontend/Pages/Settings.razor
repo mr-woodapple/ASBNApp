@@ -66,9 +66,9 @@
                         <MudItem xs="6">
                             <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="settings.ApprenticeshipStartDate" AutoClose>
                                 <PickerActions>
-                                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _startDatePicker.Close(false))">Cancel</MudButton>
+                                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _startDatePicker.CloseAsync(false))">Cancel</MudButton>
                                     <MudButton Class="mr-auto align-self-start" OnClick="SetToRecentStartDate">Recent start date</MudButton>
-                                    <MudButton Color="Color.Primary" OnClick="@(() => _startDatePicker.Close())">Ok</MudButton>
+                                    <MudButton Color="Color.Primary" OnClick="@(() => _startDatePicker.CloseAsync())">Ok</MudButton>
                                 </PickerActions>
                             </MudDatePicker>
                         </MudItem>
@@ -182,6 +182,6 @@
             : currentDate.Year - 1;
 
         await _startDatePicker.GoToDate(DateTime.Parse($"01-09-{year}"));
-        _startDatePicker.Close();
+        await _startDatePicker.CloseAsync();
     }
 }

@@ -2,16 +2,16 @@
 
 <MudStack Row="true">
     <MudPaper Elevation="0">
-        <MudChipSet @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true" >
-            <MudChip Text="today" Color="Color.Primary" Default="true"
+        <MudChipSet T="string" @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true" >
+            <MudChip T="string" Text="today" Color="Color.Primary" Default="true"
                      @onclick="@(e => { date = DateTime.Now.Date; })">
                      Today (@Today.Date.ToString("dd.MM.yyyy"))
             </MudChip>
-            <MudChip Text="tomorrow" Color="Color.Primary"
+            <MudChip T="string" Text="tomorrow" Color="Color.Primary"
                      @onclick="@(e => { date = DateTime.Now.Date.AddDays(1); })">
                      Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
             </MudChip>
-            <MudChip Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
+            <MudChip T="string" Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
         </MudChipSet>
     </MudPaper>
     
@@ -29,7 +29,7 @@
     [Parameter]
     public EventCallback<DateTime> SelectedDateChanged { get; set; }
 
-    private MudChip selectedChip;
+    private MudChip<string> selectedChip;
     private DateTime Today = DateTime.Now.Date;
     private DateTime Tomorrow = DateTime.Now.Date.AddDays(1);
 
