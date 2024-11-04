@@ -4,7 +4,7 @@
 
 namespace ASBNApp.Frontend.Model;
 
-public class WorkLocationHours
+public class WorkLocation
 {
     public string? Location { get; set; }
     public float? Hours { get; set; }

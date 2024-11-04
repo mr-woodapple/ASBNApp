@@ -7,29 +7,39 @@
 <MudPaper Outlined="true" Class="mt-5 pa-5">
     <MudGrid>
 
-        @* Select date *@
+        @* Date *@
         <MudItem xs="12">
             <MudText Typo="Typo.body2">I'm writing a log for...</MudText>
             <PillSelectorDate @bind-SelectedDate="SelectedDate" />
         </MudItem>
 
-        @* Select location *@
+        @* Location *@
         <MudItem xs="6">
             <MudText Typo="Typo.body2">I was working from...</MudText>
-            <PillSelectorLocation WorkLocationHours="workLocationHours" @bind-SelectedLocation="SelectedLocation" />
-        </MudItem>
-        <MudItem xs="6">
-            <MudNumericField @bind-Value="Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
+            <PillSelectorLocation WorkLocationHours="WorkLocations" @bind-SelectedLocation="SelectedWorkLocation" />
         </MudItem>
 
-        @* Add note and save *@
-        <MudItem xs="12">
-            <MudTextField @bind-Text="Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" />
+        @* Working hours *@
+        <MudItem xs="6">
+            @if (Entry == null) {
+                <MudSkeleton Height="50px" />
+            } else {
+                <MudNumericField @bind-Value="Entry.Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
+            }
         </MudItem>
+
+        @* Note *@
+        <MudItem xs="12">
+            @if(Entry == null) {
+                <MudSkeleton Height="50px" />
+            } else {
+                <MudTextField @bind-Text="Entry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" />
+            }
+        </MudItem>
+
         <MudItem xs="12">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
         </MudItem>
-
     </MudGrid>
 </MudPaper>
 
@@ -45,78 +55,33 @@
             if (value != _selectedDate)
             {
                 _selectedDate = value;
-                GetDataForDay().GetAwaiter().GetResult();
+                GetData();
             }
         }
     }
 
-    // Variables to bind the selected work location to
-    private string? _selectedLocation = null;
-    public string? SelectedLocation
-    {
-        get => _selectedLocation;
-        set
-        {
-            if (value != _selectedLocation)
-            {
-                _selectedLocation = value;
-                UpdateWorkHoursFromLocation();
-            }
-        }
-    }
+    public WorkLocationWithID? SelectedWorkLocation { get; set; }
+    public List<WorkLocationWithID>? WorkLocations { get; set; }
+    public EntryRowModelWithID? Entry { get; set; }
 
-    // Variables to bind the user input to
-    public float? Hours;
-    public string? Note;
-    public int? Id;
-
-    List<WorkLocationHoursWithID> workLocationHours { get; set; }
-
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        GetWorkLocationData();
-    }
 
     /// <summary>
-    /// Get's data for the work locations from the data service, 
-    /// set them for the sub components.
+    /// Load data for the selected date and all <see cref="WorkLocations"/>.
     /// </summary>
-    public async Task GetWorkLocationData()
-    {
-        workLocationHours = await dataService.GetWorkLocationHours();
+    public async Task GetData() {
+        Entry = null;
+        WorkLocations = await dataService.GetWorkLocationHours();
+        Entry = await dataService.GetDay(SelectedDate);
+
+        if (Entry != null)
+        {
+            SelectedWorkLocation = WorkLocations.SingleOrDefault(l => l.Location == Entry.Location);
+        }
+
         StateHasChanged();
     }
 
-    /// <summary>
-    /// Pre-set the value for hours worked for the UI based on the
-    /// selected workLocationHours element.
-    /// </summary>
-    public void UpdateWorkHoursFromLocation()
-    {
-        // Filter list for the matching string in SelectedLocation,
-        // set corresponding hours value to Hours
-        foreach (var entry in workLocationHours)
-        {
-            if (entry.Location == SelectedLocation) { Hours = entry.Hours; }
-        }
-    }
 
-    /// <summary>
-    /// Gets data for the value in SelectedDate
-    /// </summary>
-    public async Task GetDataForDay()
-    {
-        var data = await dataService.GetDay(SelectedDate);
-
-        Id = data.Id;
-        Note = data.Note;
-        Hours = data.Hours;
-        SelectedLocation = data.Location;
-
-        StateHasChanged();
-    }
 
     /// <summary>
     /// Triggers the DataService to save the edited data, also trigger
@@ -126,11 +91,11 @@
     {
         var data = new EntryRowModelWithID()
         {
-            Id = Id,
-            Hours = Hours,
-            Note = Note,
+            Id = Entry.Id,
+            Hours = Entry.Hours,
+            Note = Entry.Note,
             Date = SelectedDate,
-            Location = SelectedLocation
+            Location = SelectedWorkLocation.Location
         };
 
         // why do I have to convert Hours at all? its a nullable on both ends...
