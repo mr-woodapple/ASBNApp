@@ -21,10 +21,9 @@ else if (WorkLocationHours.Count == 0)
 }
 else if (WorkLocationHours.Count != 0)
 {
-    <MudChipSet T="WorkLocationWithID" @bind-SelectedValue="SelectedLocation" Mandatory="true">
-        @foreach (var location in WorkLocationHours)
-        {
-            <MudChip Value="@location" Color="Color.Primary" Text="@location.Location"
+    <MudChipSet T="WorkLocationWithID" @bind-SelectedValue="SelectedLocation" Mandatory>
+        @foreach(var location in WorkLocationHours) {
+            <MudChip Value="@location" Color="Color.Primary" Text="@location.Location" 
                 @onclick="@(e => { SelectedLocationChanged.InvokeAsync(SelectedLocation); })" />
         }
     </MudChipSet>
@@ -34,7 +33,7 @@ else if (WorkLocationHours.Count != 0)
 @code {
     [Parameter]
     public WorkLocationWithID? SelectedLocation { get; set; }
-    
+
     [Parameter]
     public EventCallback<WorkLocationWithID?> SelectedLocationChanged { get; set; }
 

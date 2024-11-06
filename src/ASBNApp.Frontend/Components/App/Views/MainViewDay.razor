@@ -45,7 +45,6 @@
 
 
 @code {
-    // Variables to bind the selected Date to
     private DateTime _selectedDate;
     public DateTime SelectedDate
     {
@@ -60,19 +59,42 @@
         }
     }
 
-    public WorkLocationWithID? SelectedWorkLocation { get; set; }
+    public WorkLocationWithID? _selectedWorkLocation;
+    public WorkLocationWithID? SelectedWorkLocation { 
+        get => _selectedWorkLocation; 
+        set 
+        {
+            if (value != _selectedWorkLocation) {
+                _selectedWorkLocation = value;
+                if (Entry != null && value != null)
+                {
+                    Entry.Hours = value.Hours;
+                }
+            }
+        }
+    }
+
     public List<WorkLocationWithID>? WorkLocations { get; set; }
     public EntryRowModelWithID? Entry { get; set; }
-
 
     /// <summary>
     /// Load data for the selected date and all <see cref="WorkLocations"/>.
     /// </summary>
-    public async Task GetData() {
+    public async Task GetData() 
+    {
+        // Trigger loading state for the UI
         Entry = null;
-        WorkLocations = await dataService.GetWorkLocationHours();
+        SelectedWorkLocation = null;
+
+        // Important that this only happens when the list is null, because otherwise 
+        // the UI won't reflect the updated selected location. Seems odd, don't understand tbh.
+        if (WorkLocations == null)
+        {
+            WorkLocations = await dataService.GetWorkLocationHours();
+        }
         Entry = await dataService.GetDay(SelectedDate);
 
+        // Set location
         if (Entry != null)
         {
             SelectedWorkLocation = WorkLocations.SingleOrDefault(l => l.Location == Entry.Location);
@@ -80,8 +102,6 @@
 
         StateHasChanged();
     }
-
-
 
     /// <summary>
     /// Triggers the DataService to save the edited data, also trigger
@@ -98,8 +118,7 @@
             Location = SelectedWorkLocation.Location
         };
 
-        // why do I have to convert Hours at all? its a nullable on both ends...
-        //if (await dataService.SaveDay(Note, SelectedDate, SelectedLocation, (float)Hours))
+        // Why do I have to convert Hours at all? its a nullable on both ends...
         if (await dataService.SaveDay(data))
         {
             Snackbar.Add("That's your data saved!", Severity.Success);
