@@ -2,24 +2,28 @@
 
 <MudStack Row="true">
     <MudPaper Elevation="0">
-        <MudChipSet T="string" @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true" >
-            <MudChip T="string" Text="today" Color="Color.Primary" Default="true"
-                     @onclick="@(e => { date = DateTime.Now.Date; })">
-                     Today (@Today.Date.ToString("dd.MM.yyyy"))
+        <MudChipSet T="string" @bind-SelectedValue="SelectedChip" Filter="true" Mandatory="true">
+            <MudChip Text="today" Color="Color.Primary" Default="true"
+                @onclick="@(e => { date = DateTime.Now.Date; })"
+            >
+                Today (@Today.Date.ToString("dd.MM.yyyy"))
             </MudChip>
-            <MudChip T="string" Text="tomorrow" Color="Color.Primary"
-                     @onclick="@(e => { date = DateTime.Now.Date.AddDays(1); })">
-                     Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
+
+            <MudChip Text="tomorrow" Color="Color.Primary"
+                @onclick="@(e => { date = DateTime.Now.Date.AddDays(1); })"
+            >
+                Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
             </MudChip>
-            <MudChip T="string" Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
+
+            <MudChip Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
         </MudChipSet>
     </MudPaper>
-    
-    <MudPaper Elevation="0" Class="mt-n5">
-        @if(selectedChip != null && selectedChip.Text == "customdate") {
+
+    @if(SelectedChip != null && SelectedChip == "customdate") {
+        <MudPaper Elevation="0" Class="mt-n5">
             <MudDatePicker Label="Select custom date:" @bind-Date="date" />
-        }
-    </MudPaper>
+        </MudPaper>
+    }
 </MudStack>
 
 
@@ -29,7 +33,7 @@
     [Parameter]
     public EventCallback<DateTime> SelectedDateChanged { get; set; }
 
-    private MudChip<string> selectedChip;
+    private string SelectedChip = "today";
     private DateTime Today = DateTime.Now.Date;
     private DateTime Tomorrow = DateTime.Now.Date.AddDays(1);
 

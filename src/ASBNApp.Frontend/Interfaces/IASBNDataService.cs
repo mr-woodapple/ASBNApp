@@ -17,7 +17,7 @@ interface IASBNDataService
     public Task<Settings> GetSettings();
     public Task<bool> SaveSettings(Settings settings);
 
-    public Task<List<WorkLocationHoursWithID>> GetWorkLocationHours();
-    public Task<bool> SaveWorkLocationHours(List<WorkLocationHoursWithID> workLocationHours);
+    public Task<List<WorkLocationWithID>> GetWorkLocationHours();
+    public Task<bool> SaveWorkLocationHours(List<WorkLocationWithID> workLocationHours);
     public Task<bool> DeleteWorkLocationHours(int? id);
 }

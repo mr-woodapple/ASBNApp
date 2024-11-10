@@ -127,35 +127,35 @@ namespace ASBNApp.Frontend.Services
 
 
 		/// <summary>
-		/// Get all available <see cref="WorkLocationHours"/> objects.
+		/// Get all available <see cref="WorkLocation"/> objects.
 		/// </summary>
 		/// <returns></returns>
-		public async Task<List<WorkLocationHoursWithID>> GetWorkLocationHours()
+		public async Task<List<WorkLocationWithID>> GetWorkLocationHours()
 		{
 			try
 			{
 				var json = await _httpClient.GetStringAsync($"/api/odata/WorkLocation");
-				var odata = JsonSerializer.Deserialize<ODataBase<WorkLocationHoursWithID>>(json);
+				var odata = JsonSerializer.Deserialize<ODataBase<WorkLocationWithID>>(json);
 
 				return odata.value;
 			}
 			catch (HttpRequestException ex)
 			{
 				Console.WriteLine($"HttpsRequestException catched: {ex.Message}");
-				return new List<WorkLocationHoursWithID>();
+				return new List<WorkLocationWithID>();
 			}
 		}
 
 		/// <summary>
-		/// Handles saving a <see cref="WorkLocationHours"/> object with the API.
+		/// Handles saving a <see cref="WorkLocation"/> object with the API.
 		/// </summary>
-		/// <param name="workLocationHours">The <see cref="WorkLocationHours"/> to save.</param>
+		/// <param name="workLocationHours">The <see cref="WorkLocation"/> to save.</param>
 		/// <returns>Bool, true representing success, false failure.</returns>
-		public async Task<bool> SaveWorkLocationHours(List<WorkLocationHoursWithID> workLocationHours)
+		public async Task<bool> SaveWorkLocationHours(List<WorkLocationWithID> workLocationHours)
         {
             foreach (var entry in workLocationHours)
             {
-                var json = JsonSerializer.Serialize(entry as WorkLocationHours);
+                var json = JsonSerializer.Serialize(entry as WorkLocation);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = (entry.Id == null)
@@ -173,7 +173,7 @@ namespace ASBNApp.Frontend.Services
         }
 
 		/// <summary>
-		/// Delete a <see cref="WorkLocationHours"/> entry for the given id.
+		/// Delete a <see cref="WorkLocation"/> entry for the given id.
 		/// </summary>
 		/// <param name="id">The id of the object to be deleted.</param>
 		/// <returns>Bool, true representing success, false failure.</returns>

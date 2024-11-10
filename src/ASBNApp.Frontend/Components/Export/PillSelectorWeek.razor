@@ -1,16 +1,16 @@
 @* Simple chip selector component for weeks *@
 
-<MudStack Row="true">
-    <MudChipSet T="string" Filter="true" Mandatory="true">
-        <MudChip T="string" Text="purple" Default="true" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(0); })">
+<MudStack Row>
+    <MudChipSet T="string" @bind-SelectedValue="_selected" Filter Mandatory>
+        <MudChip Value="@("currentWeek")" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(0); _selected = "currentWeek"; })">
             Current Week (Week @_currentWeek)
         </MudChip>
 
-        <MudChip T="string" Text="purple" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(1); })">
+        <MudChip Value="@("nextWeek")" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(1); _selected = "nextWeek"; })">
             Previous Week (Week @(_currentWeek - 1))
         </MudChip>
 
-        <MudChip T="string" Text="purple" Color="Color.Primary" OnClick="OpenDatePickerOverlay">
+        <MudChip Value="@("customWeek")" Color="Color.Primary" OnClick="@(e => { OpenDatePickerOverlay(); _selected = "customWeek"; })">
             Pick Custom Week (Week @SelectedWeek) &nbsp;
             <MudIcon Icon="@Icons.Material.Rounded.CalendarMonth" Color="Color.Surface" />
         </MudChip>
@@ -50,9 +50,11 @@
         SelectedDateChanged.InvokeAsync();
     }
 
-    DateHandler dateHandler = new DateHandler();
-    private int? _currentWeek;
+    // String to bind the selectedChip to, defaults to "currentWeek"
+    private string _selected = "currentWeek";
 
+    private int? _currentWeek;
+    DateHandler dateHandler = new DateHandler();
 
     /// <summary>
     /// Used to assign calculated values to the matching variables, avoids data not being loaded into memory

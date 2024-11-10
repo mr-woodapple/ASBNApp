@@ -37,11 +37,13 @@ also manage editing states & update parent component if necessary. *@
 
 
 @code {
+    // TODO: Check before adding a new Location, if the name is present already. In that case, don't add it and instead show a warning!
+
     // Two way binding
     [Parameter]
-    public List<WorkLocationHoursWithID>? workLocationHours { get; set; }
+    public List<WorkLocationWithID>? workLocationHours { get; set; }
     [Parameter]
-    public EventCallback<List<WorkLocationHoursWithID>?> WorkLocationHoursChanged { get; set; }
+    public EventCallback<List<WorkLocationWithID>?> WorkLocationHoursChanged { get; set; }
 
     // Text field ref
     private MudTextField<string> NewLocationTextField { get; set; }
@@ -56,7 +58,7 @@ also manage editing states & update parent component if necessary. *@
         if (_newWorkLocation != null && _newWorkHours != null)
         {
             // Add new entry & clear inputs
-            workLocationHours.Add(new WorkLocationHoursWithID()
+            workLocationHours.Add(new WorkLocationWithID()
             {
                 Location = _newWorkLocation,
                 Hours = _newWorkHours
@@ -74,7 +76,7 @@ also manage editing states & update parent component if necessary. *@
         }
     }
 
-    private async Task DeleteWorkLocationHoursEntry(WorkLocationHoursWithID entry)
+    private async Task DeleteWorkLocationHoursEntry(WorkLocationWithID entry)
     {
         // Remove entry that is not in database, so Id isn't set.
         if(entry.Id == null)

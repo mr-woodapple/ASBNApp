@@ -1,4 +1,4 @@
-@* Simple component to select a location, should get it's values from the database at some point. *@
+@* Simple component to select a location. *@
 
 @using ASBNApp.Frontend.Model;
 @inject IASBNDataService dataService;
@@ -21,63 +21,22 @@ else if (WorkLocationHours.Count == 0)
 }
 else if (WorkLocationHours.Count != 0)
 {
-    <MudChipSet T="string" @bind-SelectedChip="selectedChip" Filter="true" Mandatory="true">
-        @foreach (var entry in WorkLocationHours)
-        {
-            <MudChip @ref=ChipRef Text="@entry.Location" Color="Color.Primary"
-                     @onclick="@(e => { SelectedLocation = entry.Location; SelectedLocationChanged.InvokeAsync(SelectedLocation); })" />
+    <MudChipSet T="WorkLocationWithID" @bind-SelectedValue="SelectedLocation" Mandatory>
+        @foreach(var location in WorkLocationHours) {
+            <MudChip Value="@location" Color="Color.Primary" Text="@location.Location" 
+                @onclick="@(e => { SelectedLocationChanged.InvokeAsync(SelectedLocation); })" />
         }
     </MudChipSet>
 }
 
 
 @code {
-    private string? _selectedLocation;
     [Parameter]
-    public string? SelectedLocation
-    {
-        get => _selectedLocation;
-        set
-        {
-            _selectedLocation = value;
-            UpdateSelectedChip();
-        }
-    }
-    [Parameter]
-    public EventCallback<string?> SelectedLocationChanged { get; set; }
-
-    private MudChip<string>? selectedChip { get; set; }
-    private MudChip<string> ChipRef { set => availableChips.Add(value); }
-    private List<MudChip<string>> availableChips { get; set; } = new();
+    public WorkLocationWithID? SelectedLocation { get; set; }
 
     [Parameter]
-    public List<WorkLocationHoursWithID>? WorkLocationHours { get; set; }
+    public EventCallback<WorkLocationWithID?> SelectedLocationChanged { get; set; }
 
-
-    // Run this on after the first render to pre-set the selected chip
-    protected override async void OnAfterRender(bool firstRender)
-    {
-        if (!firstRender) return;
-
-        UpdateSelectedChip();
-        StateHasChanged();
-    }
-
-    
-    // Handle updating the selected chip, as well as edge cases as the items not being loaded yet
-    // or no item set
-    private void UpdateSelectedChip()
-    {
-        if (availableChips.Count != 0)
-        {
-            try
-            {
-                selectedChip = availableChips.Single(e => e.Text == _selectedLocation);
-            }
-            catch (InvalidOperationException e)
-            {
-                selectedChip = null;
-            }
-        }
-    }
+    [Parameter]
+    public List<WorkLocationWithID>? WorkLocationHours { get; set; }
 }
