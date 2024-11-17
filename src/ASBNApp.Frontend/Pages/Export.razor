@@ -12,7 +12,7 @@
 @using KristofferStrube.Blazor.FileSystem;
 
 
-<PageTitle>Export</PageTitle>
+<PageTitle>Export | ASBN App</PageTitle>
 
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
 	@* Check if the browser supports exporting a file, if not show info *@
@@ -28,7 +28,7 @@
 			<MudText Typo="Typo.subtitle1">Attention: You still need to manually sign these (if required by your company).</MudText>
 		</MudItem>
 
-		<MudPaper Outlined="true" Class="mt-5 pa-5">
+		<MudPaper Outlined Class="mt-5 pa-5">
 			<MudGrid>
 
 				<MudItem xs="12">
@@ -63,7 +63,12 @@
 			</MudGrid>
 		</MudPaper>
 	}
-	
+
+	@* Info linking to additional page *@
+	<MudAlert Severity="Severity.Normal" Class="mt-5" >
+		If you're looking for an option to import or export your JSON data: 
+		<MudLink Href="/import">Import & Export JSON</MudLink>
+	</MudAlert>
 </MudContainer>
 
 

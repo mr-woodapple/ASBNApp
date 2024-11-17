@@ -118,7 +118,6 @@
             Location = SelectedWorkLocation.Location
         };
 
-        // Why do I have to convert Hours at all? its a nullable on both ends...
         if (await dataService.SaveDay(data))
         {
             Snackbar.Add("That's your data saved!", Severity.Success);

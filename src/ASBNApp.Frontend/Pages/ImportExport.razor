@@ -1,0 +1,32 @@
+﻿@page "/import"
+
+@using ASBNApp.Frontend.Enums;
+
+<PageTitle>Import / Export JSON | ASBN App</PageTitle>
+
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
+
+	@* Header space *@
+	<MudItem Elevation="0" Class="my-10">
+		<MudText Typo="Typo.h3" Class="mb-5">Import & Export</MudText>
+		<MudText Typo="Typo.subtitle1">Import .json files from the legacy version (or export to .json).</MudText>
+	</MudItem>
+
+	<MudPaper Outlined Class="mt-5 pa-5">
+		<MudText Typo="Typo.subtitle1">1. Do you want to import or export data?</MudText>
+		<MudChipSet T="string">
+			<MudChip Value="@DataOperations.Import" >Import JSON</MudChip>
+			<MudChip Value="@DataOperations.Export">Export JSON</MudChip>
+
+		</MudChipSet>
+	</MudPaper>
+</MudContainer>
+
+
+
+@code {
+
+
+
+}
