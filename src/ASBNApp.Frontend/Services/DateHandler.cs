@@ -64,16 +64,22 @@ public class DateHandler {
     }
 
     /// <summary>
-    /// Returns the Monday date for a given week & year
+    /// Returns the Monday date for a given week & year.
     /// </summary>
     /// <returns> DateTime object for the first day in a week </returns>
-    public DateTime GetFirstDateOfWeek(int week, int year) {
-        // Get first Monday of a year
+    public DateTime GetFirstDateOfWeek(int week, int year)
+    {
         DateTime FirstDayOfAYear = new DateTime(year, 1, 1);
         DateTime FirstMondayOfAYear = new DateTime(year, 1, (8 - (int)FirstDayOfAYear.DayOfWeek) % 7 + 1);
 
-        // Calculate how many days we're in from that first Monday by the number of weeks
-        return FirstMondayOfAYear.AddDays((week - 1) * 7);
+		// Get the weekday of January 1st
+		DayOfWeek dayOfWeek = FirstDayOfAYear.DayOfWeek;
+
+		// Calculate days in the first week (from 01.01 to the first Sunday)
+		int daysInFirstWeek = dayOfWeek == DayOfWeek.Sunday ? 1 : 7 - (int)dayOfWeek + 1;
+
+		// Calculate how many days we're in from that first day by the number of weeks
+		return FirstDayOfAYear.AddDays(((week - 2) * 7) + daysInFirstWeek);
     }
 
     /// <summary>
