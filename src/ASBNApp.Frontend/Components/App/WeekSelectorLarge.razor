@@ -1,8 +1,11 @@
 @* Large picker to select the week we want to edit. *@
 
+@using System.Globalization;
+
 <MudItem>
     <MudStack Row="true" Justify="Justify.Center" >
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick=@(() => firstDateOfAWeek = firstDateOfAWeek?.AddDays(-7)) />
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" 
+                       OnClick=@(() => firstDateOfAWeek = cal.AddWeeks(firstDateOfAWeek.Value, -1)) />
 
         <MudStack Row="true" Class="mud-theme-primary rounded-pill ps-5" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.subtitle1" Class="m-0"><b>Selected Week: </b>@SelectedWeek of @SelectedYear</MudText>
@@ -10,7 +13,8 @@
             <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Inherit" OnClick="OpenDatePickerOverlay" />
         </MudStack>
 
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick=@(() => firstDateOfAWeek = firstDateOfAWeek?.AddDays(7)) />
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" 
+                       OnClick=@(() => firstDateOfAWeek = cal.AddWeeks(firstDateOfAWeek.Value, 1)) />
     </MudStack>
 
     <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
@@ -51,6 +55,7 @@
     }
 
     // Making the MudDatePicker work (& updating variables)
+    Calendar cal = CultureInfo.InvariantCulture.Calendar;
     MudDatePicker _picker;
     DateTime? _date;
     DateTime? firstDateOfAWeek
