@@ -41,10 +41,13 @@
 
     // Logic & variables related to openening and closing the date picker overlay
     private bool isDatePickerOverlayVisible;
-    public void OpenDatePickerOverlay()
+    public async void OpenDatePickerOverlay()
     {
         isDatePickerOverlayVisible = true;
-        StateHasChanged();
+
+        // Workaround for https://github.com/MudBlazor/MudBlazor/issues/10578
+        await Task.Yield();
+        _picker.GoToDate(firstDateOfAWeek.Value);
     }
 
     // Making the MudDatePicker work (& updating variables)
