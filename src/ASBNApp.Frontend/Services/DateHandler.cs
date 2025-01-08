@@ -1,17 +1,17 @@
+using System.Globalization;
+
+
 /// <summary>
 /// Week handler to get various information about weeks
 /// </summary>
-
-
-using System.Globalization;
-
 public class DateHandler {
 
     /// <summary>
     /// Function to get the current week number
     /// </summary> 
     /// <returns>Week number as an int</returns>
-    public int GetCurrentWeekOfYear() {
+    public int GetCurrentWeekOfYear() 
+    {
         // get culture info & current date/time from thread
         var CultureInfo = Thread.CurrentThread.CurrentCulture;
         DateTime Date = DateTime.Now;
@@ -25,10 +25,12 @@ public class DateHandler {
     }
 
     /// <summary>
-    /// Calculates the week number for a given date
+    /// Calculates the week number for a given date.
     /// </summary>
-    /// <returns>int representing the week of year for the given date</returns>
-    public int GetWeekOfYear(DateTime date) {
+    /// <param name="date"><see cref="DateTime"/> to calculate the week for.</param>
+    /// <returns><see cref="int"/> representing the week of year for the given date</returns>
+    public int GetWeekOfYear(DateTime date) 
+    {
         // Get calendar for current culture info
         var cultureInfo = Thread.CurrentThread.CurrentCulture;
         Calendar calendar = cultureInfo.Calendar;
@@ -45,7 +47,8 @@ public class DateHandler {
     /// Returns the first day of the current week
     /// </summary>
     /// <returns>Day with day & month as a string</returns>
-    public string GetFirstDayOfWeekAsString() {
+    public string GetFirstDayOfWeekAsString() 
+    {
         // (int)Date.DayOfWeek returns from a 0 for Sunday up to a 6 for Saturday -> + Monday makes the start of the week Monday
         var FirstDay = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday));
         
@@ -56,7 +59,8 @@ public class DateHandler {
     /// Returns the last day of the current week
     /// </summary>
     /// <returns>Date with day & month as a string</returns>
-    public string GetLastDayOfWeekAsString() {
+    public string GetLastDayOfWeekAsString() 
+    {
         // get 7 - DayOfWeek, add result to FirstDayOfWeek
         var LastDay = DateTime.Today.AddDays(7 - (int)DateTime.Today.DayOfWeek);
 
@@ -69,31 +73,36 @@ public class DateHandler {
     /// <returns> DateTime object for the first day in a week </returns>
     public DateTime GetFirstDateOfWeek(int week, int year)
     {
-        DateTime FirstDayOfAYear = new DateTime(year, 1, 1);
-        DateTime FirstMondayOfAYear = new DateTime(year, 1, (8 - (int)FirstDayOfAYear.DayOfWeek) % 7 + 1);
+        CultureInfo ci = CultureInfo.CurrentCulture;
 
-		// Get the weekday of January 1st
-		DayOfWeek dayOfWeek = FirstDayOfAYear.DayOfWeek;
+        DateTime januaryFirst = new DateTime(year, 1, 1);
+        int daysOffset = (int)ci.DateTimeFormat.FirstDayOfWeek - (int)januaryFirst.DayOfWeek;
+        DateTime firstWeekDay = januaryFirst.AddDays(daysOffset);
 
-		// Calculate days in the first week (from 01.01 to the first Sunday)
-		int daysInFirstWeek = dayOfWeek == DayOfWeek.Sunday ? 1 : 7 - (int)dayOfWeek + 1;
+        int firstWeek = ci.Calendar.GetWeekOfYear(januaryFirst, ci.DateTimeFormat.CalendarWeekRule, ci.DateTimeFormat.FirstDayOfWeek);
+        if ((firstWeek <= 1 || firstWeek >= 52) && daysOffset >= -3)
+        {
+            week -= 1;
+        }
 
-		// Calculate how many days we're in from that first day by the number of weeks
-		return FirstDayOfAYear.AddDays(((week - 2) * 7) + daysInFirstWeek);
+        return firstWeekDay.AddDays(week * 7);
     }
 
     /// <summary>
     /// Returns the Sunday date for a given week & year
     /// </summary>
     /// <returns> DateTime object for the first day in a week </returns>
-    public DateTime GetLastDateOfWeek(int week, int year) {
-        // Get first Monday of a year
-        DateTime FirstDayOfAYear = new DateTime(year, 1, 1);
-        DateTime FirstMondayOfAYear = new DateTime(year, 1, (8 - (int)FirstDayOfAYear.DayOfWeek) % 7 + 1);
+    public DateTime GetLastDateOfWeek(int week, int year) 
+    {
+        //// Get first Monday of a year
+        //DateTime FirstDayOfAYear = new DateTime(year, 1, 1);
+        //DateTime FirstMondayOfAYear = new DateTime(year, 1, (8 - (int)FirstDayOfAYear.DayOfWeek) % 7 + 1);
 
-        // Calculate how many days we're in from that first Monday by the number of weeks, 
-        // add 6 days to get the last date in a week
-        return FirstMondayOfAYear.AddDays((week - 1) * 7 + 6);
+        //// Calculate how many days we're in from that first Monday by the number of weeks, 
+        //// add 6 days to get the last date in a week
+        //return FirstMondayOfAYear.AddDays((week - 1) * 7 + 6);
+
+        return GetFirstDateOfWeek(week, year).AddDays(6);
     }
 
     /// <summary>
@@ -109,5 +118,24 @@ public class DateHandler {
 		var diff = today - (DateTime)startDate;
 
 		return (diff.Days / 365) + 1;
+    }
+
+    /// <summary>
+    /// This method is borrowed from http://stackoverflow.com/a/11155102/284240
+    /// 
+    /// It's different from the <see cref="GetWeekOfYear(DateTime)"/> in how it handles the week,
+    /// as the .NET standard allows for weeks to be split across years, which isn't wanted in this case.
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    public int GetIso8601WeekOfYear(DateTime time)
+    {
+        DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+        if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+        {
+            time = time.AddDays(3);
+        }
+
+        return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
     }
 }

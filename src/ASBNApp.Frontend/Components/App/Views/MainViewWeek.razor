@@ -45,6 +45,11 @@
     private List<EntryRowModelWithID> rows = new();
     private List<WorkLocationWithID> _workLocationHours = new();
 
+    // Creates DateHandler instance & variables to pass down to child component
+    public int? SelectedWeek { get; set; }
+    public int? SelectedYear { get; set; }
+
+
     protected override void OnInitialized()
     {
         GetWorkLocationHours();
@@ -85,11 +90,6 @@
         // Force update the UI
         StateHasChanged();
     }
-
-
-    // Creates DateHandler instance & variables to pass down to child component
-    public int? SelectedWeek { get; set; }
-    public int? SelectedYear { get; set; }
 
     /// <summary>
     /// Called to be called from child component to delete individual entries.

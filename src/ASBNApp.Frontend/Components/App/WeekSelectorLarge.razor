@@ -2,7 +2,7 @@
 
 <MudItem>
     <MudStack Row="true" Justify="Justify.Center" >
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick="SelectPreviousWeek" />
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick=@(() => date = date?.AddDays(-7)) />
 
         <MudStack Row="true" Class="mud-theme-primary rounded-pill ps-5" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.subtitle1" Class="m-0"><b>Selected Week: </b>@SelectedWeek of @SelectedYear</MudText>
@@ -10,7 +10,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Inherit" OnClick="OpenDatePickerOverlay" />
         </MudStack>
 
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick="SelectNextWeek" />
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick=@(() => date = date?.AddDays(7)) />
     </MudStack>
 
     <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
@@ -39,7 +39,7 @@
     DateHandler dateHandler = new DateHandler();
 
 
-    // Logic related to open and closing the date picker overlay
+    // Logic & variables related to openening and closing the date picker overlay
     private bool isDatePickerOverlayVisible;
     public void OpenDatePickerOverlay()
     {
@@ -50,15 +50,19 @@
     // Making the MudDatePicker work (& updating variables)
     MudDatePicker _picker;
     DateTime? _date;
-    DateTime? date 
+    DateTime? date // TODO: Rename to "firstDateOfAWeek"
     { 
         get => _date;
         set {
-            _date = value;
-            SelectedWeek = dateHandler.GetWeekOfYear((DateTime)value);
-            SelectedYear = ((DateTime)value).Year;
+            // ensure we have the first date of a given week before setting it.
+            int week = dateHandler.GetWeekOfYear((DateTime)value);
+            DateTime dateToSet = dateHandler.GetFirstDateOfWeek(week, ((DateTime)value).Year);
+
+            _date = dateToSet;
             isDatePickerOverlayVisible = false;
 
+            SelectedWeek = dateHandler.GetWeekOfYear(dateToSet);
+            SelectedYear = dateToSet.Year;
             TriggerAllCallbacks(SelectedWeek, SelectedYear);
         }
     }
@@ -79,8 +83,7 @@
     {
         await SelectedWeekChanged.InvokeAsync(week);
         await SelectedYearChanged.InvokeAsync(year);
-        // Callback to the parent component
-        await OnCallback.Invoke();
+        await OnCallback.Invoke(); // Callback to the parent component
     }
 
     public void CancelPicker() {
@@ -91,39 +94,5 @@
     public void SetPickerToCurrentWeek() {
         _picker.CloseAsync();
         date = DateTime.Now;
-    }
-
-    // Updates the week number and the formatted week number for the selector
-    // Take into account that we need to switch from 52 to 1 on week numbers and
-    // to the next/previous year
-    // Also update the binded values
-    public void SelectNextWeek()
-    {
-        if (SelectedWeek == 52)
-        {
-            SelectedWeek = 1;
-            SelectedYear++;
-        }
-        else
-        {
-            SelectedWeek++;
-        }
-
-        TriggerAllCallbacks(SelectedWeek, SelectedYear);
-    }
-
-    public void SelectPreviousWeek()
-    {
-        if (SelectedWeek == 01)
-        {
-            SelectedWeek = 52;
-            SelectedYear--;
-        }
-        else
-        {
-            SelectedWeek--;
-        }
-
-        TriggerAllCallbacks(SelectedWeek, SelectedYear);
     }
 }
