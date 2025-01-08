@@ -2,7 +2,7 @@
 
 <MudItem>
     <MudStack Row="true" Justify="Justify.Center" >
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick=@(() => date = date?.AddDays(-7)) />
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" OnClick=@(() => firstDateOfAWeek = firstDateOfAWeek?.AddDays(-7)) />
 
         <MudStack Row="true" Class="mud-theme-primary rounded-pill ps-5" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.subtitle1" Class="m-0"><b>Selected Week: </b>@SelectedWeek of @SelectedYear</MudText>
@@ -10,11 +10,11 @@
             <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Inherit" OnClick="OpenDatePickerOverlay" />
         </MudStack>
 
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick=@(() => date = date?.AddDays(7)) />
+        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" OnClick=@(() => firstDateOfAWeek = firstDateOfAWeek?.AddDays(7)) />
     </MudStack>
 
     <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
-        <MudDatePicker @ref="_picker" PickerVariant="PickerVariant.Static" @bind-Date="date" ShowWeekNumbers="true">
+        <MudDatePicker @ref="_picker" PickerVariant="PickerVariant.Static" @bind-Date="firstDateOfAWeek" ShowWeekNumbers="true">
             <PickerActions>
                 <MudButton Class="mr-auto align-self-start" OnClick="@(() => CancelPicker())">Cancel</MudButton>
                 <MudButton Color="Color.Primary" OnClick="@(() => SetPickerToCurrentWeek())">Current week</MudButton>
@@ -50,14 +50,13 @@
     // Making the MudDatePicker work (& updating variables)
     MudDatePicker _picker;
     DateTime? _date;
-    DateTime? date // TODO: Rename to "firstDateOfAWeek"
+    DateTime? firstDateOfAWeek
     { 
         get => _date;
         set {
-            // ensure we have the first date of a given week before setting it.
+            // Ensure we have the first date of a given week before setting it.
             int week = dateHandler.GetWeekOfYear((DateTime)value);
             DateTime dateToSet = dateHandler.GetFirstDateOfWeek(week, ((DateTime)value).Year);
-
             _date = dateToSet;
             isDatePickerOverlayVisible = false;
 
@@ -75,7 +74,7 @@
         SelectedYear = DateTime.Now.Year;
 
         // Set value for the date picker
-        date = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
+        firstDateOfAWeek = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
     }
 
     // Single place to trigger the callbacks
@@ -93,6 +92,6 @@
 
     public void SetPickerToCurrentWeek() {
         _picker.CloseAsync();
-        date = DateTime.Now;
+        firstDateOfAWeek = DateTime.Now;
     }
 }
