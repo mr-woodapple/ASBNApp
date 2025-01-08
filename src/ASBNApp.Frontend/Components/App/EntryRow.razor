@@ -14,7 +14,7 @@
 
         @* Date picker *@
         <MudItem xs="3">
-            <MudDatePicker Label="Date" @bind-Date="date" MinDate="@_minDateValue" MaxDate="@_maxDateValue" />
+            <MudDatePicker Label="Select Date" @bind-Date="date" MinDate="@_minDateValue" MaxDate="@_maxDateValue"/>
         </MudItem>
 
         @* Location selector *@
@@ -40,8 +40,8 @@
         @* Location hours input *@
         <MudItem xs="3">
             <MudStack Row>
-                <MudNumericField @bind-Value="Entry.Hours" Label="Select hours" Min="0" Format="N1" />
-                
+                <MudNumericField @bind-Value="Entry.Hours" Label="Set Hours" Min="0" Format="N1" />
+
                 <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight">
                     @if(!string.IsNullOrWhiteSpace(Entry.Note))
                     {
@@ -106,7 +106,6 @@
         }
     }
 
-
     private DateTime _date;
     private DateTime? date 
     { 
@@ -122,7 +121,6 @@
     // Min & max values for the date picker.
     private DateTime? _minDateValue;
     private DateTime? _maxDateValue;
-
 
     protected override void OnInitialized()
     {
