@@ -1,6 +1,11 @@
 ﻿@page "/import"
 
+@inject IASBNDataService dataService;
+@inject IJSRuntime js;
+
 @using ASBNApp.Frontend.Enums;
+@using System.Text.Json;
+@using System.IO;
 
 <PageTitle>Import / Export JSON | ASBN App</PageTitle>
 
@@ -13,25 +18,119 @@
 		<MudText Typo="Typo.subtitle1">Import .json files from the legacy version (or export to .json).</MudText>
 	</MudItem>
 
-	<MudPaper Elevation="0" Class="m-5">
-		<MudButton Variant="Variant.Filled" Color="Color.Primary">Import</MudButton>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary">Export</MudButton>
-	</MudPaper>
+	<MudGrid Elevation="0" Spacing="6">
+
+		@* Import *@
+		<MudItem xs="6">
+			<MudPaper Elevation="0" Outlined Class="pa-5">
+				<MudText Typo="Typo.h6">Import</MudText>
+				<MudText>Upload a file to get started!</MudText>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary">Import</MudButton>
+
+				@* TODO: Add a checkbox to use a legacy importer, that converts the entries from the legacy ASBN app *@
+				<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="Import">
+					<ActivatorContent>
+						<MudButton Variant="Variant.Filled"
+						Color="Color.Primary"
+						StartIcon="@Icons.Material.Filled.CloudUpload">
+							Upload Files
+						</MudButton>
+					</ActivatorContent>
+				</MudFileUpload>
+
+			</MudPaper>
+		</MudItem>
+
+		@* Export *@
+		<MudItem xs="6">
+			<MudPaper Elevation="0" Outlined Class="pa-5">
+				<MudText Typo="Typo.h6">Export</MudText>
+				<MudText>Select what you want to export:</MudText>
+
+				<MudCheckBox @bind-Value="_exportData" Label="Entries" Color="Color.Primary"></MudCheckBox>
+				<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
+				<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
+
+				<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" OnClick="Export">
+					@if (_isExporting)
+					{
+						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						<MudText Class="ms-2">@_exportStatus</MudText>
+					}
+					else
+					{
+						<MudText>Export Data</MudText>
+					}
+				</MudButton>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+
 </MudContainer>
 
 
 
 @code {
+	// these should be set by the ui
+	private bool _exportSettings = false;
+	private bool _exportWorkLocations = true;
+	private bool _exportData = false;
+
+	private bool _isExporting = false;
+	private string _exportStatus = "Exporting...";
 
 	// Import: 
-		// 1. Select import
-		// 2. upload file
-		// 3. Import data
+	// 1. Select import
+	// 2. upload file
+	// 3. Import data
+	private async Task Import(IBrowserFile file)
+	{
+
+		using var stream = file.OpenReadStream();
+		using var reader = new StreamReader(stream);
+		var fileContent = await reader.ReadToEndAsync();
+
+		var options = new JsonSerializerOptions
+		{
+			PropertyNameCaseInsensitive = true // Optional: allows case-insensitive property matching
+		};
+		var data = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
+
+	}
 
 
 
 	// Export:
-		// 1. select export
-		// 2. Download data
+	// 1. select export
+	// 2. Download data
 
+	private async Task Export()
+	{
+		_exportStatus = "Downloading data...";
+
+		var export = new JSONDataWrapper();
+		if (_exportWorkLocations)
+		{
+			export.WorkLocationHours = await dataService.GetWorkLocationHours();
+		}
+
+		if (_exportSettings)
+		{
+			export.Settings = await dataService.GetSettings();
+		}
+
+		if (_exportData)
+		{
+			export.Data = await dataService.GetAllEntries();
+		}
+
+		_exportStatus = "Assembling file...";
+
+		var json = JsonSerializer.Serialize(export);
+		byte[] file = System.Text.Encoding.UTF8.GetBytes(json);
+		
+		var fileName = "export.json";
+		var contentType = "text/json";
+		await js.InvokeVoidAsync("DownloadFileFromStream", fileName, contentType, file);
+	}
 }

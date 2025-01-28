@@ -2,6 +2,7 @@
 using ASBNApp.Frontend.Model;
 using System.Text;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ASBNApp.Frontend.Services
 {
@@ -125,12 +126,31 @@ namespace ASBNApp.Frontend.Services
 			return true;
 		}
 
-
 		/// <summary>
-		/// Get all available <see cref="WorkLocation"/> objects.
+		/// 
 		/// </summary>
 		/// <returns></returns>
-		public async Task<List<WorkLocationWithID>> GetWorkLocationHours()
+		public async Task<List<EntryRowModelWithID>> GetAllEntries() {
+            try
+            {
+                var json = await _httpClient.GetStringAsync($"/api/odata/Entry");
+                var odata = JsonSerializer.Deserialize<ODataBase<EntryRowModelWithID>>(json);
+
+				return odata.value;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HttpsRequestException catched while trying to download all entries: {ex.Message}");
+				return new List<EntryRowModelWithID>();
+            }
+        }
+
+
+        /// <summary>
+        /// Get all available <see cref="WorkLocation"/> objects.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<WorkLocationWithID>> GetWorkLocationHours()
 		{
 			try
 			{

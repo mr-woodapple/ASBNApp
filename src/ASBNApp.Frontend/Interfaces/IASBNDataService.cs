@@ -13,6 +13,7 @@ interface IASBNDataService
 
 	public Task<List<EntryRowModelWithID>> GetWeek(DateTime? startDate, DateTime? endDate);
     public Task<bool> SaveEntries(IEnumerable<EntryRowModelWithID> entries);
+    public Task<List<EntryRowModelWithID>> GetAllEntries();
 
     public Task<Settings> GetSettings();
     public Task<bool> SaveSettings(Settings settings);

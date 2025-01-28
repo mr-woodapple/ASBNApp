@@ -1,60 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="application-name" content="ASBN App">
+        <meta name="theme-color" content="#ff6d00" />
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="application-name" content="ASBN App">
-    <meta name="theme-color" content="#ff6d00" />
+        <link rel="apple-touch-icon" sizes="1024x1024" href="./images/asbnapp_apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="1024x1024" href="./images/asbnapp_apple-touch-icon.png">
 
-    <link rel="apple-touch-icon" sizes="1024x1024" href="./images/asbnapp_apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="1024x1024" href="./images/asbnapp_apple-touch-icon.png">
+        <!-- Primary Meta Tags -->
+        <title>ASBN App</title>
+        <base href="/" />
+        <meta name="title" content="ASBN App" />
+        <meta name="description" content="Writing your apprenticeship journal made easy!" />
 
-    <!-- Primary Meta Tags -->
-    <title>ASBN App</title>
-    <base href="/" />
-    <meta name="title" content="ASBN App" />
-    <meta name="description" content="Writing your apprenticeship journal made easy!" />
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://asbn.app" />
+        <meta property="og:title" content="ASBN App" />
+        <meta property="og:description" content="Writing your apprenticeship journal made easy!" />
+        <meta property="og:image" itemprop="image" content="./images/asbnapp_og-image.jpg" />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://asbn.app" />
-    <meta property="og:title" content="ASBN App" />
-    <meta property="og:description" content="Writing your apprenticeship journal made easy!" />
-    <meta property="og:image" itemprop="image" content="./images/asbnapp_og-image.jpg" />
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://asbn.app/" />
+        <meta property="twitter:title" content="ASBN App" />
+        <meta property="twitter:description" content="Writing your apprenticeship journal made easy!" />
+        <meta property="twitter:image" itemprop="image" content="./images/asbnapp_og-image.jpg" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://asbn.app/" />
-    <meta property="twitter:title" content="ASBN App" />
-    <meta property="twitter:description" content="Writing your apprenticeship journal made easy!" />
-    <meta property="twitter:image" itemprop="image" content="./images/asbnapp_og-image.jpg" />
+        <!-- CSS styles -->
+        <link href="css/blazorStyles.css" rel="stylesheet" />
+        <link href="css/generalStyles.css" rel="stylesheet" />
+        <link rel="icon" type="image/png" href="Favicon-ASBN-Orange-Light_512.png" />
 
-    <!-- CSS styles -->
-    <link href="css/blazorStyles.css" rel="stylesheet" />
-    <link href="css/generalStyles.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="Favicon-ASBN-Orange-Light_512.png" />
+        <!-- MudBlazor -->
+        <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    </head>
 
-    <!-- MudBlazor -->
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-</head>
-
-<body>
-    <div id="app">
-        <div class="loading-wrapper">
-            <img src="images/Logo-Rect-Orange-Light.png" aria-label="ASBN App Logo" />
-            <!-- <div class="loading-progress-text"></div> -->
+    <body>
+        <div id="app">
+            <div class="loading-wrapper">
+                <img src="images/Logo-Rect-Orange-Light.png" aria-label="ASBN App Logo" />
+                <!-- <div class="loading-progress-text"></div> -->
+            </div>
         </div>
-    </div>
 
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
+        <div id="blazor-error-ui">
+            An unhandled error has occurred.
+            <a href="" class="reload">Reload</a>
+            <a class="dismiss">🗙</a>
+        </div>
 
-    <script src="_framework/blazor.webassembly.js"></script>
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-</body>
-
+        <script src="_framework/blazor.webassembly.js"></script>
+        <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+        <script src="scripts/downloadFileFromStream.js"></script>
+    </body>
 </html>
