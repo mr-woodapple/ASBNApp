@@ -1,7 +1,6 @@
 using ASBNApp.DataAPI.Context;
 using ASBNApp.DataAPI.Models;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +57,7 @@ var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<User>("User");
 modelBuilder.EntitySet<Entry>("Entry");
 modelBuilder.EntitySet<WorkLocation>("WorkLocation");
+modelBuilder.EntitySet<JSONDataWrapper>("Import");
 
 builder.Services.AddControllers().AddOData(
     options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(

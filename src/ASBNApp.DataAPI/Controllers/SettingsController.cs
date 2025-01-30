@@ -34,7 +34,6 @@ namespace ASBNApp.DataAPI.Controllers
 			{
 				GivenName = currentUser.GivenName,
 				Surname = currentUser.Surname,
-				Username = currentUser.UserName,
 				Profession = currentUser.Profession,
 				LegalRepresentitive = currentUser.LegalRepresentitive,
 				Company = currentUser.Company,
@@ -57,7 +56,6 @@ namespace ASBNApp.DataAPI.Controllers
 
 			user.GivenName = settings.GivenName;
 			user.Surname = settings.Surname;
-			user.UserName = settings.Username;
 			user.Profession = settings.Profession;
 			user.LegalRepresentitive = settings.LegalRepresentitive;
 			user.Company = settings.Company;

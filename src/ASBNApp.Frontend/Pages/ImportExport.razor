@@ -25,7 +25,6 @@
 			<MudPaper Elevation="0" Outlined Class="pa-5">
 				<MudText Typo="Typo.h6">Import</MudText>
 				<MudText>Upload a file to get started!</MudText>
-				<MudButton Variant="Variant.Filled" Color="Color.Primary">Import</MudButton>
 
 				@* TODO: Add a checkbox to use a legacy importer, that converts the entries from the legacy ASBN app *@
 				<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="Import">
@@ -37,6 +36,13 @@
 						</MudButton>
 					</ActivatorContent>
 				</MudFileUpload>
+
+
+				@* TODO: Add checkboxes that determine what get's imported *@
+
+
+
+				<MudAlert Severity="Severity.Info">Please be aware that entries won't be overriden if there's data available for a date you're trying to import.</MudAlert>
 
 			</MudPaper>
 		</MudItem>
@@ -51,7 +57,7 @@
 				<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
 				<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
 
-				<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" OnClick="Export">
+				<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudDownload" OnClick="Export">
 					@if (_isExporting)
 					{
 						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
@@ -72,9 +78,9 @@
 
 @code {
 	// these should be set by the ui
-	private bool _exportSettings = false;
+	private bool _exportData = true;
+	private bool _exportSettings = true;
 	private bool _exportWorkLocations = true;
-	private bool _exportData = false;
 
 	private bool _isExporting = false;
 	private string _exportStatus = "Exporting...";
@@ -96,14 +102,16 @@
 		};
 		var data = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
 
+		var result = await dataService.ImportData(data);
+
 	}
 
 
 
-	// Export:
-	// 1. select export
-	// 2. Download data
-
+	/// <summary>
+	/// tba
+	/// </summary>
+	/// <returns></returns>
 	private async Task Export()
 	{
 		_exportStatus = "Downloading data...";
@@ -129,8 +137,8 @@
 		var json = JsonSerializer.Serialize(export);
 		byte[] file = System.Text.Encoding.UTF8.GetBytes(json);
 		
-		var fileName = "export.json";
-		var contentType = "text/json";
+		var fileName = $"ASBNApp_Data_Export_{DateTime.Today.ToString("d")}.json";
+		var contentType = "application/json";
 		await js.InvokeVoidAsync("DownloadFileFromStream", fileName, contentType, file);
 	}
 }

@@ -232,5 +232,22 @@ namespace ASBNApp.Frontend.Services
 			var response = await _httpClient.PatchAsync("/api/Settings", content);
 			return response.IsSuccessStatusCode;
 		}
+
+
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public async Task<HttpResponseMessage> ImportData(JSONDataWrapper data)
+		{
+			var json = JsonSerializer.Serialize(data);
+			var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+			var response = await _httpClient.PostAsync("/api/odata/Import", content);
+			return response;
+		}
 	}
 }
