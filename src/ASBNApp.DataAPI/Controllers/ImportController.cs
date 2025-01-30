@@ -25,19 +25,21 @@ public class ImportController : ODataController
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] JSONDataWrapperImportDTO jsonDTO)
     {
-        // Update the user model
         var user = await _userManager.GetUserAsync(User);
 
-        user.GivenName = jsonDTO.Settings.GivenName ?? user.GivenName;
-        user.Surname = jsonDTO.Settings.Surname ?? user.Surname;
-        user.Profession = jsonDTO.Settings.Profession ?? user.Profession;
-        user.LegalRepresentitive = jsonDTO.Settings.LegalRepresentitive ?? user.LegalRepresentitive;
-        user.Company = jsonDTO.Settings.Company ?? user.Company;
-        user.School = jsonDTO.Settings.School ?? user.School;
-        user.ApprenticeshipStartDate = jsonDTO.Settings.ApprenticeshipStartDate ?? user.ApprenticeshipStartDate;
+        if (jsonDTO.Settings != null)
+        {
+            // Update the user model
+            user.GivenName = jsonDTO.Settings.GivenName ?? user.GivenName;
+            user.Surname = jsonDTO.Settings.Surname ?? user.Surname;
+            user.Profession = jsonDTO.Settings.Profession ?? user.Profession;
+            user.LegalRepresentitive = jsonDTO.Settings.LegalRepresentitive ?? user.LegalRepresentitive;
+            user.Company = jsonDTO.Settings.Company ?? user.Company;
+            user.School = jsonDTO.Settings.School ?? user.School;
+            user.ApprenticeshipStartDate = jsonDTO.Settings.ApprenticeshipStartDate ?? user.ApprenticeshipStartDate;
 
-        await _userManager.UpdateAsync(user);
-
+            await _userManager.UpdateAsync(user);
+        }
 
         // Create a new transaction, handle writing data to the model
         using var transaction = await _context.Database.BeginTransactionAsync();
@@ -47,38 +49,53 @@ public class ImportController : ODataController
             if (jsonDTO.WorkLocationHours != null)
             {
                 // WorkLocations will always be added, not caring if they already exist.
-                foreach (var location in jsonDTO.WorkLocationHours)
+                foreach (var l in jsonDTO.WorkLocationHours)
                 {
-                    _context.WorkLocation.Add(new WorkLocation() { Hours = location.Hours, Location = location.Location, Owner = user });
+                    var location = new WorkLocation
+                    {
+                        Hours = l.Hours,
+                        Location = l.Location,
+                        Owner = user
+                    };
+
+                    if (await _context.WorkLocation.AnyAsync(l => l.Location == location.Location && l.Owner == location.Owner))
+                    {
+                        Console.WriteLine($"Already location available named {location.Location}, location is discarded.");
+                    }
+                    else
+                    {
+                        _context.WorkLocation.Add(location);
+                    }
                 }
                 await _context.SaveChangesAsync();
             }
             
-
-            // Entries won't be saved if an Entry is already present
-            foreach (var e in jsonDTO.Data)
+            if (jsonDTO.Entries != null)
             {
-                var entry = new Entry
+                // Entries won't be saved if an Entry is already present
+                foreach (var e in jsonDTO.Entries)
                 {
-                    Location = e.Location,
-                    Note = e.Note,
-                    Date = e.Date,
-                    Hours = e.Hours,
-                    Owner = user
-                };
+                    var entry = new Entry
+                    {
+                        Location = e.Location,
+                        Note = e.Note,
+                        Date = e.Date,
+                        Hours = e.Hours,
+                        Owner = user
+                    };
 
-                if (await _context.LogEntry.AnyAsync(d => d.Date == entry.Date && d.Owner == entry.Owner))
-                {
-                    Console.WriteLine($"Already data available for {entry.Date.Date}, entry is discarded.");
-                }
-                else
-                {
-                    _context.LogEntry.Add(entry);
-                }
+                    if (await _context.LogEntry.AnyAsync(d => d.Date == entry.Date && d.Owner == entry.Owner))
+                    {
+                        Console.WriteLine($"Already data available for {entry.Date.Date}, entry is discarded.");
+                    }
+                    else
+                    {
+                        _context.LogEntry.Add(entry);
+                    }
 
+                }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
-
 
             // Commit transaction if all commands succeed, transaction will auto-rollback
             // when disposed if either commands fails

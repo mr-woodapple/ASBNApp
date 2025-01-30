@@ -67,7 +67,6 @@ namespace ASBNApp.Frontend.Services
 			return response.IsSuccessStatusCode;
 		}
 
-
 		/// <summary>
 		/// Get all entries for a given timeframe.
 		/// </summary>
@@ -145,7 +144,6 @@ namespace ASBNApp.Frontend.Services
             }
         }
 
-
         /// <summary>
         /// Get all available <see cref="WorkLocation"/> objects.
         /// </summary>
@@ -204,7 +202,6 @@ namespace ASBNApp.Frontend.Services
 			HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/odata/WorkLocation({id})");
 			return response.IsSuccessStatusCode;
         }
-
 
 		/// <summary>
 		/// Returns a <see cref="Settings"/> object to be displayed on the settings page (for example).

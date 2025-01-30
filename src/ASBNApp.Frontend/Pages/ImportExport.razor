@@ -6,8 +6,9 @@
 @using ASBNApp.Frontend.Enums;
 @using System.Text.Json;
 @using System.IO;
+@using System.Text
 
-<PageTitle>Import / Export JSON | ASBN App</PageTitle>
+<PageTitle>Import / Export | ASBN App</PageTitle>
 
 
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
@@ -27,22 +28,45 @@
 				<MudText>Upload a file to get started!</MudText>
 
 				@* TODO: Add a checkbox to use a legacy importer, that converts the entries from the legacy ASBN app *@
-				<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="Import">
+				<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="SelectFile">
 					<ActivatorContent>
 						<MudButton Variant="Variant.Filled"
 						Color="Color.Primary"
-						StartIcon="@Icons.Material.Filled.CloudUpload">
-							Upload Files
+						StartIcon="@Icons.Material.Filled.AttachFile">
+							@if (File != null)
+							{
+								<MudText>Selected File: @File.Name</MudText>
+							}
+							else 
+							{
+								<MudText>Select File</MudText>
+							}
+							
 						</MudButton>
 					</ActivatorContent>
 				</MudFileUpload>
+				
+
+				<MudText>Select what you want to import:</MudText>
+				<MudCheckBox @bind-Value="_importEntries" Label="Entries" Color="Color.Primary" Disabled="_importEntriesDisabled" />
+				<MudCheckBox @bind-Value="_importSettings" Label="Settings" Color="Color.Primary" Disabled="_importSettingsDisabled" />
+				<MudCheckBox @bind-Value="_importWorkLocations" Label="Work Locations" Color="Color.Primary" Disabled="_importWorkLocationsDisabled" />
+
+				<MudButton Disabled="@_isImportButtonDisabled" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="Import">
+					@if (_isImporting)
+					{
+						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						<MudText Class="ms-2">@_importStatus</MudText>
+					}
+					else
+					{
+						<MudText>Import Selected File</MudText>
+					}
+				</MudButton>
 
 
-				@* TODO: Add checkboxes that determine what get's imported *@
 
-
-
-				<MudAlert Severity="Severity.Info">Please be aware that entries won't be overriden if there's data available for a date you're trying to import.</MudAlert>
+				<MudAlert Severity="Severity.Info">Please be aware that existing entries & locations won't be overriden with imported data.</MudAlert>
 
 			</MudPaper>
 		</MudItem>
@@ -53,7 +77,7 @@
 				<MudText Typo="Typo.h6">Export</MudText>
 				<MudText>Select what you want to export:</MudText>
 
-				<MudCheckBox @bind-Value="_exportData" Label="Entries" Color="Color.Primary"></MudCheckBox>
+				<MudCheckBox @bind-Value="_exportEntries" Label="Entries" Color="Color.Primary"></MudCheckBox>
 				<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
 				<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
 
@@ -77,33 +101,70 @@
 
 
 @code {
-	// these should be set by the ui
-	private bool _exportData = true;
+	IBrowserFile? File { get; set; }
+
+	private bool _exportEntries = true;
 	private bool _exportSettings = true;
 	private bool _exportWorkLocations = true;
 
 	private bool _isExporting = false;
 	private string _exportStatus = "Exporting...";
 
+	private bool _importEntries = true;
+	private bool _importEntriesDisabled = true;
+	private bool _importSettings = true;
+	private bool _importSettingsDisabled = true;
+	private bool _importWorkLocations = true;
+	private bool _importWorkLocationsDisabled = true;
+
+	private bool _selectedFile = false;
+	private bool _isImportButtonDisabled = true;
+	private bool _isImporting = false;
+	private string _importStatus = "Importing...";
+
+	private JSONDataWrapper? importData { get; set; }
+
 	// Import: 
 	// 1. Select import
 	// 2. upload file
 	// 3. Import data
-	private async Task Import(IBrowserFile file)
+	private async Task SelectFile(IBrowserFile file)
 	{
-
+		File = file;
 		using var stream = file.OpenReadStream();
 		using var reader = new StreamReader(stream);
 		var fileContent = await reader.ReadToEndAsync();
 
 		var options = new JsonSerializerOptions
+			{
+				PropertyNameCaseInsensitive = true // Optional: allows case-insensitive property matching
+			};
+		importData = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
+
+
+		_importEntriesDisabled = importData.Data == null ? true : false;
+		_importSettingsDisabled = importData.Settings == null ? true : false;
+		_importWorkLocationsDisabled = importData.WorkLocationHours == null ? true : false;
+		_isImportButtonDisabled = false;
+	}
+
+	private async Task Import()
+	{
+		if (importData == null)
 		{
-			PropertyNameCaseInsensitive = true // Optional: allows case-insensitive property matching
-		};
-		var data = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
+			return;
+		}
 
-		var result = await dataService.ImportData(data);
+		_isImporting = true;
 
+		importData.importEntries = _importEntries;
+		importData.importSettings = _importSettings;
+		importData.importWorkLocations = _importWorkLocations;
+
+		// select which data to import after selecting the file
+		var result = await dataService.ImportData(importData);
+
+		_isImporting = false;
 	}
 
 
@@ -127,7 +188,7 @@
 			export.Settings = await dataService.GetSettings();
 		}
 
-		if (_exportData)
+		if (_exportEntries)
 		{
 			export.Data = await dataService.GetAllEntries();
 		}

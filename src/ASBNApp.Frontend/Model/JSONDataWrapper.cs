@@ -1,6 +1,4 @@
-﻿using ASBNApp.Frontend.Components.Settings;
-
-namespace ASBNApp.Frontend.Model
+﻿namespace ASBNApp.Frontend.Model
 {
     /// <summary>
     /// Wrapper for the data read from the JSON file, holds the top level objects 
@@ -8,6 +6,10 @@ namespace ASBNApp.Frontend.Model
     /// </summary>
     public class JSONDataWrapper
     {
+        public bool? importSettings { get; set; }
+        public bool? importWorkLocations { get; set; }
+        public bool? importEntries { get; set; }
+
         public Settings? Settings { get; set; }
         public List<WorkLocationWithID>? WorkLocationHours { get; set; }
         public List<EntryRowModelWithID>? Data { get; set; }

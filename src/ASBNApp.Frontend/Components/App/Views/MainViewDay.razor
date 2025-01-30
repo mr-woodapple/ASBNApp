@@ -97,7 +97,7 @@
         // Set location
         if (Entry != null)
         {
-            SelectedWorkLocation = WorkLocations.SingleOrDefault(l => l.Location == Entry.Location);
+            SelectedWorkLocation = WorkLocations.FirstOrDefault(l => l.Location == Entry.Location);
         }
 
         StateHasChanged();
