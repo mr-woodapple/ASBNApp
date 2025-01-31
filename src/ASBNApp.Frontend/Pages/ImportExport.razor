@@ -3,10 +3,10 @@
 @inject IASBNDataService dataService;
 @inject IJSRuntime js;
 
-@using ASBNApp.Frontend.Enums;
-@using System.Text.Json;
 @using System.IO;
-@using System.Text
+@using System.Text.Json;
+@using ASBNApp.Frontend.Enums;
+@using ASBNApp.Frontend.Helpers
 
 <PageTitle>Import / Export | ASBN App</PageTitle>
 
@@ -16,7 +16,7 @@
 	@* Header space *@
 	<MudItem Elevation="0" Class="my-10">
 		<MudText Typo="Typo.h3" Class="mb-5">Import & Export</MudText>
-		<MudText Typo="Typo.subtitle1">Import .json files from the legacy version (or export to .json).</MudText>
+		<MudText Typo="Typo.subtitle1">Import and export your data to .json files (including importing data from the legacy version of this app).</MudText>
 	</MudItem>
 
 	<MudGrid Elevation="0" Spacing="6">
@@ -41,11 +41,10 @@
 							{
 								<MudText>Select File</MudText>
 							}
-							
+
 						</MudButton>
 					</ActivatorContent>
 				</MudFileUpload>
-				
 
 				<MudText>Select what you want to import:</MudText>
 				<MudCheckBox @bind-Value="_importEntries" Label="Entries" Color="Color.Primary" Disabled="_importEntriesDisabled" />
@@ -101,7 +100,8 @@
 
 
 @code {
-	IBrowserFile? File { get; set; }
+	private IBrowserFile? File { get; set; }
+	private JSONDataWrapper? importData { get; set; }
 
 	private bool _exportEntries = true;
 	private bool _exportSettings = true;
@@ -122,12 +122,12 @@
 	private bool _isImporting = false;
 	private string _importStatus = "Importing...";
 
-	private JSONDataWrapper? importData { get; set; }
 
-	// Import: 
-	// 1. Select import
-	// 2. upload file
-	// 3. Import data
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="file"></param>
+	/// <returns></returns>
 	private async Task SelectFile(IBrowserFile file)
 	{
 		File = file;
@@ -135,11 +135,24 @@
 		using var reader = new StreamReader(stream);
 		var fileContent = await reader.ReadToEndAsync();
 
-		var options = new JsonSerializerOptions
+		// Try to import as the new model, if that fails use the legacy importer
+		try
+		{
+			var options = new JsonSerializerOptions
 			{
 				PropertyNameCaseInsensitive = true // Optional: allows case-insensitive property matching
 			};
-		importData = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
+			importData = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
+		} 
+		catch (JsonException jex)
+		{
+			// try the old importer
+			importData = LegacyImportHelper.ConvertLegacyImport(fileContent);
+		}
+
+
+
+		
 
 
 		_importEntriesDisabled = importData.Data == null ? true : false;
@@ -148,13 +161,13 @@
 		_isImportButtonDisabled = false;
 	}
 
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	private async Task Import()
 	{
-		if (importData == null)
-		{
-			return;
-		}
-
 		_isImporting = true;
 
 		importData.importEntries = _importEntries;

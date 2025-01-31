@@ -1,0 +1,60 @@
+{
+  "Settings": {
+    "Username": "Max Mustermann",
+    "Profession": "IT-System-Elektroniker/-in",
+    "LegalRepresentitive": "Herbert Gr\u00F6nemayer",
+    "Company": "Demo Company",
+    "School": "Demo Schule",
+    "ApprenticeshipStartDate": "2024-09-01T00:00:00"
+  },
+  "WorkLocationHours": {
+    "MMS": {
+      "Location": "MMS",
+      "Hours": 7.6
+    },
+    "HUB Dresden": {
+      "Location": "HUB Dresden",
+      "Hours": 6.2
+    },
+    "BSZ ET Dresden": {
+      "Location": "BSZ ET Dresden",
+      "Hours": 7.2
+    }
+  },
+  "LoggedData": {
+    "2024": {
+      "49": {
+        "2024-12-04": {
+          "Note": "Hannes hat mir den Stift geklaut!",
+          "Date": "2024-12-04T00:00:00",
+          "Location": "MMS",
+          "Hours": 5.6
+        },
+        "2024-12-05": {
+          "Note": "Hannes verkloppt und mir den Stift zur\u00FCck geholt.",
+          "Date": "2024-12-05T00:00:00",
+          "Location": "MMS",
+          "Hours": 5.7
+        },
+        "2024-12-06": {
+          "Note": "Sch\u00F6nes Bild mit dem Stift gemalt.",
+          "Date": "2024-12-06T00:00:00",
+          "Location": "MMS",
+          "Hours": 7.5
+        },
+        "2024-12-07": {
+          "Note": "Mate war alle - so ne Gr\u00FCtze!",
+          "Date": "2024-12-07T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": 5.7
+        },
+        "2024-12-08": {
+          "Note": "Elterngespr\u00E4ch mit der Lehrerin...",
+          "Date": "2024-12-08T00:00:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 5.7
+        }
+      }
+    }
+  }
+}
