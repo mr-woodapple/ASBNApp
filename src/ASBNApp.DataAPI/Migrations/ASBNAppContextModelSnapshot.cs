@@ -49,7 +49,7 @@ namespace ASBNApp.DataAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("LogEntry");
+                    b.ToTable("LogEntry", (string)null);
                 });
 
             modelBuilder.Entity("ASBNApp.DataAPI.Models.WorkLocation", b =>
@@ -74,7 +74,7 @@ namespace ASBNApp.DataAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("WorkLocation");
+                    b.ToTable("WorkLocation", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

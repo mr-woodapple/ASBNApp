@@ -1,12 +1,16 @@
-﻿namespace ASBNApp.DataAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ASBNApp.DataAPI.Models
 {
     /// <summary>
     /// The entry for a single day.
     /// </summary>
     public class Entry
     {
-        public int Id { get; set; }
-        public User Owner { get; set; }
+		[JsonIgnore]
+		public int Id { get; set; }
+		[JsonIgnore]
+		public User Owner { get; set; }
 
         // This is removing any time zone related information, as there's no point in saving that.
         private DateTime _date;

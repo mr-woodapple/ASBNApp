@@ -18,7 +18,7 @@ public class ImportController : ODataController
     public ImportController(ASBNAppContext context, UserManager<User> userManager)
     {
         _context = context;
-        this._userManager = userManager;
+        _userManager = userManager;
     }
 
     [EnableQuery]

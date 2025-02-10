@@ -6,12 +6,8 @@
     /// </summary>
     public class JSONDataWrapper
     {
-        public bool? importSettings { get; set; }
-        public bool? importWorkLocations { get; set; }
-        public bool? importEntries { get; set; }
-
         public Settings? Settings { get; set; }
         public List<WorkLocationWithID>? WorkLocationHours { get; set; }
-        public List<EntryRowModelWithID>? Data { get; set; }
+        public List<EntryRowModelWithID>? Entries { get; set; }
     }
 }

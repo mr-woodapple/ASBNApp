@@ -24,79 +24,81 @@
 		@* Import *@
 		<MudItem xs="6">
 			<MudPaper Elevation="0" Outlined Class="pa-5">
-				<MudText Typo="Typo.h6">Import</MudText>
-				<MudText>Upload a file to get started!</MudText>
+				<MudStack Spacing="5" AlignItems="AlignItems.Start">
+					<MudText Typo="Typo.h6"><b>Import</b></MudText>
 
-				@* TODO: Add a checkbox to use a legacy importer, that converts the entries from the legacy ASBN app *@
-				<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="SelectFile">
-					<ActivatorContent>
-						<MudButton Variant="Variant.Filled"
-						Color="Color.Primary"
-						StartIcon="@Icons.Material.Filled.AttachFile">
-							@if (File != null)
-							{
-								<MudText>Selected File: @File.Name</MudText>
-							}
-							else 
-							{
-								<MudText>Select File</MudText>
-							}
+					<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="SelectFile">
+						<ActivatorContent>
+							<MudButton Variant="Variant.Filled"
+							Color="Color.Primary"
+							StartIcon="@Icons.Material.Filled.AttachFile">
+								@if (File != null)
+								{
+									<MudText>Selected File: @File.Name</MudText>
+								}
+								else
+								{
+									<MudText>Select file to get started!</MudText>
+								}
 
-						</MudButton>
-					</ActivatorContent>
-				</MudFileUpload>
+							</MudButton>
+						</ActivatorContent>
+					</MudFileUpload>
 
-				<MudText>Select what you want to import:</MudText>
-				<MudCheckBox @bind-Value="_importEntries" Label="Entries" Color="Color.Primary" Disabled="_importEntriesDisabled" />
-				<MudCheckBox @bind-Value="_importSettings" Label="Settings" Color="Color.Primary" Disabled="_importSettingsDisabled" />
-				<MudCheckBox @bind-Value="_importWorkLocations" Label="Work Locations" Color="Color.Primary" Disabled="_importWorkLocationsDisabled" />
+					<MudText>Select what you want to import:</MudText>
+					<MudStack Row>
+						<MudCheckBox @bind-Value="_importEntries" Label="Entries" Color="Color.Primary" Disabled="_importEntriesDisabled" />
+						<MudCheckBox @bind-Value="_importSettings" Label="Settings" Color="Color.Primary" Disabled="_importSettingsDisabled" />
+						<MudCheckBox @bind-Value="_importWorkLocations" Label="Work Locations" Color="Color.Primary" Disabled="_importWorkLocationsDisabled" />
+					</MudStack>
 
-				<MudButton Disabled="@_isImportButtonDisabled" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="Import">
-					@if (_isImporting)
-					{
-						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-						<MudText Class="ms-2">@_importStatus</MudText>
-					}
-					else
-					{
-						<MudText>Import Selected File</MudText>
-					}
-				</MudButton>
+					<MudButton Disabled="@_isImportButtonDisabled" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="Import">
+						@if (_isImporting)
+						{
+							<MudText Class="ms-2">@_importStatus</MudText>
+							<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						}
+						else
+						{
+							<MudText>Import Selected File</MudText>
+						}
+					</MudButton>
 
-
-
-				<MudAlert Severity="Severity.Info">Please be aware that existing entries & locations won't be overriden with imported data.</MudAlert>
-
+					<MudAlert Severity="Severity.Info">Please be aware that existing entries & locations won't be overriden with imported data.</MudAlert>
+				</MudStack>
 			</MudPaper>
 		</MudItem>
+
 
 		@* Export *@
 		<MudItem xs="6">
 			<MudPaper Elevation="0" Outlined Class="pa-5">
-				<MudText Typo="Typo.h6">Export</MudText>
-				<MudText>Select what you want to export:</MudText>
+				<MudStack Spacing="5" AlignItems="AlignItems.Start">
+					<MudText Typo="Typo.h6"><b>Export</b></MudText>
+					<MudText>Select what you want to export:</MudText>
 
-				<MudCheckBox @bind-Value="_exportEntries" Label="Entries" Color="Color.Primary"></MudCheckBox>
-				<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
-				<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
+					<MudStack Row>
+						<MudCheckBox @bind-Value="_exportEntries" Label="Entries" Color="Color.Primary"></MudCheckBox>
+						<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
+						<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
+					</MudStack>
 
-				<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudDownload" OnClick="Export">
-					@if (_isExporting)
-					{
-						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-						<MudText Class="ms-2">@_exportStatus</MudText>
-					}
-					else
-					{
-						<MudText>Export Data</MudText>
-					}
-				</MudButton>
+					<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudDownload" OnClick="Export">
+						@if (_isExporting)
+						{
+							<MudText Class="ms-2">@_exportStatus</MudText>
+							<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+						}
+						else
+						{
+							<MudText>Export Data</MudText>
+						}
+					</MudButton>
+				</MudStack>
 			</MudPaper>
 		</MudItem>
 	</MudGrid>
-
 </MudContainer>
-
 
 
 @code {
@@ -110,11 +112,11 @@
 	private bool _isExporting = false;
 	private string _exportStatus = "Exporting...";
 
-	private bool _importEntries = true;
+	private bool _importEntries = false;
 	private bool _importEntriesDisabled = true;
-	private bool _importSettings = true;
+	private bool _importSettings = false;
 	private bool _importSettingsDisabled = true;
-	private bool _importWorkLocations = true;
+	private bool _importWorkLocations = false;
 	private bool _importWorkLocationsDisabled = true;
 
 	private bool _selectedFile = false;
@@ -146,18 +148,16 @@
 		} 
 		catch (JsonException jex)
 		{
-			// try the old importer
 			importData = LegacyImportHelper.ConvertLegacyImport(fileContent);
 		}
 
-
-
-		
-
-
-		_importEntriesDisabled = importData.Data == null ? true : false;
+		// Set checkboxes active/inactive and precheck if data available
+		_importEntriesDisabled = importData.Entries == null ? true : false;
+		_importEntries = importData.Entries == null ? false : true;
 		_importSettingsDisabled = importData.Settings == null ? true : false;
+		_importSettings = importData.Settings == null ? false : true;
 		_importWorkLocationsDisabled = importData.WorkLocationHours == null ? true : false;
+		_importWorkLocations = importData.WorkLocationHours == null ? false : true;
 		_isImportButtonDisabled = false;
 	}
 
@@ -169,15 +169,19 @@
 	private async Task Import()
 	{
 		_isImporting = true;
+		_isImportButtonDisabled = true;
 
-		importData.importEntries = _importEntries;
-		importData.importSettings = _importSettings;
-		importData.importWorkLocations = _importWorkLocations;
+		// Handle what data get's passed to the API
+		var selectedData = new JSONDataWrapper();
+		selectedData.Entries = _importEntries ? importData.Entries : null;
+		selectedData.Settings = _importSettings ? importData.Settings : null;
+		selectedData.WorkLocationHours = _importWorkLocations ? importData.WorkLocationHours : null;
 
-		// select which data to import after selecting the file
-		var result = await dataService.ImportData(importData);
+		var result = await dataService.ImportData(selectedData);
 
+		// Update UI
 		_isImporting = false;
+		_isImportButtonDisabled = false;
 	}
 
 
@@ -203,12 +207,13 @@
 
 		if (_exportEntries)
 		{
-			export.Data = await dataService.GetAllEntries();
+			export.Entries = await dataService.GetAllEntries();
 		}
 
 		_exportStatus = "Assembling file...";
 
-		var json = JsonSerializer.Serialize(export);
+		var options = new JsonSerializerOptions { WriteIndented = true };
+		var json = JsonSerializer.Serialize(export, options);
 		byte[] file = System.Text.Encoding.UTF8.GetBytes(json);
 		
 		var fileName = $"ASBNApp_Data_Export_{DateTime.Today.ToString("d")}.json";

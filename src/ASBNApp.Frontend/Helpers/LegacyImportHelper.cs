@@ -117,7 +117,7 @@ namespace ASBNApp.Frontend.Helpers
             {
                 Settings = settings,
                 WorkLocationHours = workLocations,
-                Data = loggedData
+				Entries = loggedData
             };
         }
     }
