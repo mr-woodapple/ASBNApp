@@ -21,6 +21,11 @@ public class ImportController : ODataController
         _userManager = userManager;
     }
 
+    /// <summary>
+    /// Using transactions to import data into the database.
+    /// </summary>
+    /// <param name="jsonDTO">Data to be imported.</param>
+    /// <returns>An <see cref="ActionResult"/> with the appropriate reponse code.</returns>
     [EnableQuery]
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] JSONDataWrapperImportDTO jsonDTO)
@@ -104,6 +109,7 @@ public class ImportController : ODataController
         catch(Exception e)
         {
             Console.WriteLine($"Import failed with the following message: {e.Message}");
+            return BadRequest();
         }
 
         return Ok();

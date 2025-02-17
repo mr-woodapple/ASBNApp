@@ -230,14 +230,11 @@ namespace ASBNApp.Frontend.Services
 			return response.IsSuccessStatusCode;
 		}
 
-
-
-
 		/// <summary>
-		/// 
+		/// Send the data to import to the /odata/Import API endpoint.
 		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
+		/// <param name="data"><see cref="JSONDataWrapper"/> model to import.</param>
+		/// <returns>An <see cref="HttpResponseMessage"/>.</returns>
 		public async Task<HttpResponseMessage> ImportData(JSONDataWrapper data)
 		{
 			var json = JsonSerializer.Serialize(data);

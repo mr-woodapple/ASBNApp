@@ -2,6 +2,7 @@
 
 @inject IASBNDataService dataService;
 @inject IJSRuntime js;
+@inject ISnackbar Snackbar
 
 @using System.IO;
 @using System.Text.Json;
@@ -9,7 +10,6 @@
 @using ASBNApp.Frontend.Helpers
 
 <PageTitle>Import / Export | ASBN App</PageTitle>
-
 
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
 
@@ -48,15 +48,15 @@
 					<MudText>Select what you want to import:</MudText>
 					<MudStack Row>
 						<MudCheckBox @bind-Value="_importEntries" Label="Entries" Color="Color.Primary" Disabled="_importEntriesDisabled" />
-						<MudCheckBox @bind-Value="_importSettings" Label="Settings" Color="Color.Primary" Disabled="_importSettingsDisabled" />
 						<MudCheckBox @bind-Value="_importWorkLocations" Label="Work Locations" Color="Color.Primary" Disabled="_importWorkLocationsDisabled" />
+						<MudCheckBox @bind-Value="_importSettings" Label="Settings" Color="Color.Primary" Disabled="_importSettingsDisabled" />
 					</MudStack>
 
 					<MudButton Disabled="@_isImportButtonDisabled" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="Import">
 						@if (_isImporting)
 						{
 							<MudText Class="ms-2">@_importStatus</MudText>
-							<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+							<MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
 						}
 						else
 						{
@@ -79,15 +79,15 @@
 
 					<MudStack Row>
 						<MudCheckBox @bind-Value="_exportEntries" Label="Entries" Color="Color.Primary"></MudCheckBox>
-						<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
 						<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
+						<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
 					</MudStack>
 
 					<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudDownload" OnClick="Export">
 						@if (_isExporting)
 						{
 							<MudText Class="ms-2">@_exportStatus</MudText>
-							<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+							<MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
 						}
 						else
 						{
@@ -126,10 +126,12 @@
 
 
 	/// <summary>
+	/// Load the selected file and try to parse it, starting with the current JSON model,
+	/// but if that fails with the "legacy" one.
 	/// 
+	/// Also controls which UI elements are active, based on what was included in the file.
 	/// </summary>
-	/// <param name="file"></param>
-	/// <returns></returns>
+	/// <param name="file">The file to parse.</param>
 	private async Task SelectFile(IBrowserFile file)
 	{
 		File = file;
@@ -150,6 +152,7 @@
 		{
 			importData = LegacyImportHelper.ConvertLegacyImport(fileContent);
 		}
+		// TODO: What happens if this fails again??
 
 		// Set checkboxes active/inactive and precheck if data available
 		_importEntriesDisabled = importData.Entries == null ? true : false;
@@ -163,9 +166,8 @@
 
 
 	/// <summary>
-	/// 
+	/// Handle what data to import, hand over to <see cref="dataService"/>.
 	/// </summary>
-	/// <returns></returns>
 	private async Task Import()
 	{
 		_isImporting = true;
@@ -179,19 +181,40 @@
 
 		var result = await dataService.ImportData(selectedData);
 
-		// Update UI
+		if (result.IsSuccessStatusCode)
+		{
+			Snackbar.Add("That's your data imported!", Severity.Success);
+		}
+		else
+		{
+			Snackbar.Add("There was an error importing your data - please try again.", Severity.Error);
+			Console.WriteLine(result.Content);
+		}
+
+		// Unload file,
+		File = null;
+		importData = null;
+		selectedData = null;
+
+		// Reset UI
+		_importEntriesDisabled = true;
+		_importEntries = false;
+		_importSettingsDisabled = true;
+		_importSettings = false;
+		_importWorkLocationsDisabled = true;
+		_importWorkLocations = false;
+		_isImportButtonDisabled = true;
 		_isImporting = false;
-		_isImportButtonDisabled = false;
 	}
 
 
-
 	/// <summary>
-	/// tba
+	/// Handle downloading the selected items, writing them to a file and save that
+	/// to the users system.
 	/// </summary>
-	/// <returns></returns>
 	private async Task Export()
 	{
+		_isExporting = true;
 		_exportStatus = "Downloading data...";
 
 		var export = new JSONDataWrapper();
@@ -215,9 +238,14 @@
 		var options = new JsonSerializerOptions { WriteIndented = true };
 		var json = JsonSerializer.Serialize(export, options);
 		byte[] file = System.Text.Encoding.UTF8.GetBytes(json);
-		
+
 		var fileName = $"ASBNApp_Data_Export_{DateTime.Today.ToString("d")}.json";
 		var contentType = "application/json";
 		await js.InvokeVoidAsync("DownloadFileFromStream", fileName, contentType, file);
+
+		// TODO: Error handling
+		Snackbar.Add("That's your data exported! Have a look at your Downloads folder.", Severity.Success);
+
+		_isExporting = false;
 	}
 }
