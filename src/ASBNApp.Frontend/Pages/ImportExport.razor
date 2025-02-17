@@ -150,8 +150,19 @@
 		} 
 		catch (JsonException jex)
 		{
-			importData = LegacyImportHelper.ConvertLegacyImport(fileContent);
+			try
+			{
+				importData = LegacyImportHelper.ConvertLegacyImport(fileContent);
+			}
+			catch
+			{
+				Snackbar.Add("No valid data to import, please select another file.", Severity.Error);
+				File = null;
+				return;
+			}
 		}
+
+
 		// TODO: What happens if this fails again??
 
 		// Set checkboxes active/inactive and precheck if data available
