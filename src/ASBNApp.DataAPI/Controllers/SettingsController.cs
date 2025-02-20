@@ -1,4 +1,4 @@
-﻿using ASBNApp.DataAPI.Models;
+﻿using ASBNApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

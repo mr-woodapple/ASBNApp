@@ -1,4 +1,6 @@
-﻿namespace ASBNApp.DataAPI.Models;
+﻿using ASBNApp.Models;
+
+namespace ASBNApp.DataAPI.DTOs;
 
 public class JSONDataWrapperImportDTO
 {

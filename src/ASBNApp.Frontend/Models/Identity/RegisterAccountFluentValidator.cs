@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace ASBNApp.Frontend.Model.Identity
+namespace ASBNApp.Frontend.Models.Identity
 {
 	/// <summary>
 	/// FluentValidation validator to perform in-browser validation when registering a new user.

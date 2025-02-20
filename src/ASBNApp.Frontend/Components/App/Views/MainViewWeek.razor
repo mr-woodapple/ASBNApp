@@ -1,15 +1,17 @@
 @* Main view to input and edit data, displayed when the user selects the weekly view. *@
 
+@using ASBNApp.Frontend.Helpers
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+
 @inject IASBNDataService dataService
 @inject DateHandler dateHandler
 @inject ISnackbar Snackbar
 
-@using ASBNApp.Frontend.Helpers
-
 
 <MudPaper Outlined="true" Elevation="0" Class="my-5">
     <MudItem Class="pa-5">
-        <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="Callback" />
+        <WeekSelectorLarge @bind-SelectedWeek="SelectedWeek" @bind-SelectedYear="SelectedYear" OnCallback="RefreshView" />
     </MudItem>
 
     @if(rows.Count > 5)
@@ -31,7 +33,7 @@
     {
         @foreach (var entry in rows)
         {
-            <EntryRow Entry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" workLocationHours="_workLocationHours" OnItemDeleted="RefreshView" />
+            <EntryRow CurrentEntry="entry" SelectedWeek="SelectedWeek" SelectedYear="SelectedYear" WorkLocations="_workLocationHours" OnItemDeleted="RefreshView" />
         }
     }
 
@@ -42,20 +44,21 @@
 
 
 @code {
-    private List<EntryRowModelWithID> rows = new();
-    private List<WorkLocationWithID> _workLocationHours = new();
+    private List<Entry> rows = new();
+    private List<WorkLocation> _workLocationHours = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        GetWorkLocationHours();
+        await GetWorkLocationHours();
     }
 
     /// <summary>
-    /// Function to trigger a callback from the child component (and then do whatever is in this method)
+    /// Re-load the listed entries if the selected week changes.
     /// </summary>
-    /// <returns>Task if successfull.</returns>
-    public async Task Callback()
+    /// <returns>Task if successful.</returns>
+    public async Task RefreshView()
     {
+        rows = new();
         await GetDataFromWeekDates();
     }
 
@@ -86,21 +89,9 @@
         StateHasChanged();
     }
 
-
     // Creates DateHandler instance & variables to pass down to child component
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
-
-    /// <summary>
-    /// Called to be called from child component to delete individual entries.
-    /// </summary>
-    /// <param name="Id">The ID of the component to be deleted.</param>
-    private void RefreshView(int Id)
-    {
-        rows.Remove(rows.FirstOrDefault(e => e.Id == Id));
-        rows = MainViewWeekHelper.GetCompleteWeek(rows, SelectedWeek, SelectedYear);
-        StateHasChanged();
-    }
 
     /// <summary>
     /// Triggers the DataService to save the edited data, also trigger
@@ -108,6 +99,8 @@
     /// </summary>
     private async void SaveData()
     {
+        // TODO: Make this refresh if a new entry is saved.
+
         // TODO: Might wanna change this to check the return of dataService? 
         // if task.success, show success snackbar, if not error snackbar
         if (await dataService.SaveEntries(rows))

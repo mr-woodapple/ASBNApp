@@ -4,6 +4,7 @@ using ASBNApp.DataAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASBNApp.DataAPI.Migrations
 {
     [DbContext(typeof(ASBNAppContext))]
-    partial class ASBNAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250218153319_UpdateEntryModelPart1")]
+    partial class UpdateEntryModelPart1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,11 @@ namespace ASBNApp.DataAPI.Migrations
 
             modelBuilder.Entity("ASBNApp.DataAPI.Models.Entry", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -40,6 +43,9 @@ namespace ASBNApp.DataAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldLocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OwnerId")
@@ -56,11 +62,11 @@ namespace ASBNApp.DataAPI.Migrations
 
             modelBuilder.Entity("ASBNApp.DataAPI.Models.WorkLocation", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("LocationName")
                         .HasColumnType("nvarchar(max)");

@@ -1,5 +1,5 @@
+using ASBNApp.Models;
 using ASBNApp.DataAPI.Context;
-using ASBNApp.DataAPI.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;

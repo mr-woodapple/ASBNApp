@@ -1,15 +1,18 @@
 @page "/export"
 
+@using ASBNApp.Frontend.Helpers
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+@using ASBNApp.Frontend.Services
+@using KristofferStrube.Blazor.FileSystem;
+@using PdfSharp.Fonts;
+
 @inject IHttpClientFactory httpClientFactory;
 @inject DateHandler dateHandler;
 @inject FontServices fontServices;
 @inject IASBNDataService dataService;
 @inject IFileSystemAccessService FileSystemAccessService;
 @inject ISnackbar Snackbar;
-
-@using ASBNApp.Frontend.Helpers
-@using PdfSharp.Fonts;
-@using KristofferStrube.Blazor.FileSystem;
 
 
 <PageTitle>Export | ASBN App</PageTitle>
@@ -76,7 +79,7 @@
 	private bool _isSupported = true;
 	private bool _tooManyEntries;
 	private bool _isExporting;
-	List<EntryRowModelWithID>? rows;
+	List<Entry>? rows;
 
 	// Variables to bind to the child week picker
 	public int? SelectedWeek { get; set; }
@@ -129,8 +132,8 @@
 	{
 		_isExporting = true;
 
-		// Get Data we want to generate the pdf from
-		Model.Settings settings = await dataService.GetSettings();
+            // Get Entries we want to generate the pdf from
+            ASBNApp.Models.Settings settings = await dataService.GetSettings();
 
 		// Handles exporting the PDF
 		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);

@@ -1,10 +1,12 @@
 @page "/settings"
 
+@using ASBNApp.Frontend.Data;
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+
 @inject NavigationManager navigationManager;
 @inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
-
-@using ASBNApp.Frontend.Data;
 
 
 <PageTitle>Settings | ASBN App</PageTitle>
@@ -39,15 +41,15 @@
                 </MudItem>
 
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="@settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
+                    <MudTextField @bind-Value="settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="@settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
+                    <MudTextField @bind-Value="settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
                 </MudItem>
 
                 @* Choose the apprenticeship from a pre-defined list *@
                 <MudItem xs="12">
-                    <MudSelect @bind-Value="@settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter"
+                    <MudSelect @bind-Value="settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter"
                                 HelperText="This will be shown as your profession on your exported documents.">
                         @foreach (var entry in Data.Professions.Apprenticeships)
                         {
@@ -117,8 +119,8 @@
 
 
 @code {
-    public Model.Settings? settings { get; set; }
-    public List<WorkLocationWithID> workLocationHours { get; set; } = new();
+    public ASBNApp.Models.Settings? settings { get; set; }
+    public List<WorkLocation> workLocationHours { get; set; } = new();
     private bool _hasLoadedWorkLocationHours;
 
     // Reference to the date picker

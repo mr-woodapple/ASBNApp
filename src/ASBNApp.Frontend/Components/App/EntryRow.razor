@@ -1,6 +1,8 @@
 @* UI bit that represents a single entry, supposed to be used in MainViewWeek. *@
 
-@using ASBNApp.Frontend.Model;
+@using ASBNApp.Frontend.Interfaces
+@using ASBNApp.Frontend.Models
+
 @inject IASBNDataService dataService;
 @inject IDialogService dialogService;
 
@@ -9,26 +11,26 @@
     <MudGrid>
         @* Name of the day *@
         <MudItem xs="3">
-            <MudText Typo="Typo.h4"> @Entry.Date.DayOfWeek </MudText>
+            <MudText Typo="Typo.h4"> @CurrentEntry.Date.DayOfWeek </MudText>
         </MudItem>
 
         @* Date picker *@
         <MudItem xs="3">
-            <MudDatePicker Label="Date" @bind-Date="date" MinDate="@_minDateValue" MaxDate="@_maxDateValue" />
+            <MudDatePicker Label="Date" @bind-Date="Date" MinDate="@_minDateValue" MaxDate="@_maxDateValue" />
         </MudItem>
 
         @* Location selector *@
         <MudItem xs="3">
-            @if (workLocationHours.Count != 0)
+            @if (WorkLocations.Count != 0)
             {
-                <MudSelect T="string" Value="Entry.Location" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
-                    @foreach (var entry in workLocationHours)
+                <MudSelect T="WorkLocation" Value="SelectedWorkLocation" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
+                    @foreach (var location in WorkLocations)
                     {
-                        <MudSelectItem Value="entry.Location"/>
-                    }                    
+                        <MudSelectItem Value="location">@location.LocationName</MudSelectItem>
+                    }
                 </MudSelect>
             }
-            else 
+            else
             {
                 <MudAlert Severity="Severity.Warning" Dense="true">
                     No data available, please add new work location in settings.
@@ -40,10 +42,10 @@
         @* Location hours input *@
         <MudItem xs="3">
             <MudStack Row>
-                <MudNumericField @bind-Value="Entry.Hours" Label="Select hours" Min="0" Format="N1" />
-                
+                <MudNumericField @bind-Value="CurrentEntry.Hours" Label="Select hours" Min="0" Format="N1" />
+
                 <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight">
-                    @if(!string.IsNullOrWhiteSpace(Entry.Note))
+                    @if (!string.IsNullOrWhiteSpace(CurrentEntry.Note))
                     {
                         <MudMenuItem OnClick="DeleteEntry">
                             <div class="d-flex align-center">
@@ -64,7 +66,7 @@
 
         @* Text *@
         <MudItem xs="12">
-            <MudTextField T="string" @bind-Text="Entry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" />
+            <MudTextField T="string" @bind-Text="CurrentEntry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" />
         </MudItem>
     </MudGrid>
 </MudPaper>
@@ -72,14 +74,11 @@
 
 @code {
     [Parameter]
-    public List<WorkLocationWithID> workLocationHours { get; set; }
-
-    // Dealing with two way binding
+    public List<WorkLocation> WorkLocations { get; set; }
     [Parameter]
-    public EntryRowModelWithID Entry { get; set; }
+    public Entry CurrentEntry { get; set; }
     [Parameter]
     public EventCallback<int> OnItemDeleted { get; set; }
-
 
     // Week & year variables to set min and max values for the date picker
     private int? _selectedWeek;
@@ -106,15 +105,14 @@
         }
     }
 
-
     private DateTime _date;
-    private DateTime? date 
+    private DateTime? Date 
     { 
         get => _date; 
         set 
         {
             _date = (DateTime)value;
-            Entry.Date = (DateTime)value;
+            CurrentEntry.Date = (DateTime)value;
         }
     }
     DateHandler dateHandler = new DateHandler();
@@ -123,11 +121,21 @@
     private DateTime? _minDateValue;
     private DateTime? _maxDateValue;
 
+    WorkLocation? SelectedWorkLocation { get; set; }
 
     protected override void OnInitialized()
     {
+        try
+        {
+            SelectedWorkLocation = WorkLocations.First(l => l.Id == CurrentEntry.LocationId);
+        }
+        catch
+        {
+            Console.WriteLine("Test");
+        }
+
         UpdateMinMaxDates();
-        UpdateWorkHoursFromLocation(Entry.Location);
+        UpdateWorkHoursFromLocation(SelectedWorkLocation);
     }
 
     /// <summary>
@@ -140,10 +148,10 @@
         var dialogCancelled = await OpenConfirmationDialogAsync();
         if (dialogCancelled) { return; }
 
-        bool success = await dataService.DeleteDay(Entry.Id);
+        bool success = await dataService.DeleteDay(CurrentEntry.Id);
         if (success)
         {
-            OnItemDeleted.InvokeAsync((int)Entry.Id);
+            OnItemDeleted.InvokeAsync((int)CurrentEntry.Id);
         }
     }
 
@@ -155,7 +163,7 @@
     {
         var parameters = new DialogParameters<DialogTemplate>
         {
-            { x => x.ContentText, $"Do you really want to delete the entry for {Entry.Date.DayOfWeek} ({Entry.Date.ToShortDateString()})? This process cannot be undone." },
+            { x => x.ContentText, $"Do you really want to delete the entry for {CurrentEntry.Date.DayOfWeek} ({CurrentEntry.Date.ToShortDateString()})? This process cannot be undone." },
             { x => x.ButtonText, "Delete" },
             { x => x.Color, Color.Error }
         };
@@ -172,7 +180,7 @@
     {
         if (SelectedWeek != null && SelectedYear != null)
         {
-            date = Entry.Date;
+            Date = CurrentEntry.Date;
 
             // set values for min and max in the date picker
             _minDateValue = dateHandler.GetFirstDateOfWeek((int)SelectedWeek, (int)SelectedYear);
@@ -181,23 +189,21 @@
     }
 
     /// <summary>
-    /// Pre-define the hours value for input UI fields based on the selected work location.
-    ///
-    /// Filter list for the matching string in SelectedLocation, then set corresponding hours value to Hours
+    /// Add suggested hours to the ui input based on the selected work location.
     /// </summary>
-    public void UpdateWorkHoursFromLocation(string? location) {
-        if (!string.IsNullOrEmpty(location))
+    public void UpdateWorkHoursFromLocation(WorkLocation? workLocation) 
+    {
+        try
         {
-            foreach (var item in workLocationHours)
-            {
-                if (location == item.Location)
-                {
-                    Entry.Location = item.Location;
-                    Entry.Hours = item.Hours;
-                    StateHasChanged();
-                }
-            }
+            var location = WorkLocations.First(l => l.Id == workLocation.Id);
+            SelectedWorkLocation = location;
+            CurrentEntry.LocationId = location.Id;
+            CurrentEntry.Hours = location.SuggestedHours;
+            StateHasChanged();
+        } 
+        catch (Exception e)
+        {
+            Console.WriteLine($"No location available, not assigning any values. Exception: {e.Message}");
         }
-        
     }
 }

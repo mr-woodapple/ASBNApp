@@ -1,13 +1,17 @@
 ﻿@page "/import"
 
+@using System.IO;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using ASBNApp.Frontend.Enums;
+@using ASBNApp.Frontend.Helpers;
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+
 @inject IASBNDataService dataService;
 @inject IJSRuntime js;
 @inject ISnackbar Snackbar
 
-@using System.IO;
-@using System.Text.Json;
-@using ASBNApp.Frontend.Enums;
-@using ASBNApp.Frontend.Helpers
 
 <PageTitle>Import / Export | ASBN App</PageTitle>
 
@@ -144,7 +148,8 @@
 		{
 			var options = new JsonSerializerOptions
 			{
-				PropertyNameCaseInsensitive = true // Optional: allows case-insensitive property matching
+				ReferenceHandler = ReferenceHandler.Preserve,
+				PropertyNameCaseInsensitive = true // Allows case-insensitive property matching
 			};
 			importData = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
 		} 
@@ -246,7 +251,11 @@
 
 		_exportStatus = "Assembling file...";
 
-		var options = new JsonSerializerOptions { WriteIndented = true };
+		var options = new JsonSerializerOptions 
+		{
+			ReferenceHandler = ReferenceHandler.Preserve,
+			WriteIndented = true 
+		};
 		var json = JsonSerializer.Serialize(export, options);
 		byte[] file = System.Text.Encoding.UTF8.GetBytes(json);
 

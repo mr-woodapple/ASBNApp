@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
+﻿using ASBNApp.Models;
+using System.Text.Json;
 using System.Text.Json.Nodes;
-using ASBNApp.Frontend.Model;
 
 namespace ASBNApp.Frontend.Helpers
 {
@@ -58,7 +58,7 @@ namespace ASBNApp.Frontend.Helpers
             }
 
             // Map WorkLocations
-            var workLocations = new List<WorkLocationWithID>();
+            var workLocations = new List<WorkLocation>();
             var workLocationsNode = root["WorkLocationHours"]?.AsObject();
             if (workLocationsNode != null)
             {
@@ -67,17 +67,17 @@ namespace ASBNApp.Frontend.Helpers
                     var location = locationNode.Value.Deserialize<WorkLocation>();
                     if (location != null)
                     {
-                        workLocations.Add(new WorkLocationWithID
+                        workLocations.Add(new WorkLocation
                         {
-                            Location = location.Location,
-                            Hours = location.Hours
+                            LocationName = location.LocationName,
+                            SuggestedHours = location.SuggestedHours
                         });
                     }
                 }
             }
 
             // Map Entries
-            var loggedData = new List<EntryRowModelWithID>();
+            var loggedData = new List<Entry>();
             var loggedDataNode = root["LoggedData"]?.AsObject();
             if (loggedDataNode != null)
             {
@@ -95,14 +95,14 @@ namespace ASBNApp.Frontend.Helpers
                             {
                                 foreach (var entryNode in entriesNode) // Iterate over individual entries
                                 {
-                                    var entry = entryNode.Value?.Deserialize<EntryRowModel>();
+                                    var entry = entryNode.Value?.Deserialize<Entry>();
                                     if (entry != null)
                                     {
-                                        loggedData.Add(new EntryRowModelWithID
+                                        loggedData.Add(new Entry
                                         {
                                             Note = entry.Note,
                                             Date = entry.Date,
-                                            Location = entry.Location,
+                                            LocationId = entry.LocationId,
                                             Hours = entry.Hours
                                         });
                                     }

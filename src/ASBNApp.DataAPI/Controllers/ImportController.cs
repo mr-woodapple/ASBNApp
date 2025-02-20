@@ -1,5 +1,6 @@
-﻿using ASBNApp.DataAPI.Context;
-using ASBNApp.DataAPI.Models;
+﻿using ASBNApp.Models;
+using ASBNApp.DataAPI.DTOs;
+using ASBNApp.DataAPI.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ public class ImportController : ODataController
     /// <summary>
     /// Using transactions to import data into the database.
     /// </summary>
-    /// <param name="jsonDTO">Data to be imported.</param>
+    /// <param name="jsonDTO">Entries to be imported.</param>
     /// <returns>An <see cref="ActionResult"/> with the appropriate reponse code.</returns>
     [EnableQuery]
     [HttpPost]
@@ -58,14 +59,14 @@ public class ImportController : ODataController
                 {
                     var location = new WorkLocation
                     {
-                        Hours = l.Hours,
-                        Location = l.Location,
+                        SuggestedHours = l.SuggestedHours,
+                        LocationName = l.LocationName,
                         Owner = user
                     };
 
-                    if (await _context.WorkLocation.AnyAsync(l => l.Location == location.Location && l.Owner == location.Owner))
+                    if (await _context.WorkLocation.AnyAsync(l => l.LocationName == location.LocationName && l.Owner == location.Owner))
                     {
-                        Console.WriteLine($"Already location available named {location.Location}, location is discarded.");
+                        Console.WriteLine($"Already location available named {location.LocationName}, location is discarded.");
                     }
                     else
                     {

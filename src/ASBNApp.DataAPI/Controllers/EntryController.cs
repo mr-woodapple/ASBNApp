@@ -1,4 +1,4 @@
-﻿using ASBNApp.DataAPI.Models;
+﻿using ASBNApp.Models;
 using ASBNApp.DataAPI.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;

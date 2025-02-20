@@ -4,6 +4,7 @@ using ASBNApp.DataAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASBNApp.DataAPI.Migrations
 {
     [DbContext(typeof(ASBNAppContext))]
-    partial class ASBNAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250218152744_UpdateWorkLocationModel")]
+    partial class UpdateWorkLocationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,11 +27,11 @@ namespace ASBNApp.DataAPI.Migrations
 
             modelBuilder.Entity("ASBNApp.DataAPI.Models.Entry", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -36,8 +39,8 @@ namespace ASBNApp.DataAPI.Migrations
                     b.Property<float?>("Hours")
                         .HasColumnType("real");
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("int");
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -47,8 +50,6 @@ namespace ASBNApp.DataAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
-
                     b.HasIndex("OwnerId");
 
                     b.ToTable("LogEntry");
@@ -56,11 +57,11 @@ namespace ASBNApp.DataAPI.Migrations
 
             modelBuilder.Entity("ASBNApp.DataAPI.Models.WorkLocation", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("LocationName")
                         .HasColumnType("nvarchar(max)");
@@ -316,15 +317,9 @@ namespace ASBNApp.DataAPI.Migrations
 
             modelBuilder.Entity("ASBNApp.DataAPI.Models.Entry", b =>
                 {
-                    b.HasOne("ASBNApp.DataAPI.Models.WorkLocation", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
-
                     b.HasOne("ASBNApp.DataAPI.Models.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
-
-                    b.Navigation("Location");
 
                     b.Navigation("Owner");
                 });

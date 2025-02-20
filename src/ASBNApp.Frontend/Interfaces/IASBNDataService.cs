@@ -1,25 +1,25 @@
+using ASBNApp.Models;
+
+namespace ASBNApp.Frontend.Interfaces;
+
 /// <summary>
 /// Interface for retrieving & saving data
 /// </summary>
-
-using ASBNApp.Frontend.Model;
-
 interface IASBNDataService
 {
-
-	public Task<EntryRowModelWithID> GetDay(DateTime? date);
-	public Task<bool> SaveDay(EntryRowModelWithID entry);
+	public Task<Entry?> GetDay(DateTime? date);
+	public Task<bool> SaveDay(Entry entry);
 	public Task<bool> DeleteDay(int? id);
 
-	public Task<List<EntryRowModelWithID>> GetWeek(DateTime? startDate, DateTime? endDate);
-    public Task<bool> SaveEntries(IEnumerable<EntryRowModelWithID> entries);
-    public Task<List<EntryRowModelWithID>> GetAllEntries();
+	public Task<List<Entry>> GetWeek(DateTime? startDate, DateTime? endDate);
+    public Task<bool> SaveEntries(IEnumerable<Entry> entries);
+    public Task<List<Entry>> GetAllEntries();
 
     public Task<Settings> GetSettings();
     public Task<bool> SaveSettings(Settings settings);
 
-    public Task<List<WorkLocationWithID>> GetWorkLocationHours();
-    public Task<bool> SaveWorkLocationHours(List<WorkLocationWithID> workLocationHours);
+    public Task<List<WorkLocation>> GetWorkLocationHours();
+    public Task<bool> SaveWorkLocationHours(List<WorkLocation> workLocationHours);
     public Task<bool> DeleteWorkLocationHours(int? id);
 
     public Task<HttpResponseMessage> ImportData(JSONDataWrapper data);

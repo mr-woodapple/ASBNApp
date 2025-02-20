@@ -1,6 +1,8 @@
 @* Simple component to select a location. *@
 
-@using ASBNApp.Frontend.Model;
+@using ASBNApp.Frontend.Interfaces
+@using ASBNApp.Frontend.Models
+
 @inject IASBNDataService dataService;
 
 
@@ -21,9 +23,9 @@ else if (WorkLocationHours.Count == 0)
 }
 else if (WorkLocationHours.Count != 0)
 {
-    <MudChipSet T="WorkLocationWithID" @bind-SelectedValue="SelectedLocation" Mandatory>
+    <MudChipSet T="WorkLocation" @bind-SelectedValue="SelectedLocation" Mandatory>
         @foreach(var location in WorkLocationHours) {
-            <MudChip Value="@location" Color="Color.Primary" Text="@location.Location" 
+            <MudChip Value="@location" Color="Color.Primary" Text="@location.LocationName" 
                 @onclick="@(e => { SelectedLocationChanged.InvokeAsync(SelectedLocation); })" />
         }
     </MudChipSet>
@@ -32,11 +34,11 @@ else if (WorkLocationHours.Count != 0)
 
 @code {
     [Parameter]
-    public WorkLocationWithID? SelectedLocation { get; set; }
+    public WorkLocation? SelectedLocation { get; set; }
 
     [Parameter]
-    public EventCallback<WorkLocationWithID?> SelectedLocationChanged { get; set; }
+    public EventCallback<WorkLocation?> SelectedLocationChanged { get; set; }
 
     [Parameter]
-    public List<WorkLocationWithID>? WorkLocationHours { get; set; }
+    public List<WorkLocation>? WorkLocationHours { get; set; }
 }

@@ -1,10 +1,8 @@
-/// <summary>
-/// Model for what to expect from the API when asking for the users settings.
-/// </summary>
+﻿namespace ASBNApp.Models;
 
-namespace ASBNApp.Frontend.Model;
-
-public class Settings {
+// Model used to only pass the requested user settings data back to the frontend.
+public class Settings
+{
 	public string? GivenName { get; set; }
 	public string? Surname { get; set; }
 	public string? Username { get; set; }

@@ -1,4 +1,4 @@
-﻿using ASBNApp.Frontend.Model;
+﻿using ASBNApp.Frontend.Models;
 
 namespace ASBNApp.Frontend.Interfaces
 {

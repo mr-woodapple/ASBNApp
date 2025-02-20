@@ -24,7 +24,7 @@
         Note5 = 5,
 
         /// <summary>
-        /// Hours column, specifies the amount of hours worked that day
+        /// SuggestedHours column, specifies the amount of hours worked that day
         /// </summary>
         Hours1 = 6,
         Hours2 = 33,
@@ -33,7 +33,7 @@
         Hours5 = 9,
 
         /// <summary>
-        /// Location column, specifies the working location
+        /// LocationName column, specifies the working location
         /// </summary>
         Location1 = 32,
         Location2 = 10,

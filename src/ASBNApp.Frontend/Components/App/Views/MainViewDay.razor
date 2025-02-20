@@ -1,6 +1,9 @@
 @* Main view to input and edit data, displayed when the user selects the daily view. *@
 
 @using System.Net.Http.Json;
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+
 @inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
 
@@ -21,19 +24,19 @@
 
         @* Working hours *@
         <MudItem xs="6">
-            @if (Entry == null) {
+            @if (CurrentEntry == null) {
                 <MudSkeleton Height="50px" />
             } else {
-                <MudNumericField @bind-Value="Entry.Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
+                <MudNumericField @bind-Value="CurrentEntry.Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
             }
         </MudItem>
 
         @* Note *@
         <MudItem xs="12">
-            @if(Entry == null) {
+            @if (CurrentEntry == null) {
                 <MudSkeleton Height="50px" />
             } else {
-                <MudTextField @bind-Text="Entry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" />
+                <MudTextField @bind-Text="CurrentEntry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" />
             }
         </MudItem>
 
@@ -59,23 +62,23 @@
         }
     }
 
-    public WorkLocationWithID? _selectedWorkLocation;
-    public WorkLocationWithID? SelectedWorkLocation { 
+    public WorkLocation? _selectedWorkLocation;
+    public WorkLocation? SelectedWorkLocation { 
         get => _selectedWorkLocation; 
         set 
         {
             if (value != _selectedWorkLocation) {
                 _selectedWorkLocation = value;
-                if (Entry != null && value != null)
+                if (CurrentEntry != null && value != null)
                 {
-                    Entry.Hours = value.Hours;
+                    CurrentEntry.Hours = value.SuggestedHours;
                 }
             }
         }
     }
 
-    public List<WorkLocationWithID>? WorkLocations { get; set; }
-    public EntryRowModelWithID? Entry { get; set; }
+    public List<WorkLocation>? WorkLocations { get; set; }
+    public Entry? CurrentEntry { get; set; }
 
     /// <summary>
     /// Load data for the selected date and all <see cref="WorkLocations"/>.
@@ -83,7 +86,7 @@
     public async Task GetData() 
     {
         // Trigger loading state for the UI
-        Entry = null;
+        CurrentEntry = null;
         SelectedWorkLocation = null;
 
         // Important that this only happens when the list is null, because otherwise 
@@ -91,13 +94,20 @@
         if (WorkLocations == null)
         {
             WorkLocations = await dataService.GetWorkLocationHours();
+            StateHasChanged();
         }
-        Entry = await dataService.GetDay(SelectedDate);
+
+        // Try to retrieve data from the API
+        CurrentEntry = await dataService.GetDay(SelectedDate);
 
         // Set location
-        if (Entry != null)
+        if (CurrentEntry != null)
         {
-            SelectedWorkLocation = WorkLocations.FirstOrDefault(l => l.Location == Entry.Location);
+            SelectedWorkLocation = WorkLocations.FirstOrDefault(l => l.Id == CurrentEntry.LocationId);
+        }
+        else
+        {
+            CurrentEntry = new Entry { Date = SelectedDate };
         }
 
         StateHasChanged();
@@ -109,13 +119,13 @@
     /// </summary>
     public async void SaveData()
     {
-        var data = new EntryRowModelWithID()
+        var data = new Entry()
         {
-            Id = Entry.Id,
-            Hours = Entry.Hours,
-            Note = Entry.Note,
+            Id = CurrentEntry.Id,
+            Hours = CurrentEntry.Hours,
+            Note = CurrentEntry.Note,
             Date = SelectedDate,
-            Location = SelectedWorkLocation.Location
+            LocationId = SelectedWorkLocation.Id
         };
 
         if (await dataService.SaveDay(data))

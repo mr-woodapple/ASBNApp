@@ -1,7 +1,8 @@
 @* Component to show location & working hours for all entries of WorkLocationHours,
 also manage editing states & update parent component if necessary. *@
 
-@using ASBNApp.Frontend.Model;
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
 
 @inject IASBNDataService dataService;
 
@@ -11,10 +12,10 @@ also manage editing states & update parent component if necessary. *@
         @foreach(var entry in workLocationHours)
         {
             <MudItem xs="7">
-                <MudTextField @bind-Value="entry.Location" Label="Work location:" Variant="Variant.Outlined"/>
+                <MudTextField @bind-Value="entry.LocationName" Label="Work location:" Variant="Variant.Outlined"/>
             </MudItem>
             <MudItem xs="4">
-                <MudNumericField @bind-Value="@entry.Hours" Variant="Variant.Outlined" Label="Working hours:" Min="0" Format="N1" />
+                <MudNumericField @bind-Value="@entry.SuggestedHours" Variant="Variant.Outlined" Label="Working hours:" Min="0" Format="N1" />
             </MudItem>
             <MudItem xs="1">
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => DeleteWorkLocationHoursEntry(entry))" />
@@ -26,7 +27,7 @@ also manage editing states & update parent component if necessary. *@
             <MudTextField @ref=NewLocationTextField @bind-Value="_newWorkLocation" Label="Add new work location..." />
         </MudItem>
         <MudItem xs="4">
-            <MudNumericField @bind-Value="_newWorkHours" Variant="Variant.Text" Label="Add hours..." Min="0" Format="N1" />
+            <MudNumericField @bind-Value="_newSuggestedHours" Variant="Variant.Text" Label="Add suggested hours..." Min="0" Format="N1" />
         </MudItem>
         <MudItem xs="1">
             <MudIconButton Icon="@Icons.Material.Rounded.Add" Color="Color.Primary" aria-label="delete" OnClick="AddNewWorkLocationHoursEntry" />
@@ -37,35 +38,35 @@ also manage editing states & update parent component if necessary. *@
 
 
 @code {
-    // TODO: Check before adding a new Location, if the name is present already. In that case, don't add it and instead show a warning!
+    // TODO: Check before adding a new LocationName, if the name is present already. In that case, don't add it and instead show a warning!
 
     // Two way binding
     [Parameter]
-    public List<WorkLocationWithID>? workLocationHours { get; set; }
+    public List<WorkLocation>? workLocationHours { get; set; }
     [Parameter]
-    public EventCallback<List<WorkLocationWithID>?> WorkLocationHoursChanged { get; set; }
+    public EventCallback<List<WorkLocation>?> WorkLocationHoursChanged { get; set; }
 
     // Text field ref
     private MudTextField<string> NewLocationTextField { get; set; }
 
     // Variables & methods to add a new entry
     private string? _newWorkLocation { get; set; }
-    private float? _newWorkHours { get; set; }
+    private float? _newSuggestedHours { get; set; }
 
     private void AddNewWorkLocationHoursEntry()
     {
         // TODO: Change from this to the plus button only becoming active once we have input in both variables
-        if (_newWorkLocation != null && _newWorkHours != null)
+        if (_newWorkLocation != null && _newSuggestedHours != null)
         {
             // Add new entry & clear inputs
-            workLocationHours.Add(new WorkLocationWithID()
+            workLocationHours.Add(new WorkLocation()
             {
-                Location = _newWorkLocation,
-                Hours = _newWorkHours
+                LocationName = _newWorkLocation,
+                SuggestedHours = _newSuggestedHours
             });
 
             NewLocationTextField.Clear();
-            _newWorkHours = null;
+            _newSuggestedHours = null;
 
             // Update parent component
             WorkLocationHoursChanged.InvokeAsync(workLocationHours);
@@ -76,7 +77,7 @@ also manage editing states & update parent component if necessary. *@
         }
     }
 
-    private async Task DeleteWorkLocationHoursEntry(WorkLocationWithID entry)
+    private async Task DeleteWorkLocationHoursEntry(WorkLocation entry)
     {
         // Remove entry that is not in database, so Id isn't set.
         if(entry.Id == null)
