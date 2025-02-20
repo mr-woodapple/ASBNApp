@@ -2,8 +2,10 @@
 # ASBN App
 A Blazor Web Assembly app that allows you to write your mandatory apprenticeship report book with ease. The aim is to be able to quickly add a note for a day before forgetting about it, and when the time has come, you can export a ready-to-go pdf with the information you entered sometime before.
 
-The app uses a custom API to handle storing the data in an SQL database. Authentication is handled using ASP.NET Core Identity. There's also a legacy version available that uses JSON to store data - simply check-out "legacy-version" to access that.
+The app uses a custom API to handle storing the data in an SQL database. Authentication is handled using ASP.NET Core Identity. There's also a legacy version available that uses JSON to store data - simply check-out "legacy-version" to access that (there's no support for this version, use at your own risk).
 
+## Stats
+![Alt](https://repobeats.axiom.co/api/embed/a1ab77f807a4ff827d7004849fde015aeb5390fd.svg "Repobeats analytics image for ASBN App")
 
 ## Contributing
 PRs accepted. Looking forward to your ideas / bugfixes, whatever you may wanna do. :)

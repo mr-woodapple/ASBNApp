@@ -2,11 +2,11 @@
 
 <MudStack Row>
     <MudChipSet T="string" @bind-SelectedValue="_selected" Filter Mandatory>
-        <MudChip Value="@("currentWeek")" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(0); _selected = "currentWeek"; })">
+        <MudChip Value="@("currentWeek")" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(); _selected = "currentWeek"; })">
             Current Week (Week @_currentWeek)
         </MudChip>
 
-        <MudChip Value="@("nextWeek")" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(1); _selected = "nextWeek"; })">
+        <MudChip Value="@("nextWeek")" Color="Color.Primary" OnClick="@(e => { date = date?.AddDays(-7); _selected = "nextWeek"; })">
             Previous Week (Week @(_currentWeek - 1))
         </MudChip>
 
@@ -116,27 +116,12 @@
     }
 
     // Updated SelectedYear & Selected Week from the pill selector
-    public void UpdateFromWeekPicker(int option)
+    public void UpdateFromWeekPicker()
     {
         // this week selected
-        if (option == 0)
-        {
-            SelectedWeek = dateHandler.GetCurrentWeekOfYear();
-            SelectedYear = DateTime.Now.Year;
-        }
-        // previous week selected
-        else
-        {
-            if (SelectedWeek == 1)
-            {
-                SelectedWeek = 52;
-                SelectedYear--;
-            }
-            else
-            {
-                SelectedWeek--;
-            }
-        }
+        SelectedWeek = dateHandler.GetCurrentWeekOfYear();
+        SelectedYear = DateTime.Now.Year;
+
         TriggerAllCallbacks(SelectedWeek, SelectedYear);
     }
 }

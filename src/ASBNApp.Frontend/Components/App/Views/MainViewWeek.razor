@@ -46,6 +46,10 @@
 @code {
     private List<Entry> rows = new();
     private List<WorkLocation> _workLocationHours = new();
+      
+    // Creates DateHandler instance & variables to pass down to child component
+    public int? SelectedWeek { get; set; }
+    public int? SelectedYear { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -68,7 +72,7 @@
         StateHasChanged();
     }
 
-    // Update the data we have from the data the (dummy) interface implementation returns
+    // Update the data we have from the data then interface implementation returns
     // Will be called on initialization & once SelectedWeek or SelectedYear changes
     public async Task GetDataFromWeekDates()
     {
@@ -88,10 +92,6 @@
         // Force update the UI
         StateHasChanged();
     }
-
-    // Creates DateHandler instance & variables to pass down to child component
-    public int? SelectedWeek { get; set; }
-    public int? SelectedYear { get; set; }
 
     /// <summary>
     /// Triggers the DataService to save the edited data, also trigger
