@@ -8,7 +8,7 @@ namespace ASBNApp.Frontend.Interfaces;
 interface IASBNDataService
 {
 	public Task<Entry?> GetDay(DateTime? date);
-	public Task<bool> SaveDay(Entry entry);
+	public Task<HttpResponseMessage> SaveDay(Entry entry);
 	public Task<bool> DeleteDay(int? id);
 
 	public Task<List<Entry>> GetWeek(DateTime? startDate, DateTime? endDate);

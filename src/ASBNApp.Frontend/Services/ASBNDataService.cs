@@ -44,17 +44,15 @@ public class ASBNDataService : IASBNDataService
     /// </summary>
     /// <param name="entry">The <see cref="Entry"/> to save.</param>
     /// <returns>True for success, false for error during saving.</returns>
-    public async Task<bool> SaveDay(Entry entry)
+    public async Task<HttpResponseMessage> SaveDay(Entry entry)
     {
         JsonSerializerOptions options = new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
         var json = JsonSerializer.Serialize(DateTimeKindHelper.SetDateTimeKindToNone(entry), options);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = (entry.Id == null)
+        return (entry.Id == null)
             ? await _httpClient.PostAsync("/api/odata/Entry", content)
             : await _httpClient.PatchAsync($"/api/odata/Entry({entry.Id})", content);
-
-        return response.IsSuccessStatusCode;
     }
 
     /// <summary>

@@ -48,7 +48,7 @@ namespace ASBNApp.DataAPI.Controllers
             else 
             {
 				_context.LogEntry.Add(entry);
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 				return Created(entry);
 			} 
         }
