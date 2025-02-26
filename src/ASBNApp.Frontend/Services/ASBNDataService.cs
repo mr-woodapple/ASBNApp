@@ -167,12 +167,29 @@ public class ASBNDataService : IASBNDataService
         }
     }
 
-    /// <summary>
-    /// Handles saving a <see cref="WorkLocation"/> object with the API.
-    /// </summary>
-    /// <param name="workLocationHours">The <see cref="WorkLocation"/> to save.</param>
-    /// <returns>Bool, true representing success, false failure.</returns>
-    public async Task<bool> SaveWorkLocationHours(List<WorkLocation> workLocationHours)
+	/// <summary>
+	/// Handles saving a <see cref="WorkLocation"/>. Will use POST or PATCH depending
+	/// on the value for Id, if = null: POST, if != null: PATCH.
+	/// </summary>
+	/// <param name="workLocationHour">The location to save to DB.</param>
+	/// <returns><see cref="HttpResponseMessage"/> for the current save process.</returns>
+	public async Task<HttpResponseMessage> SaveWorkLocation(WorkLocation workLocationHour)
+    {
+		JsonSerializerOptions options = new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+		var json = JsonSerializer.Serialize(workLocationHour, options);
+		var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+		return (workLocationHour.Id == null)
+			? await _httpClient.PostAsync("/api/odata/WorkLocation", content)
+			: await _httpClient.PatchAsync($"/api/odata/WorkLocation({workLocationHour.Id})", content);
+	}
+
+	/// <summary>
+	/// Handles saving a <see cref="WorkLocation"/> object with the API.
+	/// </summary>
+	/// <param name="workLocationHours">The <see cref="WorkLocation"/> to save.</param>
+	/// <returns>Bool, true representing success, false failure.</returns>
+	public async Task<bool> SaveWorkLocationHours(List<WorkLocation> workLocationHours)
     {
         foreach (var location in workLocationHours)
         {
@@ -199,13 +216,12 @@ public class ASBNDataService : IASBNDataService
     /// </summary>
     /// <param name="id">The id of the object to be deleted.</param>
     /// <returns>Bool, true representing success, false failure.</returns>
-    public async Task<bool> DeleteWorkLocationHours(int? id)
+    public async Task<HttpResponseMessage> DeleteWorkLocationHours(int? id)
     {
         if (id == null)
-        { return false; }
+        { return null; }
 
-        HttpResponseMessage response = await _httpClient.DeleteAsync($"/api/odata/WorkLocation({id})");
-        return response.IsSuccessStatusCode;
+		return await _httpClient.DeleteAsync($"/api/odata/WorkLocation({id})");
     }
 
     /// <summary>

@@ -7,9 +7,9 @@ namespace ASBNApp.DataAPI.Context;
 
 public class ASBNAppContext : IdentityDbContext<IdentityUser>
 {
-    public ASBNAppContext(DbContextOptions<ASBNAppContext> options) : base(options) { }
+	public ASBNAppContext(DbContextOptions<ASBNAppContext> options) : base(options) { }
 
-    public DbSet<User> AppUsers { get; set; } = default!;
-    public DbSet<Entry> LogEntry { get; set; } = default!;
-    public DbSet<WorkLocation> WorkLocation { get; set; } = default!;
+	public DbSet<User> AppUsers { get; set; } = default!;
+	public DbSet<Entry> LogEntry { get; set; } = default!;
+	public DbSet<WorkLocation> WorkLocation { get; set; } = default!;
 }

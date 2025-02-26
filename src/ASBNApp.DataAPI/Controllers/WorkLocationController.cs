@@ -39,7 +39,7 @@ public class WorkLocationController : ODataController
 
         // TODO: Wrap in a try-catch block
         _context.WorkLocation.Add(workLocation);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return Created(workLocation);
     }
 
@@ -49,10 +49,10 @@ public class WorkLocationController : ODataController
     {
         try
         {
-			var entry = _context.WorkLocation.SingleOrDefault(d => d.Id == key);
-			delta.Patch(entry);
-			_context.SaveChanges();
-			return Updated(entry);
+			var location = _context.WorkLocation.SingleOrDefault(d => d.Id == key);
+			delta.Patch(location);
+			await _context.SaveChangesAsync();
+			return Updated(location);
 		}
         catch
         {
@@ -66,15 +66,15 @@ public class WorkLocationController : ODataController
     {
         try
         {
-			var entry = _context.WorkLocation.SingleOrDefault(e => e.Id == key);
-            _context.WorkLocation.Remove(entry);
-            _context.SaveChanges();
+			var location = _context.WorkLocation.SingleOrDefault(e => e.Id == key);
+            _context.WorkLocation.Remove(location);
+            await _context.SaveChangesAsync();
 
             return Ok();
 		}
         catch
         {
-            return NotFound();
+            return Conflict("Cannot delete WorkLocation while it's referenced on one or more Entries.");
         }
 	}
 }

@@ -93,27 +93,28 @@
                 </MudItem>
             }
 
-
-            @* Specify your working locations and the hours for each location *@
-            <MudItem xs="12">
-                <MudText Typo="Typo.body2" Class="mb-3">
-                    <b>My working hours & locations:</b>
-                </MudText>
-
-                @if(!_hasLoadedWorkLocationHours)
-                {
-                    <WorkLocationHoursSkeleton />
-                }
-                else
-                {
-                    <WorkLocationHours @bind-workLocationHours="workLocationHours" />
-                }
-            </MudItem>
-
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
             </MudItem>
         </MudGrid>
+    </MudPaper>
+
+    <MudPaper Outlined="true" Class="pa-5 mt-10">
+        @* Specify your working locations and the hours for each location *@
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Class="mb-3">
+                <b>Manage locations and their suggested hours:</b>
+            </MudText>
+
+            @if (!_hasLoadedWorkLocationHours)
+            {
+                <WorkLocationHoursSkeleton />
+            }
+            else
+            {
+                <WorkLocationHours @bind-workLocationHours="workLocationHours" />
+            }
+        </MudItem>
     </MudPaper>
 </MudContainer>
 
@@ -158,14 +159,14 @@
     /// </summary>
     public async void SaveData()
     {
-        if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
+        if (await dataService.SaveSettings(settings))
         {
             // Show dialog if successful
-            Snackbar.Add("That's your data saved!", Severity.Success);
+            Snackbar.Add("That's your settings saved!", Severity.Success);
         }
         else
         {
-            Snackbar.Add("There was an error saving you data, please try again.", Severity.Error);
+            Snackbar.Add("There was an error saving you settings, please try again.", Severity.Error);
         }
     }
 

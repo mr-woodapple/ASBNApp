@@ -19,8 +19,9 @@ interface IASBNDataService
     public Task<bool> SaveSettings(Settings settings);
 
     public Task<List<WorkLocation>> GetWorkLocationHours();
+    public Task<HttpResponseMessage> SaveWorkLocation(WorkLocation workLocationHour);
     public Task<bool> SaveWorkLocationHours(List<WorkLocation> workLocationHours);
-    public Task<bool> DeleteWorkLocationHours(int? id);
+    public Task<HttpResponseMessage> DeleteWorkLocationHours(int? id);
 
     public Task<HttpResponseMessage> ImportData(JSONDataWrapper data);
 }
