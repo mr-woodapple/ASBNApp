@@ -155,6 +155,8 @@
 		} 
 		catch (JsonException jex)
 		{
+			Console.WriteLine("Exception catched, trying to use the legacy importer now. Exception message: ", jex.Message);
+
 			try
 			{
 				importData = LegacyImportHelper.ConvertLegacyImport(fileContent);
@@ -259,11 +261,19 @@
 		var json = JsonSerializer.Serialize(export, options);
 		byte[] file = System.Text.Encoding.UTF8.GetBytes(json);
 
-		var fileName = $"ASBNApp_Data_Export_{DateTime.Today.ToString("d")}.json";
-		var contentType = "application/json";
-		await js.InvokeVoidAsync("DownloadFileFromStream", fileName, contentType, file);
+		// try saving the file to disk
+		try
+		{
+			var fileName = $"ASBNApp_Data_Export_{DateTime.Today.ToString("d")}.json";
+			var contentType = "application/json";
+			await js.InvokeVoidAsync("DownloadFileFromStream", fileName, contentType, file);
+		}
+		catch
+		{
+			Snackbar.Add("Error, your data couldn't be exported. Please try again or contact the admin (see GitHub).", Severity.Error);
+			return;
+		}
 
-		// TODO: Error handling
 		Snackbar.Add("That's your data exported! Have a look at your Downloads folder.", Severity.Success);
 
 		_isExporting = false;

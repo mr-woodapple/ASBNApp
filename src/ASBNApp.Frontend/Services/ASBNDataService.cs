@@ -261,7 +261,7 @@ public class ASBNDataService : IASBNDataService
         var json = JsonSerializer.Serialize(data);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _httpClient.PostAsync("/api/odata/Import", content);
+        var response = await _httpClient.PostAsync("/api/Import", content);
         return response;
     }
 }

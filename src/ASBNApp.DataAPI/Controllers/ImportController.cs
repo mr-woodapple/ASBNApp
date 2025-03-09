@@ -4,14 +4,14 @@ using ASBNApp.DataAPI.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASBNApp.DataAPI.Controllers;
 
 [Authorize]
-public class ImportController : ODataController
+[ApiController]
+[Route("[controller]")]
+public class ImportController : ControllerBase
 {
     private readonly ASBNAppContext _context;
     private readonly UserManager<User> _userManager;
@@ -27,32 +27,30 @@ public class ImportController : ODataController
     /// </summary>
     /// <param name="jsonDTO">Entries to be imported.</param>
     /// <returns>An <see cref="ActionResult"/> with the appropriate reponse code.</returns>
-    [EnableQuery]
     [HttpPost]
-    public async Task<ActionResult> Post([FromBody] JSONDataWrapperImportDTO jsonDTO)
+	public async Task<ActionResult> Post([FromBody] JSONDataWrapperImportDTO jsonDTO)
     {
-        var user = await _userManager.GetUserAsync(User);
-
-        if (jsonDTO.Settings != null)
-        {
-            // Update the user model
-            user.GivenName = jsonDTO.Settings.GivenName ?? user.GivenName;
-            user.Surname = jsonDTO.Settings.Surname ?? user.Surname;
-            user.Profession = jsonDTO.Settings.Profession ?? user.Profession;
-            user.LegalRepresentitive = jsonDTO.Settings.LegalRepresentitive ?? user.LegalRepresentitive;
-            user.Company = jsonDTO.Settings.Company ?? user.Company;
-            user.School = jsonDTO.Settings.School ?? user.School;
-            user.ApprenticeshipStartDate = jsonDTO.Settings.ApprenticeshipStartDate ?? user.ApprenticeshipStartDate;
-
-            await _userManager.UpdateAsync(user);
-        }
-
-        // Create a new transaction, handle writing data to the model
-        using var transaction = await _context.Database.BeginTransactionAsync();
+		// Create a new transaction, handle writing data to the model
+		using var transaction = await _context.Database.BeginTransactionAsync();
 
         try
         {
-            if (jsonDTO.WorkLocationHours != null)
+			var user = await _userManager.GetUserAsync(User);
+			if (jsonDTO.Settings != null)
+			{
+				// Update the user model
+				user.GivenName = jsonDTO.Settings.GivenName ?? user.GivenName;
+				user.Surname = jsonDTO.Settings.Surname ?? user.Surname;
+				user.Profession = jsonDTO.Settings.Profession ?? user.Profession;
+				user.LegalRepresentitive = jsonDTO.Settings.LegalRepresentitive ?? user.LegalRepresentitive;
+				user.Company = jsonDTO.Settings.Company ?? user.Company;
+				user.School = jsonDTO.Settings.School ?? user.School;
+				user.ApprenticeshipStartDate = jsonDTO.Settings.ApprenticeshipStartDate ?? user.ApprenticeshipStartDate;
+
+				await _userManager.UpdateAsync(user);
+			}
+
+			if (jsonDTO.WorkLocationHours != null)
             {
                 // WorkLocations will always be added, not caring if they already exist.
                 foreach (var l in jsonDTO.WorkLocationHours)
@@ -78,17 +76,34 @@ public class ImportController : ODataController
             
             if (jsonDTO.Entries != null)
             {
-                // Entries won't be saved if an Entry is already present
-                foreach (var e in jsonDTO.Entries)
+                // Load available locations, so we can filter for the correct ones
+                var workLocations = _context.WorkLocation.Where(e => e.Owner.Id == user.Id);
+
+				// Entries won't be saved if an Entry is already present
+				foreach (var e in jsonDTO.Entries)
                 {
                     var entry = new Entry
                     {
-                        Location = e.Location,
-                        Note = e.Note,
+						Note = e.Note,
                         Date = e.Date,
                         Hours = e.Hours,
                         Owner = user
                     };
+
+                    // Try assigning a WorkLocation
+                    if (e.Location != null)
+                    {
+						entry.LocationId = workLocations.First(l => l.LocationName == e.Location.LocationName).Id;
+					}
+                    else if (e.LocationId != null)
+					{
+						entry.LocationId = workLocations.First(l => l.Id == e.LocationId).Id;
+					}
+                    else
+                    {
+						Console.WriteLine($"{nameof(WorkLocation.LocationName)} not found, not saving any location to entry on {e.Date}.");
+					}
+
 
                     if (await _context.LogEntry.AnyAsync(d => d.Date == entry.Date && d.Owner == entry.Owner))
                     {
@@ -101,18 +116,16 @@ public class ImportController : ODataController
 
                 }
                 await _context.SaveChangesAsync();
-            }
+			}
 
-            // Commit transaction if all commands succeed, transaction will auto-rollback
-            // when disposed if either commands fails
-            await transaction.CommitAsync();
-        }
-        catch(Exception e)
+			await transaction.CommitAsync();
+			return Ok();
+		}
+		catch (Exception e)
         {
+            await transaction.RollbackAsync();
             Console.WriteLine($"Import failed with the following message: {e.Message}");
             return BadRequest();
         }
-
-        return Ok();
     }
 }

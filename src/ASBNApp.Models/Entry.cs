@@ -9,7 +9,7 @@ namespace ASBNApp.Models;
 public class Entry
 {
     [JsonIgnore]
-    public User Owner { get; set; }
+    public User? Owner { get; set; }
 
     public int? Id { get; set; }
 	
@@ -22,8 +22,11 @@ public class Entry
     }
 
     public string? Note { get; set; }
+
     [ForeignKey(nameof(LocationId))]
     public WorkLocation? Location { get; set; }
+
     public int? LocationId { get; set; }
+
     public float? Hours { get; set; }
 }
