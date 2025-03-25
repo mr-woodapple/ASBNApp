@@ -15,19 +15,21 @@ public class ImportController : ControllerBase
 {
     private readonly ASBNAppContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly ILogger<ImportController> _logger;
 
-    public ImportController(ASBNAppContext context, UserManager<User> userManager)
-    {
-        _context = context;
-        _userManager = userManager;
-    }
+	public ImportController(ASBNAppContext context, UserManager<User> userManager, ILogger<ImportController> logger)
+	{
+		_logger = logger;
+		_context = context;
+		_userManager = userManager;
+	}
 
-    /// <summary>
-    /// Using transactions to import data into the database.
-    /// </summary>
-    /// <param name="jsonDTO">Entries to be imported.</param>
-    /// <returns>An <see cref="ActionResult"/> with the appropriate reponse code.</returns>
-    [HttpPost]
+	/// <summary>
+	/// Using transactions to import data into the database.
+	/// </summary>
+	/// <param name="jsonDTO">Entries to be imported.</param>
+	/// <returns>An <see cref="ActionResult"/> with the appropriate reponse code.</returns>
+	[HttpPost]
 	public async Task<ActionResult> Post([FromBody] JSONDataWrapperImportDTO jsonDTO)
     {
 		// Create a new transaction, handle writing data to the model
@@ -35,6 +37,8 @@ public class ImportController : ControllerBase
 
         try
         {
+            _logger.LogInformation("Starting import...");
+
 			var user = await _userManager.GetUserAsync(User);
 			if (jsonDTO.Settings != null)
 			{
@@ -64,7 +68,7 @@ public class ImportController : ControllerBase
 
                     if (await _context.WorkLocation.AnyAsync(l => l.LocationName == location.LocationName && l.Owner == location.Owner))
                     {
-                        Console.WriteLine($"Already location available named {location.LocationName}, location is discarded.");
+                        _logger.LogInformation($"Already location available named {location.LocationName}, location is discarded.");
                     }
                     else
                     {
@@ -101,13 +105,13 @@ public class ImportController : ControllerBase
 					}
                     else
                     {
-						Console.WriteLine($"{nameof(WorkLocation.LocationName)} not found, not saving any location to entry on {e.Date}.");
-					}
+                        _logger.LogInformation($"{nameof(WorkLocation.LocationName)} not found, not saving any location to entry on {e.Date}.");
+                    }
 
 
                     if (await _context.LogEntry.AnyAsync(d => d.Date == entry.Date && d.Owner == entry.Owner))
                     {
-                        Console.WriteLine($"Already data available for {entry.Date.Date}, entry is discarded.");
+                        _logger.LogInformation($"Already data available for {entry.Date.Date}, entry is discarded.");
                     }
                     else
                     {
@@ -124,7 +128,7 @@ public class ImportController : ControllerBase
 		catch (Exception e)
         {
             await transaction.RollbackAsync();
-            Console.WriteLine($"Import failed with the following message: {e.Message}");
+            _logger.LogError(e, "Import failed with the following message: {Message}", e.Message);
             return BadRequest();
         }
     }

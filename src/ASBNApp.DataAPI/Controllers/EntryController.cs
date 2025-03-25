@@ -8,80 +8,79 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace ASBNApp.DataAPI.Controllers
+namespace ASBNApp.DataAPI.Controllers;
+
+[Authorize]
+public class EntryController : ODataController
 {
-    [Authorize]
-    public class EntryController : ODataController
+    private readonly ASBNAppContext _context;
+    private readonly UserManager<User> userManager;
+
+    public EntryController(ASBNAppContext context, UserManager<User> userManager)
     {
-        private readonly ASBNAppContext _context;
-        private readonly UserManager<User> userManager;
+        _context = context;
+        this.userManager = userManager;
+    }
 
-        public EntryController(ASBNAppContext context, UserManager<User> userManager)
+
+    [EnableQuery]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Entry>>> Get()
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+        return Ok(_context.LogEntry.Where(e => e.Owner.Id == currentUser.Id));
+    }
+
+    [EnableQuery]
+    [HttpPost]
+    public async Task<ActionResult> Post([FromBody] Entry entry)
+    {
+        // TODO: Add validation here? (For example check that the strings lenght is ok, etc.)
+
+        var user = await userManager.GetUserAsync(User);
+        entry.Owner = user;
+
+        // Check if the user has data for this day present, if so this shouldn't be a POST
+        if (await _context.LogEntry.AnyAsync(d => d.Date == entry.Date && d.Owner == entry.Owner))
         {
-            _context = context;
-            this.userManager = userManager;
+            return Conflict($"Already data available for {entry.Date.Date}, this should be a PATCH request. Request aborted.");
         }
-
-
-        [EnableQuery]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Entry>>> Get()
+        else 
         {
-            var currentUser = await userManager.GetUserAsync(User);
-            return Ok(_context.LogEntry.Where(e => e.Owner.Id == currentUser.Id));
-        }
-
-        [EnableQuery]
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Entry entry)
-        {
-            // TODO: Add validation here? (For example check that the strings lenght is ok, etc.)
-
-            var user = await userManager.GetUserAsync(User);
-            entry.Owner = user;
-
-            // Check if the user has data for this day present, if so this shouldn't be a POST
-            if (await _context.LogEntry.AnyAsync(d => d.Date == entry.Date && d.Owner == entry.Owner))
-            {
-                return Conflict($"Already data available for {entry.Date.Date}, this should be a PATCH request. Request aborted.");
-            }
-            else 
-            {
 				_context.LogEntry.Add(entry);
 				await _context.SaveChangesAsync();
 				return Created(entry);
 			} 
-        }
+    }
 
-        [EnableQuery]
-        [HttpPatch]
-        public ActionResult Patch([FromRoute] int key, [FromBody] Delta<Entry> delta)
+    [EnableQuery]
+    [HttpPatch]
+    public ActionResult Patch([FromRoute] int key, [FromBody] Delta<Entry> delta)
+    {
+        var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
+
+        if (entry == null)
         {
-            var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
-
-            if (entry == null)
-            {
-                return NotFound();
-            }
-
-            delta.Patch(entry);
-            _context.SaveChanges();
-            return Updated(entry);
+            return NotFound();
         }
 
-        [EnableQuery]
-        [HttpDelete]
-        public ActionResult Delete([FromRoute] int key)
+        delta.Patch(entry);
+        _context.SaveChanges();
+        return Updated(entry);
+    }
+
+    [EnableQuery]
+    [HttpDelete]
+    public ActionResult Delete([FromRoute] int key)
+    {
+        var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
+
+        if (entry != null)
         {
-            var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
-
-            if (entry != null)
-            {
-                _context.LogEntry.Remove(entry);
-            }
-
-            _context.SaveChanges();
-            return NoContent();
+            _context.LogEntry.Remove(entry);
         }
+
+        _context.SaveChanges();
+        return NoContent();
     }
 }
