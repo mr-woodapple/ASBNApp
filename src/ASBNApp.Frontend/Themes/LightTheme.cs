@@ -11,12 +11,11 @@ public static class LightTheme
                 Primary = Colors.Orange.Accent4,
                 AppbarBackground = Colors.Orange.Accent4,
                 AppbarText = Colors.Shades.White,
-                
             },
 
             Typography = new Typography()
             {
-                Default = new Default()
+                Default = new DefaultTypography()
                 {
                     FontFamily = ["Inter"]
                 }
