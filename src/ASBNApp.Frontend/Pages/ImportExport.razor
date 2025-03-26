@@ -1,0 +1,281 @@
+﻿@page "/import"
+
+@using System.IO;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using ASBNApp.Frontend.Enums;
+@using ASBNApp.Frontend.Helpers;
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+
+@inject IASBNDataService dataService;
+@inject IJSRuntime js;
+@inject ISnackbar Snackbar
+
+
+<PageTitle>Import / Export | ASBN App</PageTitle>
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
+
+	@* Header space *@
+	<MudItem Elevation="0" Class="my-10">
+		<MudText Typo="Typo.h3" Class="mb-5">Import & Export</MudText>
+		<MudText Typo="Typo.subtitle1">Import and export your data to .json files (including importing data from the legacy version of this app).</MudText>
+	</MudItem>
+
+	<MudGrid Elevation="0" Spacing="6">
+
+		@* Import *@
+		<MudItem xs="6">
+			<MudPaper Elevation="0" Outlined Class="pa-5">
+				<MudStack Spacing="5" AlignItems="AlignItems.Start">
+					<MudText Typo="Typo.h6"><b>Import</b></MudText>
+
+					<MudFileUpload T="IBrowserFile" Accept=".json" FilesChanged="SelectFile">
+						<ActivatorContent>
+							<MudButton Variant="Variant.Filled"
+							Color="Color.Primary"
+							StartIcon="@Icons.Material.Filled.AttachFile">
+								@if (File != null)
+								{
+									<MudText>Selected File: @File.Name</MudText>
+								}
+								else
+								{
+									<MudText>Select file to get started!</MudText>
+								}
+
+							</MudButton>
+						</ActivatorContent>
+					</MudFileUpload>
+
+					<MudText>Select what you want to import:</MudText>
+					<MudStack Row>
+						<MudCheckBox @bind-Value="_importEntries" Label="Entries" Color="Color.Primary" Disabled="_importEntriesDisabled" />
+						<MudCheckBox @bind-Value="_importWorkLocations" Label="Work Locations" Color="Color.Primary" Disabled="_importWorkLocationsDisabled" />
+						<MudCheckBox @bind-Value="_importSettings" Label="Settings" Color="Color.Primary" Disabled="_importSettingsDisabled" />
+					</MudStack>
+
+					<MudButton Disabled="@_isImportButtonDisabled" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="Import">
+						@if (_isImporting)
+						{
+							<MudText Class="ms-2">@_importStatus</MudText>
+							<MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
+						}
+						else
+						{
+							<MudText>Import Selected File</MudText>
+						}
+					</MudButton>
+
+					<MudAlert Severity="Severity.Info">Please be aware that existing entries & locations won't be overriden with imported data.</MudAlert>
+				</MudStack>
+			</MudPaper>
+		</MudItem>
+
+
+		@* Export *@
+		<MudItem xs="6">
+			<MudPaper Elevation="0" Outlined Class="pa-5">
+				<MudStack Spacing="5" AlignItems="AlignItems.Start">
+					<MudText Typo="Typo.h6"><b>Export</b></MudText>
+					<MudText>Select what you want to export:</MudText>
+
+					<MudStack Row>
+						<MudCheckBox @bind-Value="_exportEntries" Label="Entries" Color="Color.Primary"></MudCheckBox>
+						<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
+						<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
+					</MudStack>
+
+					<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudDownload" OnClick="Export">
+						@if (_isExporting)
+						{
+							<MudText Class="ms-2">@_exportStatus</MudText>
+							<MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
+						}
+						else
+						{
+							<MudText>Export Data</MudText>
+						}
+					</MudButton>
+				</MudStack>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</MudContainer>
+
+
+@code {
+	private IBrowserFile? File { get; set; }
+	private JSONDataWrapper? importData { get; set; }
+
+	private bool _exportEntries = true;
+	private bool _exportSettings = true;
+	private bool _exportWorkLocations = true;
+
+	private bool _isExporting = false;
+	private string _exportStatus = "Exporting...";
+
+	private bool _importEntries = false;
+	private bool _importEntriesDisabled = true;
+	private bool _importSettings = false;
+	private bool _importSettingsDisabled = true;
+	private bool _importWorkLocations = false;
+	private bool _importWorkLocationsDisabled = true;
+
+	private bool _selectedFile = false;
+	private bool _isImportButtonDisabled = true;
+	private bool _isImporting = false;
+	private string _importStatus = "Importing...";
+
+
+	/// <summary>
+	/// Load the selected file and try to parse it, starting with the current JSON model,
+	/// but if that fails with the "legacy" one.
+	/// 
+	/// Also controls which UI elements are active, based on what was included in the file.
+	/// </summary>
+	/// <param name="file">The file to parse.</param>
+	private async Task SelectFile(IBrowserFile file)
+	{
+		File = file;
+		using var stream = file.OpenReadStream();
+		using var reader = new StreamReader(stream);
+		var fileContent = await reader.ReadToEndAsync();
+
+		// Try to import as the new model, if that fails use the legacy importer
+		try
+		{
+			var options = new JsonSerializerOptions
+			{
+				ReferenceHandler = ReferenceHandler.Preserve,
+				PropertyNameCaseInsensitive = true // Allows case-insensitive property matching
+			};
+			importData = JsonSerializer.Deserialize<JSONDataWrapper>(fileContent, options);
+		} 
+		catch (JsonException jex)
+		{
+			Console.WriteLine("Exception catched, trying to use the legacy importer now. Exception message: ", jex.Message);
+
+			try
+			{
+				importData = LegacyImportHelper.ConvertLegacyImport(fileContent);
+			}
+			catch
+			{
+				Snackbar.Add("No valid data to import, please select another file.", Severity.Error);
+				File = null;
+				return;
+			}
+		}
+
+
+		// TODO: What happens if this fails again??
+
+		// Set checkboxes active/inactive and precheck if data available
+		_importEntriesDisabled = importData.Entries == null ? true : false;
+		_importEntries = importData.Entries == null ? false : true;
+		_importSettingsDisabled = importData.Settings == null ? true : false;
+		_importSettings = importData.Settings == null ? false : true;
+		_importWorkLocationsDisabled = importData.WorkLocationHours == null ? true : false;
+		_importWorkLocations = importData.WorkLocationHours == null ? false : true;
+		_isImportButtonDisabled = false;
+	}
+
+
+	/// <summary>
+	/// Handle what data to import, hand over to <see cref="dataService"/>.
+	/// </summary>
+	private async Task Import()
+	{
+		_isImporting = true;
+		_isImportButtonDisabled = true;
+
+		// Handle what data get's passed to the API
+		var selectedData = new JSONDataWrapper();
+		selectedData.Entries = _importEntries ? importData.Entries : null;
+		selectedData.Settings = _importSettings ? importData.Settings : null;
+		selectedData.WorkLocationHours = _importWorkLocations ? importData.WorkLocationHours : null;
+
+		var result = await dataService.ImportData(selectedData);
+
+		if (result.IsSuccessStatusCode)
+		{
+			Snackbar.Add("That's your data imported!", Severity.Success);
+		}
+		else
+		{
+			Snackbar.Add("There was an error importing your data - please try again.", Severity.Error);
+			Console.WriteLine(result.Content);
+		}
+
+		// Unload file,
+		File = null;
+		importData = null;
+		selectedData = null;
+
+		// Reset UI
+		_importEntriesDisabled = true;
+		_importEntries = false;
+		_importSettingsDisabled = true;
+		_importSettings = false;
+		_importWorkLocationsDisabled = true;
+		_importWorkLocations = false;
+		_isImportButtonDisabled = true;
+		_isImporting = false;
+	}
+
+
+	/// <summary>
+	/// Handle downloading the selected items, writing them to a file and save that
+	/// to the users system.
+	/// </summary>
+	private async Task Export()
+	{
+		_isExporting = true;
+		_exportStatus = "Downloading data...";
+
+		var export = new JSONDataWrapper();
+		if (_exportWorkLocations)
+		{
+			export.WorkLocationHours = await dataService.GetWorkLocationHours();
+		}
+
+		if (_exportSettings)
+		{
+			export.Settings = await dataService.GetSettings();
+		}
+
+		if (_exportEntries)
+		{
+			export.Entries = await dataService.GetAllEntries();
+		}
+
+		_exportStatus = "Assembling file...";
+
+		var options = new JsonSerializerOptions 
+		{
+			ReferenceHandler = ReferenceHandler.Preserve,
+			WriteIndented = true 
+		};
+		var json = JsonSerializer.Serialize(export, options);
+		byte[] file = System.Text.Encoding.UTF8.GetBytes(json);
+
+		// try saving the file to disk
+		try
+		{
+			var fileName = $"ASBNApp_Data_Export_{DateTime.Today.ToString("d")}.json";
+			var contentType = "application/json";
+			await js.InvokeVoidAsync("DownloadFileFromStream", fileName, contentType, file);
+		}
+		catch
+		{
+			Snackbar.Add("Error, your data couldn't be exported. Please try again or contact the admin (see GitHub).", Severity.Error);
+			return;
+		}
+
+		Snackbar.Add("That's your data exported! Have a look at your Downloads folder.", Severity.Success);
+
+		_isExporting = false;
+	}
+}

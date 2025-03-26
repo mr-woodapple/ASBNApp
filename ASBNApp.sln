@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{36F455A3-6767-4300-926B-C5F1932D2217}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASBNApp.Models", "src\ASBNApp.Models\ASBNApp.Models.csproj", "{1F691015-08D6-46E4-8F70-010CBEA1B37A}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASBNApp.DataAPI", "src\ASBNApp.DataAPI\ASBNApp.DataAPI.csproj", "{998B41B4-03BF-4D1B-A31D-152969CE4170}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASBNApp.Frontend", "src\ASBNApp.Frontend\ASBNApp.Frontend.csproj", "{9F8D4856-E356-4041-AABF-18D4C0FE443E}"
@@ -24,6 +26,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F691015-08D6-46E4-8F70-010CBEA1B37A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F691015-08D6-46E4-8F70-010CBEA1B37A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F691015-08D6-46E4-8F70-010CBEA1B37A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F691015-08D6-46E4-8F70-010CBEA1B37A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{998B41B4-03BF-4D1B-A31D-152969CE4170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{998B41B4-03BF-4D1B-A31D-152969CE4170}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{998B41B4-03BF-4D1B-A31D-152969CE4170}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,6 +43,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{1F691015-08D6-46E4-8F70-010CBEA1B37A} = {36F455A3-6767-4300-926B-C5F1932D2217}
 		{998B41B4-03BF-4D1B-A31D-152969CE4170} = {36F455A3-6767-4300-926B-C5F1932D2217}
 		{9F8D4856-E356-4041-AABF-18D4C0FE443E} = {36F455A3-6767-4300-926B-C5F1932D2217}
 	EndGlobalSection

@@ -1,9 +1,9 @@
+using ASBNApp.Frontend.Models;
+using PdfSharp.Fonts;
+
 /// <summary>
 /// Required implementation of the IFontResolver, required to use custom fonts within PDFSharp
 /// </summary>
-
-using PdfSharp.Fonts;
-
 public class CustomFontResolver : IFontResolver
 {
     private readonly Fonts _fontLoaded;

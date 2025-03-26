@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ASBNApp.Models\ASBNApp.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\pdf\Vorlage_ASBN.pdf">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

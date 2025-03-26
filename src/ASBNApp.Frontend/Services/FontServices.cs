@@ -1,8 +1,9 @@
+using ASBNApp.Frontend.Models;
+
 /// <summary>
 /// Service to load custom fonts, required because we don't have access to fonts from the 
 /// browser -> we need to load in any font we need, as in this case
 /// </summary>
-
 public class FontServices
 {
 	// Registering the httpClient

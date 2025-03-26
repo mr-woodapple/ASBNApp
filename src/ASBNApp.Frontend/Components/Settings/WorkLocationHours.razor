@@ -1,9 +1,13 @@
 @* Component to show location & working hours for all entries of WorkLocationHours,
 also manage editing states & update parent component if necessary. *@
 
-@using ASBNApp.Frontend.Model;
+@using System.Text.Json
+@using ASBNApp.Frontend.Models;
+@using ASBNApp.Frontend.Interfaces;
 
 @inject IASBNDataService dataService;
+@inject ISnackbar Snackbar;
+
 
 <MudPaper Elevation="0" Class="mb-5">
 
@@ -11,10 +15,10 @@ also manage editing states & update parent component if necessary. *@
         @foreach(var entry in workLocationHours)
         {
             <MudItem xs="7">
-                <MudTextField @bind-Value="entry.Location" Label="Work location:" Variant="Variant.Outlined"/>
+                <MudTextField @bind-Value="entry.LocationName" Label="Work location:" Variant="Variant.Outlined"/>
             </MudItem>
             <MudItem xs="4">
-                <MudNumericField @bind-Value="@entry.Hours" Variant="Variant.Outlined" Label="Working hours:" Min="0" Format="N1" />
+                <MudNumericField @bind-Value="@entry.SuggestedHours" Variant="Variant.Outlined" Label="Suggested working hours:" Min="0" Format="N1" />
             </MudItem>
             <MudItem xs="1">
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => DeleteWorkLocationHoursEntry(entry))" />
@@ -26,10 +30,10 @@ also manage editing states & update parent component if necessary. *@
             <MudTextField @ref=NewLocationTextField @bind-Value="_newWorkLocation" Label="Add new work location..." />
         </MudItem>
         <MudItem xs="4">
-            <MudNumericField @bind-Value="_newWorkHours" Variant="Variant.Text" Label="Add hours..." Min="0" Format="N1" />
+            <MudNumericField @bind-Value="_newSuggestedHours" Variant="Variant.Text" Label="Add suggested hours..." Min="0" Format="N1" />
         </MudItem>
         <MudItem xs="1">
-            <MudIconButton Icon="@Icons.Material.Rounded.Add" Color="Color.Primary" aria-label="delete" OnClick="AddNewWorkLocationHoursEntry" />
+            <MudIconButton Icon="@Icons.Material.Rounded.Add" Color="Color.Primary" Variant="Variant.Filled" aria-label="delete" OnClick="AddNewWorkLocationHoursEntry" />
         </MudItem>
     </MudGrid>
 
@@ -37,58 +41,67 @@ also manage editing states & update parent component if necessary. *@
 
 
 @code {
-    // TODO: Check before adding a new Location, if the name is present already. In that case, don't add it and instead show a warning!
-
-    // Two way binding
     [Parameter]
-    public List<WorkLocationWithID>? workLocationHours { get; set; }
+    public List<WorkLocation>? workLocationHours { get; set; }
     [Parameter]
-    public EventCallback<List<WorkLocationWithID>?> WorkLocationHoursChanged { get; set; }
+    public EventCallback<List<WorkLocation>?> WorkLocationHoursChanged { get; set; }
 
-    // Text field ref
     private MudTextField<string> NewLocationTextField { get; set; }
 
     // Variables & methods to add a new entry
     private string? _newWorkLocation { get; set; }
-    private float? _newWorkHours { get; set; }
+    private float? _newSuggestedHours { get; set; }
 
-    private void AddNewWorkLocationHoursEntry()
+    private async Task AddNewWorkLocationHoursEntry()
     {
         // TODO: Change from this to the plus button only becoming active once we have input in both variables
-        if (_newWorkLocation != null && _newWorkHours != null)
+        if (_newWorkLocation != null && _newSuggestedHours != null)
         {
-            // Add new entry & clear inputs
-            workLocationHours.Add(new WorkLocationWithID()
+            var newLocation = new WorkLocation()
+                {
+                    LocationName = _newWorkLocation,
+                    SuggestedHours = _newSuggestedHours
+                };
+
+            // Add entry to database
+            var response = await dataService.SaveWorkLocation(newLocation);
+            if (!response.IsSuccessStatusCode)
             {
-                Location = _newWorkLocation,
-                Hours = _newWorkHours
-            });
+                Snackbar.Add("Couldn't create location, please try again.", Severity.Error);
+                return;
+            }
+            newLocation = JsonSerializer.Deserialize<WorkLocation>(await response.Content.ReadAsStringAsync());
+
+            // Add new entry & clear inputs
+            workLocationHours.Add(newLocation);
 
             NewLocationTextField.Clear();
-            _newWorkHours = null;
+            _newSuggestedHours = null;
 
             // Update parent component
             WorkLocationHoursChanged.InvokeAsync(workLocationHours);
-        }
-        else 
-        {
-            Console.WriteLine("Add something to both inputs before trying to add the entry!");
+            Snackbar.Add("Success! Location created.", Severity.Success);
         }
     }
 
-    private async Task DeleteWorkLocationHoursEntry(WorkLocationWithID entry)
+    private async Task DeleteWorkLocationHoursEntry(WorkLocation location)
     {
-        // Remove entry that is not in database, so Id isn't set.
-        if(entry.Id == null)
+        try
         {
-            workLocationHours.Remove(entry);
+            var response = await dataService.DeleteWorkLocationHours(location.Id);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Failed to delete location.");
+            }
+            workLocationHours.Remove(location);
             WorkLocationHoursChanged.InvokeAsync(workLocationHours);
+
+            Snackbar.Add("Success! Location deleted.", Severity.Success);
         }
-        else
+        catch
         {
-            await dataService.DeleteWorkLocationHours(entry.Id);
-            workLocationHours.Remove(entry);
-            WorkLocationHoursChanged.InvokeAsync(workLocationHours);
+            Snackbar.Add("Couldn't delete the location. You cannot delete locations if they're referenced on an entry.", Severity.Error);
         }
+        
     }
 }

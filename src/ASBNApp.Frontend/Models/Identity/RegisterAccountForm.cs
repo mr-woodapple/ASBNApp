@@ -1,4 +1,4 @@
-namespace ASBNApp.Frontend.Model
+namespace ASBNApp.Frontend.Models
 {
 	/// <summary>
 	/// Form using when registering a user.

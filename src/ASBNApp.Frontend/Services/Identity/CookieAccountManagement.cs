@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using ASBNApp.Frontend.Model;
+using ASBNApp.Frontend.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using ASBNApp.Frontend.Interfaces;

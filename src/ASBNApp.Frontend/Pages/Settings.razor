@@ -1,13 +1,15 @@
 @page "/settings"
 
+@using ASBNApp.Frontend.Data;
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+
 @inject NavigationManager navigationManager;
 @inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
 
-@using ASBNApp.Frontend.Data;
 
-
-<PageTitle>Settings</PageTitle>
+<PageTitle>Settings | ASBN App</PageTitle>
 
 <MudContainer Class="mt-5 mb-15" MaxWidth="MaxWidth.ExtraExtraLarge">
 
@@ -39,15 +41,15 @@
                 </MudItem>
 
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="@settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
+                    <MudTextField @bind-Value="settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="@settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
+                    <MudTextField @bind-Value="settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
                 </MudItem>
 
                 @* Choose the apprenticeship from a pre-defined list *@
                 <MudItem xs="12">
-                    <MudSelect @bind-Value="@settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter"
+                    <MudSelect @bind-Value="settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter"
                                 HelperText="This will be shown as your profession on your exported documents.">
                         @foreach (var entry in Data.Professions.Apprenticeships)
                         {
@@ -91,34 +93,35 @@
                 </MudItem>
             }
 
-
-            @* Specify your working locations and the hours for each location *@
-            <MudItem xs="12">
-                <MudText Typo="Typo.body2" Class="mb-3">
-                    <b>My working hours & locations:</b>
-                </MudText>
-
-                @if(!_hasLoadedWorkLocationHours)
-                {
-                    <WorkLocationHoursSkeleton />
-                }
-                else
-                {
-                    <WorkLocationHours @bind-workLocationHours="workLocationHours" />
-                }
-            </MudItem>
-
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
             </MudItem>
         </MudGrid>
     </MudPaper>
+
+    <MudPaper Outlined="true" Class="pa-5 mt-10">
+        @* Specify your working locations and the hours for each location *@
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Class="mb-3">
+                <b>Manage locations and their suggested hours:</b>
+            </MudText>
+
+            @if (!_hasLoadedWorkLocationHours)
+            {
+                <WorkLocationHoursSkeleton />
+            }
+            else
+            {
+                <WorkLocationHours @bind-workLocationHours="workLocationHours" />
+            }
+        </MudItem>
+    </MudPaper>
 </MudContainer>
 
 
 @code {
-    public Model.Settings? settings { get; set; }
-    public List<WorkLocationWithID> workLocationHours { get; set; } = new();
+    public ASBNApp.Models.Settings? settings { get; set; }
+    public List<WorkLocation> workLocationHours { get; set; } = new();
     private bool _hasLoadedWorkLocationHours;
 
     // Reference to the date picker
@@ -156,14 +159,14 @@
     /// </summary>
     public async void SaveData()
     {
-        if (await dataService.SaveSettings(settings) && await dataService.SaveWorkLocationHours(workLocationHours))
+        if (await dataService.SaveSettings(settings))
         {
             // Show dialog if successful
-            Snackbar.Add("That's your data saved!", Severity.Success);
+            Snackbar.Add("That's your settings saved!", Severity.Success);
         }
         else
         {
-            Snackbar.Add("There was an error saving you data, please try again.", Severity.Error);
+            Snackbar.Add("There was an error saving you settings, please try again.", Severity.Error);
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ASBNApp.Frontend.Model.Identity
+namespace ASBNApp.Frontend.Models.Identity
 {
 	public class RegisterAccountBadRequest
 	{

@@ -3,8 +3,9 @@
 @inject IAccountManagement Acct
 @inject NavigationManager navigationManager
 
-@using ASBNApp.Frontend.Services;
 @using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+@using ASBNApp.Frontend.Services;
 
 <MudAppBar>
     <MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
@@ -19,15 +20,14 @@
             {
                 <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
             }
-            else
-            {
-                <MudTooltip Text="Logout">
-                    <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="HandleLogout" />
-                </MudTooltip>
-            }
-            <MudTooltip Text="Settings">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Href="settings" />
-            </MudTooltip>
+
+            <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
+                     AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+
+                <MudMenuItem Href="import" Icon="@Icons.Material.Filled.DataObject" IconColor="Color.Inherit">Import / Export</MudMenuItem>
+                <MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Settings</MudMenuItem>
+                <MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit">Logout</MudMenuItem>
+            </MudMenu>
         </Authorized>
     </AuthorizeView>
 </MudAppBar>

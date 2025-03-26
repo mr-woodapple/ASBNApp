@@ -1,14 +1,14 @@
-﻿@*  Index view to show if the user isn't logged in. *@
+﻿@page "/"
 
-@page "/"
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models
+@using KristofferStrube.Blazor.FileSystem;
 
 @* Keep the square brackets to add info where the log originated from *@
 @inject ILogger<NavBar> Logger;
 @inject IASBNDataService dataService;
 
-@using KristofferStrube.Blazor.FileSystem;
-
-
+@*  Index view to show if the user isn't logged in. *@
 <PageTitle>Start</PageTitle>
 
 <MudContainer Class="pt-0" MaxWidth="MaxWidth.ExtraExtraLarge">

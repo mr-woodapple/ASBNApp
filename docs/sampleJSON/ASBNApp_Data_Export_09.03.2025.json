@@ -1,0 +1,142 @@
+{
+  "$id": "1",
+  "ID": null,
+  "Settings": {
+    "$id": "2",
+    "GivenName": "Manfred",
+    "Surname": "Mustermann",
+    "Username": null,
+    "Profession": "IT-System-Kaufmann/-frau",
+    "LegalRepresentitive": null,
+    "Company": "Telekom",
+    "School": "BSZ ET Dresden",
+    "ApprenticeshipStartDate": "2024-09-01T00:00:00"
+  },
+  "WorkLocationHours": {
+    "$id": "3",
+    "$values": [
+      {
+        "$id": "4",
+        "Id": 2,
+        "LocationName": "MMS",
+        "SuggestedHours": 7.6
+      },
+      {
+        "$id": "5",
+        "Id": 11,
+        "LocationName": "Location 1",
+        "SuggestedHours": 5
+      },
+      {
+        "$id": "6",
+        "Id": 17,
+        "LocationName": "Location 2",
+        "SuggestedHours": 5.2
+      }
+    ]
+  },
+  "Entries": {
+    "$id": "7",
+    "$values": [
+      {
+        "$id": "8",
+        "Id": 2,
+        "Date": "2024-09-06T00:00:00+02:00",
+        "Note": "Testeintrag 2",
+        "Location": null,
+        "LocationId": null,
+        "Hours": null
+      },
+      {
+        "$id": "9",
+        "Id": 1008,
+        "Date": "2024-09-24T00:00:00+02:00",
+        "Note": "Test Dienstag",
+        "Location": null,
+        "LocationId": null,
+        "Hours": null
+      },
+      {
+        "$id": "10",
+        "Id": 1009,
+        "Date": "2024-09-29T00:00:00+02:00",
+        "Note": "Test",
+        "Location": null,
+        "LocationId": null,
+        "Hours": null
+      },
+      {
+        "$id": "11",
+        "Id": 4019,
+        "Date": "2024-12-04T00:00:00+01:00",
+        "Note": "Hannes hat mir den Stift geklaut!",
+        "Location": null,
+        "LocationId": 2,
+        "Hours": 5.6
+      },
+      {
+        "$id": "12",
+        "Id": 4020,
+        "Date": "2024-12-05T00:00:00+01:00",
+        "Note": "Hannes verkloppt und mir den Stift zur\u00FCck geholt.",
+        "Location": null,
+        "LocationId": 2,
+        "Hours": 5.7
+      },
+      {
+        "$id": "13",
+        "Id": 4021,
+        "Date": "2024-12-06T00:00:00+01:00",
+        "Note": "Sch\u00F6nes Bild mit dem Stift gemalt.",
+        "Location": null,
+        "LocationId": 2,
+        "Hours": 7.5
+      },
+      {
+        "$id": "14",
+        "Id": 4022,
+        "Date": "2024-12-07T00:00:00+01:00",
+        "Note": "Mate war alle - so ne Gr\u00FCtze!",
+        "Location": null,
+        "LocationId": null,
+        "Hours": 5.7
+      },
+      {
+        "$id": "15",
+        "Id": 4023,
+        "Date": "2024-12-08T00:00:00+01:00",
+        "Note": "Elterngespr\u00E4ch mit der Lehrerin...",
+        "Location": null,
+        "LocationId": null,
+        "Hours": 5.7
+      },
+      {
+        "$id": "16",
+        "Id": 4041,
+        "Date": "2025-02-19T00:00:00+01:00",
+        "Note": "Test",
+        "Location": null,
+        "LocationId": null,
+        "Hours": null
+      },
+      {
+        "$id": "17",
+        "Id": 4042,
+        "Date": "2025-02-17T00:00:00+01:00",
+        "Note": "Test 2",
+        "Location": null,
+        "LocationId": 2,
+        "Hours": 7.6
+      },
+      {
+        "$id": "18",
+        "Id": 4044,
+        "Date": "2025-02-25T00:00:00+01:00",
+        "Note": "Test Location 2",
+        "Location": null,
+        "LocationId": 17,
+        "Hours": 5.2
+      }
+    ]
+  }
+}

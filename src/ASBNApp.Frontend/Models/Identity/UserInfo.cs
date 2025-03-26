@@ -1,4 +1,4 @@
-﻿namespace ASBNApp.Frontend.Model
+﻿namespace ASBNApp.Frontend.Models
 {
 	/// <summary>
 	/// User info from identity endpoint to establish claims.

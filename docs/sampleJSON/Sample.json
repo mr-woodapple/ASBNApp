@@ -1,0 +1,452 @@
+{
+  "Settings": {
+    "Username": "Max Mustermann",
+    "Profession": "IT-System-Elektroniker/-in",
+    "LegalRepresentitive": "Herbert Gr\u00F6nemayer",
+    "Company": "Demo Company",
+    "School": "Demo Schule",
+    "ApprenticeshipStartDate": "2024-09-01T00:00:00"
+  },
+  "WorkLocationHours": {
+    "MMS": {
+      "Location": "MMS",
+      "Hours": 7.6
+    },
+    "HUB Dresden": {
+      "Location": "HUB Dresden",
+      "Hours": 6.2
+    },
+    "BSZ ET Dresden": {
+      "Location": "BSZ ET Dresden",
+      "Hours": 7.2
+    }
+  },
+  "LoggedData": {
+    "2024": {
+      "49": {
+        "2024-12-04": {
+          "Note": "Hannes hat mir den Stift geklaut!",
+          "Date": "2024-12-04T00:00:00",
+          "Location": "MMS",
+          "Hours": null
+        },
+        "2024-12-05": {
+          "Note": "Hannes verkloppt und mir den Stift zur\u00FCck geholt.",
+          "Date": "2024-12-05T00:00:00",
+          "Location": "MMS",
+          "Hours": null
+        },
+        "2024-12-06": {
+          "Note": "Sch\u00F6nes Bild mit dem Stift gemalt.",
+          "Date": "2024-12-06T00:00:00",
+          "Location": "MMS",
+          "Hours": null
+        },
+        "2024-12-07": {
+          "Note": "Mate war alle - so ne Gr\u00FCtze!",
+          "Date": "2024-12-07T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": null
+        },
+        "2024-12-08": {
+          "Note": "Elterngespr\u00E4ch mit der Lehrerin...",
+          "Date": "2024-12-08T00:00:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": null
+        }
+      },
+      "50": {
+        "2024-12-11": {
+          "Note": "Hannes hat den Stift geklaut!",
+          "Date": "2024-12-11T00:00:00",
+          "Location": "MMS",
+          "Hours": null
+        },
+        "2024-12-12": {
+          "Note": "Hannes verkloppt und mir den Stift zur\u00FCck geholt.",
+          "Date": "2024-12-12T00:00:00",
+          "Location": "MMS",
+          "Hours": null
+        },
+        "2024-12-13": {
+          "Note": "Weihnachtsfeier Test -\u003E gestrichen",
+          "Date": "2024-12-13T00:00:00+01:00",
+          "Location": "HUB Dresden",
+          "Hours": null
+        },
+        "2024-12-14": {
+          "Note": "Test",
+          "Date": "2024-12-14T00:00:00+01:00",
+          "Location": "HUB Dresden",
+          "Hours": null
+        },
+        "2024-12-15": {
+          "Note": "V\u00F6llig verkatert ausgeschlafen, die Weihnachtsfeier war gut. :)",
+          "Date": "2024-12-15T00:00:00+01:00",
+          "Location": "MMS",
+          "Hours": null
+        }
+      },
+      "52": {
+        "2024-12-25": {
+          "Note": "Ein neuer Eintrag hier - wuhuuu!",
+          "Date": "2024-12-25T00:00:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": null
+        },
+        "2024-12-26": {
+          "Note": "Noch so ein neuer Eintrag, das ist ja fantastisch!",
+          "Date": "2024-12-26T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": 4.1
+        },
+        "2024-12-27": {
+          "Note": "",
+          "Date": "2024-12-27T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-12-28": {
+          "Note": "",
+          "Date": "2024-12-28T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-12-29": {
+          "Note": "",
+          "Date": "2024-12-29T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": null
+        }
+      },
+      "51": {
+        "2024-12-18": {
+          "Note": "Test",
+          "Date": "2024-12-18T00:00:00+01:00",
+          "Location": "MMS",
+          "Hours": null
+        },
+        "2024-12-19": {
+          "Note": "Test",
+          "Date": "2024-12-19T00:00:00+01:00",
+          "Location": "MMS",
+          "Hours": null
+        },
+        "2024-12-20": {
+          "Note": "Test der Arbeitsstunden",
+          "Date": "2024-12-20T00:00:00+01:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2024-12-21": {
+          "Note": "",
+          "Date": "2024-12-21T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-12-22": {
+          "Note": "",
+          "Date": "2024-12-22T00:00:00",
+          "Location": "",
+          "Hours": null
+        }
+      },
+      "4": {
+        "2024-01-23": {
+          "Note": "Neuer Testeintrag f\u00FCr den Anfang Januar 2024.",
+          "Date": "2024-01-23T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
+        },
+        "2024-01-24": {
+          "Note": "",
+          "Date": "2024-01-24T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-01-25": {
+          "Note": "",
+          "Date": "2024-01-25T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-01-26": {
+          "Note": "",
+          "Date": "2024-01-26T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2024-01-27": {
+          "Note": "",
+          "Date": "2024-01-27T00:00:00",
+          "Location": "",
+          "Hours": null
+        }
+      }
+    },
+    "2025": {
+      "1": {
+        "2025-01-01": {
+          "Note": "Test",
+          "Date": "2025-01-01T00:00:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2025-01-02": {
+          "Note": "Testeintrag, der x-te.",
+          "Date": "2025-01-02T00:00:00+01:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2025-01-03": {
+          "Note": null,
+          "Date": "2025-01-03T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-01-04": {
+          "Note": null,
+          "Date": "2025-01-04T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-01-05": {
+          "Note": "halluu",
+          "Date": "2025-01-05T00:00:00",
+          "Location": null,
+          "Hours": null
+        }
+      },
+      "3": {
+        "2025-01-15": {
+          "Note": "Noch ein neuer Testeintrag... Wuhuu!",
+          "Date": "2025-01-15T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": null
+        },
+        "2025-01-16": {
+          "Note": null,
+          "Date": "2025-01-16T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-01-17": {
+          "Note": null,
+          "Date": "2025-01-17T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-01-18": {
+          "Note": null,
+          "Date": "2025-01-18T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-01-19": {
+          "Note": null,
+          "Date": "2025-01-19T00:00:00",
+          "Location": null,
+          "Hours": null
+        }
+      },
+      "4": {
+        "2025-01-22": {
+          "Note": "Testeintrag",
+          "Date": "2025-01-22T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
+        },
+        "2025-01-23": {
+          "Note": "Zweiter Testeintrag, es wird spaaaanned! ",
+          "Date": "2025-01-23T00:00:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2025-01-24": {
+          "Note": "",
+          "Date": "2025-01-24T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2025-01-25": {
+          "Note": "",
+          "Date": "2025-01-25T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2025-01-26": {
+          "Note": "",
+          "Date": "2025-01-26T00:00:00",
+          "Location": "",
+          "Hours": null
+        }
+      },
+      "18": {
+        "2025-04-29": {
+          "Note": null,
+          "Date": "2025-04-29T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-04-30": {
+          "Note": null,
+          "Date": "2025-04-30T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-01": {
+          "Note": "test",
+          "Date": "2025-05-01T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
+        },
+        "2025-05-02": {
+          "Note": null,
+          "Date": "2025-05-02T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-03": {
+          "Note": "Testeintrag am 03. Mai in der MMS",
+          "Date": "2025-05-03T00:00:00+02:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2025-05-04": {
+          "Note": "HUB dresdeb",
+          "Date": "2025-05-04T00:00:00+02:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 7.2
+        }
+      },
+      "21": {
+        "2025-05-20": {
+          "Note": null,
+          "Date": "2025-05-20T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-21": {
+          "Note": null,
+          "Date": "2025-05-21T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-22": {
+          "Note": null,
+          "Date": "2025-05-22T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-23": {
+          "Note": null,
+          "Date": "2025-05-23T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-24": {
+          "Note": null,
+          "Date": "2025-05-24T00:00:00+02:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 7.2
+        }
+      },
+      "19": {
+        "2025-05-06": {
+          "Note": null,
+          "Date": "2025-05-06T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-07": {
+          "Note": null,
+          "Date": "2025-05-07T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-08": {
+          "Note": "Test",
+          "Date": "2025-05-08T00:00:00+02:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
+        },
+        "2025-05-09": {
+          "Note": null,
+          "Date": "2025-05-09T00:00:00",
+          "Location": null,
+          "Hours": null
+        },
+        "2025-05-10": {
+          "Note": null,
+          "Date": "2025-05-10T00:00:00",
+          "Location": null,
+          "Hours": null
+        }
+      },
+      "26": {
+        "2025-06-24": {
+          "Note": "Testeintrag Montag 24.06.\n- Neuer Test.\n- Test 2",
+          "Date": "2025-06-24T00:00:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2025-06-25": {
+          "Note": "",
+          "Date": "2025-06-25T00:00:00",
+          "Location": "HUB Dresden",
+          "Hours": 6.2
+        },
+        "2025-06-26": {
+          "Note": "",
+          "Date": "2025-06-26T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2025-06-27": {
+          "Note": "test sonntag, ge\u00E4ndert auf Donnerstag",
+          "Date": "2025-06-27T00:00:00",
+          "Location": "MMS",
+          "Hours": 7.6
+        },
+        "2025-06-29": {
+          "Note": "Testeintrag ",
+          "Date": "2025-06-29T00:00:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 7.2
+        }
+      },
+      "27": {
+        "2025-07-01": {
+          "Note": "Neue Woche neues Gl\u00FCck",
+          "Date": "2025-07-01T08:51:22.759+02:00",
+          "Location": "BSZ ET Dresden",
+          "Hours": 7.2
+        },
+        "2025-07-02": {
+          "Note": "",
+          "Date": "2025-07-02T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2025-07-03": {
+          "Note": "",
+          "Date": "2025-07-03T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2025-07-04": {
+          "Note": "",
+          "Date": "2025-07-04T00:00:00",
+          "Location": "",
+          "Hours": null
+        },
+        "2025-07-07": {
+          "Note": "",
+          "Date": "2025-07-07T00:00:00",
+          "Location": "",
+          "Hours": null
+        }
+      }
+    }
+  }
+}
