@@ -1,7 +1,8 @@
 ﻿@* Nav Bar item *@
 
-@inject IAccountManagement Acct
-@inject NavigationManager navigationManager
+@inject IAccountManagement AccManagement
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @using ASBNApp.Frontend.Interfaces;
 @using ASBNApp.Frontend.Models
@@ -21,12 +22,33 @@
                 <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
             }
 
+            @* Tools menu *@
+            <MudMenu Icon="@Icons.Material.Filled.Apps" Color="Color.Inherit" Class="ma-2"
+                     AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+                <MudItem Class="ma-3">
+                    <MudText Typo="Typo.h6" Align="Align.Center">Tools:</MudText>
+                    <MudItem Class="my-5" />
+
+                    <MudMenuItem Href="import" Icon="@Icons.Material.Filled.DataObject" IconColor="Color.Inherit">
+                        <MudStack Class="ps-5" Spacing="1">
+                            <MudText Typo="Typo.subtitle1">Import / Export</MudText>
+                            <MudText Typo="Typo.body2">Import or export your data to/from JSON files.</MudText>
+                        </MudStack>
+                    </MudMenuItem>
+                </MudItem>
+            </MudMenu>
+
+            @* Account menu *@
             <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
                      AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+                <MudItem Class="ma-3" >
+                    <MudText Typo="Typo.h6" Align="Align.Center">Hi there!</MudText>
+                    <MudText Class="pt-2"> You're logged in using "@_email" </MudText>
+                    <MudItem Class="my-5" />
 
-                <MudMenuItem Href="import" Icon="@Icons.Material.Filled.DataObject" IconColor="Color.Inherit">Import / Export</MudMenuItem>
-                <MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Settings</MudMenuItem>
-                <MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit">Logout</MudMenuItem>
+                    <MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Settings</MudMenuItem>
+                    <MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Inherit">Logout</MudMenuItem>
+                </MudItem>
             </MudMenu>
         </Authorized>
     </AuthorizeView>
@@ -36,12 +58,22 @@
 @code 
 {
     private bool _isLoggingOut;
+    private string? _email;
+
+    /// <summary>
+	/// Get the email of the current user.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _email = authState.User.Identity.Name;
+    }
 
     private async Task HandleLogout()
     {
         _isLoggingOut = true;
-        await Acct.LogoutAsync();
-        navigationManager.NavigateTo("/");
+        await AccManagement.LogoutAsync();
+        NavigationManager.NavigateTo("/");
         _isLoggingOut = false;
     }
 }

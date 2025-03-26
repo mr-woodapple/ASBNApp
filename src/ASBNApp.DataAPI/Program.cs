@@ -20,11 +20,7 @@ builder.Services.AddIdentityCore<User>()
 	.AddApiEndpoints();
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Add ApplicationInsights logging:
+builder.Services.AddOpenApi();
 builder.Services.AddApplicationInsightsTelemetry();
 
 // Configure cookie policy
@@ -76,11 +72,9 @@ var app = builder.Build();
 // Set CORS policy
 app.UseCors("AllowASBNAppFrontend");
 
-// Enable Swagger for local development
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.MapOpenApi();
 }
 
 app.UsePathBase(new PathString("/api"));
