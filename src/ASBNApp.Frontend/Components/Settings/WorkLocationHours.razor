@@ -14,25 +14,25 @@ also manage editing states & update parent component if necessary. *@
     <MudGrid>
         @foreach(var entry in workLocationHours)
         {
-            <MudItem xs="7">
-                <MudTextField @bind-Value="entry.LocationName" Label="Work location:" Variant="Variant.Outlined"/>
+            <MudItem xs="6" md="7">
+                <MudTextField Dense @bind-Value="entry.LocationName" Label="Work location:" Variant="Variant.Outlined"/>
             </MudItem>
             <MudItem xs="4">
-                <MudNumericField @bind-Value="@entry.SuggestedHours" Variant="Variant.Outlined" Label="Suggested working hours:" Min="0" Format="N1" />
+                <MudNumericField @bind-Value="@entry.SuggestedHours" Variant="Variant.Outlined" Label="Suggested working hours:" Min="0" Format="N1" HideSpinButtons />
             </MudItem>
-            <MudItem xs="1">
+            <MudItem xs="2" md="1">
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => DeleteWorkLocationHoursEntry(entry))" />
             </MudItem>
         }
 
         @* Additional rows to add data: *@
-        <MudItem xs="7">
+        <MudItem xs="6" md="7">
             <MudTextField @ref=NewLocationTextField @bind-Value="_newWorkLocation" Label="Add new work location..." />
         </MudItem>
         <MudItem xs="4">
-            <MudNumericField @bind-Value="_newSuggestedHours" Variant="Variant.Text" Label="Add suggested hours..." Min="0" Format="N1" />
+            <MudNumericField @bind-Value="_newSuggestedHours" Variant="Variant.Text" Label="Add suggested hours..." Min="0" Format="N1" HideSpinButtons />
         </MudItem>
-        <MudItem xs="1">
+        <MudItem xs="2" md="1">
             <MudIconButton Icon="@Icons.Material.Rounded.Add" Color="Color.Primary" Variant="Variant.Filled" aria-label="delete" OnClick="AddNewWorkLocationHoursEntry" />
         </MudItem>
     </MudGrid>

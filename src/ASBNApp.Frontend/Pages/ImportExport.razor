@@ -15,7 +15,7 @@
 
 <PageTitle>Import / Export | ASBN App</PageTitle>
 
-<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraExtraLarge">
+<MudContainer Class="my-5" MaxWidth="MaxWidth.ExtraExtraLarge">
 
 	@* Header space *@
 	<MudItem Elevation="0" Class="my-10">
@@ -26,7 +26,7 @@
 	<MudGrid Elevation="0" Spacing="6">
 
 		@* Import *@
-		<MudItem xs="6">
+		<MudItem xs="12" md="6">
 			<MudPaper Elevation="0" Outlined Class="pa-5">
 				<MudStack Spacing="5" AlignItems="AlignItems.Start">
 					<MudText Typo="Typo.h6"><b>Import</b></MudText>
@@ -50,11 +50,11 @@
 					</MudFileUpload>
 
 					<MudText>Select what you want to import:</MudText>
-					<MudStack Row>
+					<MudItem Class="d-flex flex-wrap">
 						<MudCheckBox @bind-Value="_importEntries" Label="Entries" Color="Color.Primary" Disabled="_importEntriesDisabled" />
 						<MudCheckBox @bind-Value="_importWorkLocations" Label="Work Locations" Color="Color.Primary" Disabled="_importWorkLocationsDisabled" />
 						<MudCheckBox @bind-Value="_importSettings" Label="Settings" Color="Color.Primary" Disabled="_importSettingsDisabled" />
-					</MudStack>
+					</MudItem>
 
 					<MudButton Disabled="@_isImportButtonDisabled" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload" OnClick="Import">
 						@if (_isImporting)
@@ -75,17 +75,17 @@
 
 
 		@* Export *@
-		<MudItem xs="6">
+		<MudItem xs="12" md="6">
 			<MudPaper Elevation="0" Outlined Class="pa-5">
 				<MudStack Spacing="5" AlignItems="AlignItems.Start">
 					<MudText Typo="Typo.h6"><b>Export</b></MudText>
 					<MudText>Select what you want to export:</MudText>
 
-					<MudStack Row>
+					<MudItem Class="d-flex flex-wrap">
 						<MudCheckBox @bind-Value="_exportEntries" Label="Entries" Color="Color.Primary"></MudCheckBox>
 						<MudCheckBox @bind-Value="_exportWorkLocations" Label="Work Locations" Color="Color.Primary"></MudCheckBox>
 						<MudCheckBox @bind-Value="_exportSettings" Label="Settings" Color="Color.Primary"></MudCheckBox>
-					</MudStack>
+					</MudItem>
 
 					<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudDownload" OnClick="Export">
 						@if (_isExporting)

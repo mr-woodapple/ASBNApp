@@ -8,7 +8,7 @@
                        OnClick=@(() => firstDateOfAWeek = cal.AddWeeks(firstDateOfAWeek.Value, -1)) />
 
         <MudStack Row="true" Class="mud-theme-primary rounded-pill ps-5" AlignItems="AlignItems.Center">
-            <MudText Typo="Typo.subtitle1" Class="m-0"><b>Selected Week: </b>@SelectedWeek of @SelectedYear</MudText>
+            <MudText Typo="Typo.subtitle1" Class="m-0">Week @SelectedWeek of @SelectedYear</MudText>
 
             <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Inherit" OnClick="OpenDatePickerOverlay" />
         </MudStack>

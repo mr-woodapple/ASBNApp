@@ -10,17 +10,36 @@
 <MudPaper Outlined="true" Class="pa-5 ma-5">
     <MudGrid>
         @* Name of the day *@
-        <MudItem xs="3">
+        <MudItem xs="12" sm="6" md="3" Class="d-flex justify-space-between">
             <MudText Typo="Typo.h4"> @CurrentEntry.Date.DayOfWeek </MudText>
-        </MudItem>
+
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight"
+                Class="d-sm-none">
+                @if (!string.IsNullOrWhiteSpace(CurrentEntry.Note))
+                {
+                    <MudMenuItem OnClick="DeleteEntry">
+                        <div class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Delete" Title="Delete" />
+                            <MudText Typo="Typo.button" Class="ps-4">Delete entry</MudText>
+                        </div>
+                    </MudMenuItem>
+                }
+                else
+                {
+                    <MudMenuItem Disabled>
+                        <MudText>No action available.</MudText>
+                    </MudMenuItem>
+                }
+            </MudMenu>
+        </MudItem>        
 
         @* Date picker *@
-        <MudItem xs="3">
+        <MudItem xs="12" sm="6" md="3">
             <MudDatePicker Label="Select Date" @bind-Date="Date" MinDate="@_minDateValue" MaxDate="@_maxDateValue"/>
         </MudItem>
 
         @* Location selector *@
-        <MudItem xs="3">
+        <MudItem xs="7" sm="6" md="3">
             @if (WorkLocations.Count != 0)
             {
                 <MudSelect T="WorkLocation" Value="SelectedWorkLocation" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
@@ -39,12 +58,12 @@
             }
         </MudItem>
 
-        @* Location hours input *@
-        <MudItem xs="3">
+        @* Work hours input *@
+        <MudItem xs="5" sm="6" md="3">
             <MudStack Row>
                 <MudNumericField @bind-Value="CurrentEntry.Hours" Label="Set hours" Min="0" Format="N1" />
 
-                <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight">
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight" Class="d-none d-sm-block">
                     @if (!string.IsNullOrWhiteSpace(CurrentEntry.Note))
                     {
                         <MudMenuItem OnClick="DeleteEntry">
@@ -125,14 +144,7 @@
 
     protected override void OnInitialized()
     {
-        try
-        {
-            SelectedWorkLocation = WorkLocations.First(l => l.Id == CurrentEntry.LocationId);
-        }
-        catch
-        {
-            Console.WriteLine("Test");
-        }
+        SelectedWorkLocation = WorkLocations.FirstOrDefault(l => l.Id == CurrentEntry.LocationId);
 
         UpdateMinMaxDates();
         UpdateWorkHoursFromLocation(SelectedWorkLocation);

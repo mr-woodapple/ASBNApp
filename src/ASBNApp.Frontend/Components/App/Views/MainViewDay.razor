@@ -9,136 +9,160 @@
 @inject ISnackbar Snackbar
 
 <MudPaper Outlined="true" Class="mt-5 pa-5">
-    <MudGrid>
+	<MudGrid>
+		@* Date *@
+		<MudItem xs="12">
+			<MudText Typo="Typo.body2">I'm writing a log for...</MudText>
+			<PillSelectorDate @bind-SelectedDate="SelectedDate" />
+		</MudItem>
 
-        @* Date *@
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2">I'm writing a log for...</MudText>
-            <PillSelectorDate @bind-SelectedDate="SelectedDate" />
-        </MudItem>
+		@* Location *@
+		<MudItem xs="12" md="6">
+			<MudText Typo="Typo.body2">I was working from...</MudText>
+			<PillSelectorLocation WorkLocationHours="WorkLocations" @bind-SelectedLocation="SelectedWorkLocation" />
+		</MudItem>
 
-        @* Location *@
-        <MudItem xs="6">
-            <MudText Typo="Typo.body2">I was working from...</MudText>
-            <PillSelectorLocation WorkLocationHours="WorkLocations" @bind-SelectedLocation="SelectedWorkLocation" />
-        </MudItem>
+		@* Working hours *@
+		<MudItem xs="12" md="6">
+			@if (CurrentEntry == null)
+			{
+				<MudSkeleton Height="50px" />
+			}
+			else
+			{
+				<MudNumericField @bind-Value="CurrentEntry.Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
+			}
+		</MudItem>
 
-        @* Working hours *@
-        <MudItem xs="6">
-            @if (CurrentEntry == null) {
-                <MudSkeleton Height="50px" />
-            } else {
-                <MudNumericField @bind-Value="CurrentEntry.Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
-            }
-        </MudItem>
+		@* Note *@
+		<MudItem xs="12">
+			@if (CurrentEntry == null)
+			{
+				<MudSkeleton Height="50px" />
+			}
+			else
+			{
+				<MudTextField @bind-Text="CurrentEntry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" />
+			}
+		</MudItem>
 
-        @* Note *@
-        <MudItem xs="12">
-            @if (CurrentEntry == null) {
-                <MudSkeleton Height="50px" />
-            } else {
-                <MudTextField @bind-Text="CurrentEntry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" />
-            }
-        </MudItem>
-
-        <MudItem xs="12">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
-        </MudItem>
-    </MudGrid>
+		<MudItem xs="12">
+			<MudButton Disabled="_isSaving" Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">
+				@if (_isSaving)
+				{
+					<MudText Class="ms-2">Saving...</MudText>
+					<MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
+				}
+				else
+				{
+					<MudText>Save</MudText>
+				}
+			</MudButton>
+		</MudItem>
+	</MudGrid>
 </MudPaper>
 
 
 @code {
-    private DateTime _selectedDate;
-    public DateTime SelectedDate
-    {
-        get => _selectedDate;
-        set
-        {
-            if (value != _selectedDate)
-            {
-                _selectedDate = value;
-                GetData();
-            }
-        }
-    }
+	private bool _isSaving = false;
 
-    public WorkLocation? _selectedWorkLocation;
-    public WorkLocation? SelectedWorkLocation { 
-        get => _selectedWorkLocation; 
-        set 
-        {
-            if (value != _selectedWorkLocation) {
-                _selectedWorkLocation = value;
-                if (CurrentEntry != null && value != null)
-                {
-                    CurrentEntry.Hours = value.SuggestedHours;
-                }
-            }
-        }
-    }
+	private DateTime _selectedDate;
+	public DateTime SelectedDate
+	{
+		get => _selectedDate;
+		set
+		{
+			if (value != _selectedDate)
+			{
+				_selectedDate = value;
+				GetData();
+			}
+		}
+	}
 
-    public List<WorkLocation>? WorkLocations { get; set; }
-    public Entry? CurrentEntry { get; set; }
+	public WorkLocation? _selectedWorkLocation;
+	public WorkLocation? SelectedWorkLocation
+	{
+		get => _selectedWorkLocation;
+		set
+		{
+			if (value != _selectedWorkLocation)
+			{
+				_selectedWorkLocation = value;
+				if (CurrentEntry != null && value != null)
+				{
+					CurrentEntry.Hours = value.SuggestedHours;
+				}
+			}
+		}
+	}
 
-    /// <summary>
-    /// Load data for the selected date and all <see cref="WorkLocations"/>.
-    /// </summary>
-    public async Task GetData() 
-    {
-        // Trigger loading state for the UI
-        CurrentEntry = null;
-        SelectedWorkLocation = null;
+	public List<WorkLocation>? WorkLocations { get; set; }
+	public Entry? CurrentEntry { get; set; }
 
-        // Important that this only happens when the list is null, because otherwise 
-        // the UI won't reflect the updated selected location. Seems odd, don't understand tbh.
-        if (WorkLocations == null)
-        {
-            WorkLocations = await dataService.GetWorkLocationHours();
-            StateHasChanged();
-        }
+	/// <summary>
+	/// Load data for the selected date and all <see cref="WorkLocations"/>.
+	/// </summary>
+	public async Task GetData()
+	{
+		// Trigger loading state for the UI
+		CurrentEntry = null;
+		SelectedWorkLocation = null;
 
-        // Try to retrieve data from the API
-        CurrentEntry = await dataService.GetDay(SelectedDate);
+		// Important that this only happens when the list is null, because otherwise
+		// the UI won't reflect the updated selected location. Seems odd, don't understand tbh.
+		if (WorkLocations == null)
+		{
+			WorkLocations = await dataService.GetWorkLocationHours();
+			StateHasChanged();
+		}
 
-        // Set location
-        if (CurrentEntry != null)
-        {
-            SelectedWorkLocation = WorkLocations.FirstOrDefault(l => l.Id == CurrentEntry.LocationId);
-        }
-        else
-        {
-            CurrentEntry = new Entry { Date = SelectedDate };
-        }
+		// Try to retrieve data from the API
+		CurrentEntry = await dataService.GetDay(SelectedDate);
 
-        StateHasChanged();
-    }
+		// Set location
+		if (CurrentEntry != null)
+		{
+			SelectedWorkLocation = WorkLocations.FirstOrDefault(l => l.Id == CurrentEntry.LocationId);
+		}
+		else
+		{
+			CurrentEntry = new Entry { Date = SelectedDate };
+		}
 
-    /// <summary>
-    /// Work with <see cref="IASBNDataService"/> to save the current entry,
-    /// update the local object with the data the <see cref="IASBNDataService"/> returned,  
-    /// also trigger an alert to indicate success / error.
-    /// </summary>
-    public async void SaveData()
-    {
-        var data = new Entry()
-        {
-            Id = CurrentEntry.Id,
-            Hours = CurrentEntry.Hours,
-            Note = CurrentEntry.Note,
-            Date = SelectedDate,
-            LocationId = SelectedWorkLocation?.Id ?? null
-        };
+		StateHasChanged();
+	}
 
-        try
-        {
-            var response = await dataService.SaveDay(data);
-            CurrentEntry = JsonSerializer.Deserialize<Entry>(await response.Content.ReadAsStringAsync());
-            Snackbar.Add("That's your data saved!", Severity.Success);
-        }
-        catch
-        {
-            Snackbar.Add("There was an error saving your data - please try again.", Severity.Error);
-        }
-    }
+	/// <summary>
+	/// Work with <see cref="IASBNDataService"/> to save the current entry,
+	/// update the local object with the data the <see cref="IASBNDataService"/> returned,
+	/// also trigger an alert to indicate success / error.
+	/// </summary>
+	public async void SaveData()
+	{
+		// TODO: Check if text != null
+
+		_isSaving = true;
+		var data = new Entry()
+		{
+			Id = CurrentEntry.Id,
+			Hours = CurrentEntry.Hours,
+			Note = CurrentEntry.Note,
+			Date = SelectedDate,
+			LocationId = SelectedWorkLocation?.Id ?? null
+		};
+
+		try
+		{
+			var response = await dataService.SaveDay(data);
+			CurrentEntry = JsonSerializer.Deserialize<Entry>(await response.Content.ReadAsStringAsync());
+			Snackbar.Add("That's your data saved!", Severity.Success);
+		}
+		catch
+		{
+			Snackbar.Add("There was an error saving your data - please try again.", Severity.Error);
+		}
+
+		_isSaving = false;
+	}
 }

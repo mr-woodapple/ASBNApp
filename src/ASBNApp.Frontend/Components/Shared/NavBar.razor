@@ -9,73 +9,77 @@
 @using ASBNApp.Frontend.Services;
 
 <MudAppBar>
-    <MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
+	<AuthorizeView>
+		<NotAuthorized>
+			<MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
+		</NotAuthorized>
 
-    <AuthorizeView>
-        <Authorized>
-            <MudButton Href="/app" Color="Color.Inherit" Class="ms-10 me-5">Start</MudButton>
-            <MudButton Href="export" Color="Color.Inherit">Export</MudButton>
-            <MudSpacer />
+		<Authorized>
+			<MudLink Href="/app">
+				<MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
+			</MudLink>
 
-            @if (_isLoggingOut)
-            {
-                <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
-            }
+			<MudSpacer />
 
-            @* Tools menu *@
-            <MudMenu Icon="@Icons.Material.Filled.Apps" Color="Color.Inherit" Class="ma-2"
-                     AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
-                <MudItem Class="ma-3">
-                    <MudText Typo="Typo.h6" Align="Align.Center">Tools:</MudText>
-                    <MudItem Class="my-5" />
 
-                    <MudMenuItem Href="import" Icon="@Icons.Material.Filled.DataObject" IconColor="Color.Inherit">
-                        <MudStack Class="ps-5" Spacing="1">
-                            <MudText Typo="Typo.subtitle1">Import / Export</MudText>
-                            <MudText Typo="Typo.body2">Import or export your data to/from JSON files.</MudText>
-                        </MudStack>
-                    </MudMenuItem>
-                </MudItem>
-            </MudMenu>
+			<MudIconButton Href="/app" Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" aria-label="Start page" />
+			@* Tools menu *@
+			<MudMenu Icon="@Icons.Material.Filled.Apps" Color="Color.Inherit" Class="ma-2"
+					 AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+				<MudItem Class="ma-3">
+					<MudText Typo="Typo.h6" Align="Align.Center">Tools:</MudText>
+					<MudItem Class="my-5" />
 
-            @* Account menu *@
-            <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
-                     AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
-                <MudItem Class="ma-3" >
-                    <MudText Typo="Typo.h6" Align="Align.Center">Hi there!</MudText>
-                    <MudText Class="pt-2"> You're logged in using "@_email" </MudText>
-                    <MudItem Class="my-5" />
+					<MudMenuItem Href="export" Icon="@Icons.Custom.FileFormats.FileDocument" IconColor="Color.Inherit">
+						<MudStack Class="ps-5" Spacing="1">
+							<MudText Typo="Typo.subtitle1">Export to PDF</MudText>
+							<MudText Typo="Typo.body2">Generate PDF files from your entries.</MudText>
+						</MudStack>
+					</MudMenuItem>
+					<MudMenuItem Href="import" Icon="@Icons.Material.Filled.DataObject" IconColor="Color.Inherit">
+						<MudStack Class="ps-5" Spacing="1">
+							<MudText Typo="Typo.subtitle1">Import / Export</MudText>
+							<MudText Typo="Typo.body2">Import or export your data to/from JSON files.</MudText>
+						</MudStack>
+					</MudMenuItem>
+				</MudItem>
+			</MudMenu>
 
-                    <MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Account Settings</MudMenuItem>
-                    <MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">
-                        <MudText Inline Color="Color.Error">Logout</MudText>
-                    </MudMenuItem>
-                </MudItem>
-            </MudMenu>
-        </Authorized>
-    </AuthorizeView>
+			@* Account menu *@
+			<MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
+					 AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+				<MudItem Class="ma-3">
+					<MudText Typo="Typo.h6" Align="Align.Center">Hi there!</MudText>
+					<MudText Class="pt-2"> You're logged in using @_email. </MudText>
+					<MudItem Class="my-5" />
+
+					<MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Account Settings</MudMenuItem>
+					<MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">
+						<MudText Inline Color="Color.Error">Logout</MudText>
+					</MudMenuItem>
+				</MudItem>
+			</MudMenu>
+		</Authorized>
+	</AuthorizeView>
 </MudAppBar>
 
 
-@code 
+@code
 {
-    private bool _isLoggingOut;
-    private string? _email;
+	private string? _email;
 
-    /// <summary>
+	/// <summary>
 	/// Get the email of the current user.
-    /// </summary>
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        _email = authState.User.Identity.Name;
-    }
+	/// </summary>
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		_email = authState.User.Identity.Name;
+	}
 
-    private async Task HandleLogout()
-    {
-        _isLoggingOut = true;
-        await AccManagement.LogoutAsync();
-        NavigationManager.NavigateTo("/");
-        _isLoggingOut = false;
-    }
+	private async Task HandleLogout()
+	{
+		await AccManagement.LogoutAsync();
+		NavigationManager.NavigateTo("/");
+	}
 }

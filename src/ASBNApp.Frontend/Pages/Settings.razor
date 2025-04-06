@@ -40,10 +40,10 @@
                     </MudText>
                 </MudItem>
 
-                <MudItem xs="6">
+                <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
                 </MudItem>
-                <MudItem xs="6">
+                <MudItem xs="12" md="6">
                     <MudTextField @bind-Value="settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
                 </MudItem>
 
@@ -58,14 +58,14 @@
                     </MudSelect>
                 </MudItem>
 
-                <MudItem xs="12">
+                <MudItem xs="12" md="6">
                     <MudText Typo="Typo.body2" Class="mb-3">
                         <b>Further details:</b>
                     </MudText>
 
                     <MudGrid>
                         @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
-                        <MudItem xs="6">
+                        <MudItem xs="12" md="6">
                             <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="settings.ApprenticeshipStartDate" AutoClose>
                                 <PickerActions>
                                     <MudButton Class="mr-auto align-self-start" OnClick="@(() => _startDatePicker.CloseAsync(false))">Cancel</MudButton>
@@ -76,17 +76,17 @@
                         </MudItem>
 
                         @* Specify your legal representative (if applicable) *@
-                        <MudItem xs="6">
+                        <MudItem xs="12" md="6">
                             <MudTextField @bind-Value="settings.LegalRepresentitive" Label="Enter your legal representitive..." Variant="Variant.Text" HelperText="Required for students below 18 years." />
                         </MudItem>
 
                         @* Add company name here, required for the output pdf *@
-                        <MudItem xs="6">
+                        <MudItem xs="12" md="6">
                             <MudTextField @bind-Value="settings.Company" Label="Company name..." Variant="Variant.Text" HelperText="Name of the company you're working at." />
                         </MudItem>
 
                         @* Add school name here, required for the output pdf *@
-                        <MudItem xs="6">
+                        <MudItem xs="12" md="6">
                             <MudTextField @bind-Value="settings.School" Label="School name..." Variant="Variant.Text" HelperText="Name of the school you're going to." />
                         </MudItem>
                     </MudGrid>
