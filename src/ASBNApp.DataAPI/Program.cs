@@ -1,10 +1,12 @@
-using ASBNApp.Models;
 using ASBNApp.DataAPI.Context;
+using ASBNApp.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +21,21 @@ builder.Services.AddIdentityCore<User>()
 	.AddEntityFrameworkStores<ASBNAppContext>()
 	.AddApiEndpoints();
 
-// Add services to the container.
-builder.Services.AddOpenApi();
+// Add various services (Swagger & Application Insights)
+builder.Services.AddSwaggerGen(options =>
+{
+	options.SwaggerDoc("v1", new OpenApiInfo
+	{
+		Version = "v1",
+		Title = "ASBN App Data API",
+		Description = "An ASP.NET Core Web API for handling everything between frontend requests and the database.",
+	});
+
+	// get the generated api documentation file, allowing to add comments to the swagger ui
+	var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationInsightsTelemetry();
 
 // Configure cookie policy
@@ -56,7 +71,6 @@ var modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<User>("User");
 modelBuilder.EntitySet<Entry>("Entry");
 modelBuilder.EntitySet<WorkLocation>("WorkLocation");
-modelBuilder.EntitySet<JSONDataWrapper>("Import");
 
 builder.Services.AddControllers().AddOData(
     options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
@@ -74,7 +88,8 @@ app.UseCors("AllowASBNAppFrontend");
 
 if (app.Environment.IsDevelopment())
 {
-	app.MapOpenApi();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UsePathBase(new PathString("/api"));

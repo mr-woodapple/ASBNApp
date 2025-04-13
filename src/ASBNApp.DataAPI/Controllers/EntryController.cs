@@ -24,7 +24,6 @@ public class EntryController : ODataController
 
 
     [EnableQuery]
-    [HttpGet]
     public async Task<ActionResult<IEnumerable<Entry>>> Get()
     {
         var currentUser = await userManager.GetUserAsync(User);
@@ -54,7 +53,6 @@ public class EntryController : ODataController
     }
 
     [EnableQuery]
-    [HttpPatch]
     public ActionResult Patch([FromRoute] int key, [FromBody] Delta<Entry> delta)
     {
         var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
@@ -70,7 +68,6 @@ public class EntryController : ODataController
     }
 
     [EnableQuery]
-    [HttpDelete]
     public ActionResult Delete([FromRoute] int key)
     {
         var entry = _context.LogEntry.SingleOrDefault(d => d.Id == key);
