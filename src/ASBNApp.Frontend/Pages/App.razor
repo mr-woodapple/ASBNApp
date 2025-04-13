@@ -1,5 +1,9 @@
 ﻿@page "/app"
 
+@using ASBNApp.Frontend.Services;
+
+@inject IDialogService dialogService;
+
 
 <PageTitle>Start</PageTitle>
 
@@ -12,20 +16,20 @@
             <MudText Typo="Typo.subtitle1">What do you wanna log?</MudText>
         </MudItem>
 
-        <MudTabs>
-            <MudTabPanel Text="Day" Icon="@Icons.Material.Filled.ViewDay" OnClick="() => IsDayBool = true"
+        <MudTabs @ref="_tabs" OnPreviewInteraction="SwitchView">
+            <MudTabPanel Text="Day" Icon="@Icons.Material.Filled.ViewDay" 
                 ToolTip="Single day view, no distraction."  />
 
-            <MudTabPanel Text="Week" Icon="@Icons.Material.Filled.ViewWeek" OnClick="() => IsDayBool = false"
+            <MudTabPanel Text="Week" Icon="@Icons.Material.Filled.ViewWeek"
                 ToolTip="The full week at a glance!" />
         </MudTabs>
     </MudItem>
 
-	@* Form space *@
-    @if (IsDayBool) {
+    @if (_tabs?.ActivePanelIndex == null || _tabs?.ActivePanelIndex == 0) 
+    {
         <MainViewDay />
     } 
-    else 
+    else
     {
         <MainViewWeek />
     }
@@ -34,4 +38,60 @@
 
 @code {
     private bool IsDayBool = true;
+    private MudTabs? _tabs;
+
+    /// <summary>
+    /// Called when the user clicks on a tab.
+    /// Then checks if we need to display a warning for unsaved data.
+    /// </summary>
+    private async Task SwitchView(TabInteractionEventArgs args)
+    {
+        if (args.PanelIndex == 1)
+        {
+            if (!UnsavedContentDialogService.IsDayViewDataSaved)
+            {
+                var isDialogCancelled = await OpenConfirmationDialogAsync();
+                if (isDialogCancelled)
+                {
+                    // Do nothing, stay on the current view
+                    args.Cancel = true;
+                    return;
+                }
+            }
+        }
+
+        if (args.PanelIndex == 0)
+        {
+            if (!UnsavedContentDialogService.IsWeekViewDataSaved)
+            {
+                var isDialogCancelled = await OpenConfirmationDialogAsync();
+                if (isDialogCancelled)
+                {
+                    // Do nothing, stay on the current view
+                    args.Cancel = true;
+                    return;
+                }
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Creates the dialog, specifies the text and buttons to show.
+    /// </summary>
+    /// <returns>Bool representing if the dialog was cancelled or not.</returns>
+    private async Task<bool> OpenConfirmationDialogAsync()
+    {
+        var parameters = new DialogParameters<DialogTemplate>
+        {
+            { x => x.ContentText, $"You have unsaved data in the current tab. If you switch views, your data will be lost. To save your data first, click 'Cancel'." },
+            { x => x.ButtonText, "Switch views anyway" },
+            { x => x.Color, Color.Error }
+        };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = await dialogService.ShowAsync<DialogTemplate>("Unsaved data - continue?", parameters, options);
+        var result = await dialog.Result;
+        return result.Canceled;
+    }
 }

@@ -49,7 +49,7 @@
 
                 @* Choose the apprenticeship from a pre-defined list *@
                 <MudItem xs="12">
-                    <MudSelect @bind-Value="settings.Profession" Label="Select your apprenticeship:" AnchorOrigin="Origin.BottomCenter"
+                    <MudSelect @bind-Value="settings.Profession" Label="Select your apprenticeship:"
                                 HelperText="This will be shown as your profession on your exported documents.">
                         @foreach (var entry in Data.Professions.Apprenticeships)
                         {
@@ -58,7 +58,7 @@
                     </MudSelect>
                 </MudItem>
 
-                <MudItem xs="12" md="6">
+                <MudItem xs="12">
                     <MudText Typo="Typo.body2" Class="mb-3">
                         <b>Further details:</b>
                     </MudText>

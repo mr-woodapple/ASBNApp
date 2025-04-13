@@ -1,7 +1,8 @@
 @* UI bit that represents a single entry, supposed to be used in MainViewWeek. *@
 
-@using ASBNApp.Frontend.Interfaces
-@using ASBNApp.Frontend.Models
+@using ASBNApp.Frontend.Models;
+@using ASBNApp.Frontend.Services;
+@using ASBNApp.Frontend.Interfaces;
 
 @inject IASBNDataService dataService;
 @inject IDialogService dialogService;
@@ -42,7 +43,7 @@
         <MudItem xs="7" sm="6" md="3">
             @if (WorkLocations.Count != 0)
             {
-                <MudSelect T="WorkLocation" Value="SelectedWorkLocation" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
+                <MudSelect T="WorkLocation" Value="SelectedWorkLocation" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="UpdateWorkHoursFromLocation">
                     @foreach (var location in WorkLocations)
                     {
                         <MudSelectItem Value="location">@location.LocationName</MudSelectItem>
@@ -64,7 +65,7 @@
                 <MudNumericField @bind-Value="CurrentEntry.Hours" Label="Set hours" Min="0" Format="N1" />
 
                 <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight" Class="d-none d-sm-block">
-                    @if (!string.IsNullOrWhiteSpace(CurrentEntry.Note))
+                    @if (CurrentEntry.Id != null)
                     {
                         <MudMenuItem OnClick="DeleteEntry">
                             <div class="d-flex align-center">
@@ -85,7 +86,7 @@
 
         @* Text *@
         <MudItem xs="12">
-            <MudTextField T="string" @bind-Text="CurrentEntry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" />
+            <MudTextField T="string" @bind-Text="CurrentEntry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" ValueChanged="@(() => UnsavedContentDialogService.IsWeekViewDataSaved = false)" />
         </MudItem>
     </MudGrid>
 </MudPaper>

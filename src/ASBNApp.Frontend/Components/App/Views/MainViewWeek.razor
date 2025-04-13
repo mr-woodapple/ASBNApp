@@ -1,12 +1,13 @@
 @* Main view to input and edit data, displayed when the user selects the weekly view. *@
 
-@using ASBNApp.Frontend.Helpers
+@using ASBNApp.Frontend.Models;
+@using ASBNApp.Frontend.Helpers;
+@using ASBNApp.Frontend.Services;
 @using ASBNApp.Frontend.Interfaces;
-@using ASBNApp.Frontend.Models
 
-@inject IASBNDataService dataService
-@inject DateHandler dateHandler
-@inject ISnackbar Snackbar
+@inject ISnackbar Snackbar;
+@inject DateHandler dateHandler;
+@inject IASBNDataService dataService;
 
 
 <MudPaper Outlined="true" Elevation="0" Class="my-5">
@@ -46,7 +47,7 @@
 @code {
     private List<Entry> rows = new();
     private List<WorkLocation> _workLocationHours = new();
-      
+
     // Creates DateHandler instance & variables to pass down to child component
     public int? SelectedWeek { get; set; }
     public int? SelectedYear { get; set; }
@@ -91,6 +92,9 @@
 
         // Force update the UI
         StateHasChanged();
+
+        // Override the value, because it's otherwise triggered by setting the data from what the API returned.
+        UnsavedContentDialogService.ResetWeekView();
     }
 
     /// <summary>
@@ -106,6 +110,7 @@
         if (await dataService.SaveEntries(rows))
         {
             Snackbar.Add("That's your data saved!", Severity.Success);
+            UnsavedContentDialogService.IsDayViewDataSaved = true;
         }
         else
         {
