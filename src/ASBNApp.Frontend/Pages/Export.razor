@@ -137,7 +137,7 @@
 		List<ASBNApp.Models.WorkLocation> locations = await dataService.GetWorkLocationHours();
 
 		// Handles exporting the PDF
-		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
+		PDFExportService pdfHandler = new PDFExportService(dateHandler);
 
 		// Open the pdf template file in a bytestream
 		var _httpClient = httpClientFactory.CreateClient("FrontendClient");

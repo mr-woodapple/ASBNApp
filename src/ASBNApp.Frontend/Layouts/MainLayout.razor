@@ -1,9 +1,9 @@
-﻿@inject NavigationManager navigationManager;
+﻿@inherits LayoutComponentBase
+
+@inject NavigationManager navigationManager;
 @inject AuthenticationStateProvider authenticationStateProvider
 
-@inherits LayoutComponentBase
-
-<MudThemeProvider Theme="LightTheme.GetTheme()"/>
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudPopoverProvider />
 <MudDialogProvider/>
 <MudSnackbarProvider/>
@@ -12,7 +12,7 @@
 
 
 <MudLayout>
-    <NavBar />
+    <NavBar @bind-IsDarkMode="_isDarkMode"/>
     <MudMainContent>
         <CascadingAuthenticationState>
             @if (!_isLoading)
@@ -32,6 +32,11 @@
 @code{
     private bool _isLoading = true;
 
+    // Theme related stuff
+    private bool _isDarkMode;
+	private MudTheme _theme = DefaultTheme.GetTheme();
+	private MudThemeProvider _mudThemeProvider;
+
     /// <summary>
     /// Redirect the user to the login page if he's not logged in.
     /// </summary>
@@ -50,10 +55,7 @@
         else
         {
             // Redirect if user is on a protected page, but not authenticated
-            if (navigationManager.Uri.EndsWith("/login") || navigationManager.Uri.EndsWith("/register") || navigationManager.Uri.EndsWith("/"))
-            {
-                // do nothing
-            } 
+            if (navigationManager.Uri.EndsWith("/login") || navigationManager.Uri.EndsWith("/register") || navigationManager.Uri.EndsWith("/")) { } 
             else
             {
                 navigationManager.NavigateTo("/");
@@ -61,5 +63,21 @@
         }
 
         _isLoading = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+            StateHasChanged();
+        }
+    }
+
+    private Task OnSystemPreferenceChanged(bool newValue)
+    {
+        _isDarkMode = newValue;
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 }

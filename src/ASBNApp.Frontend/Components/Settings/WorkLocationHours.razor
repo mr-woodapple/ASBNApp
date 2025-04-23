@@ -91,7 +91,7 @@ also manage editing states & update parent component if necessary. *@
             var response = await dataService.DeleteWorkLocationHours(location.Id);
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception("Failed to delete location.");
+                throw new Exception($"Failed to delete location '{location.LocationName}'.");
             }
             workLocationHours.Remove(location);
             WorkLocationHoursChanged.InvokeAsync(workLocationHours);
@@ -100,8 +100,7 @@ also manage editing states & update parent component if necessary. *@
         }
         catch
         {
-            Snackbar.Add("Couldn't delete the location. You cannot delete locations if they're referenced on an entry.", Severity.Error);
+            Snackbar.Add($"Couldn't delete location '{location.LocationName}'. You cannot delete locations if they're referenced on an entry.", Severity.Error);
         }
-        
     }
 }
