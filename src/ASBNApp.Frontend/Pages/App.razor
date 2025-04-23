@@ -1,8 +1,10 @@
 ﻿@page "/app"
 
 @using ASBNApp.Frontend.Services;
+@using ASBNApp.Frontend.Interfaces
 
 @inject IDialogService dialogService;
+@inject IUnsavedContentDialogService unsavedContentDialogService;
 
 
 <PageTitle>Start</PageTitle>
@@ -48,7 +50,7 @@
     {
         if (args.PanelIndex == 1)
         {
-            if (!UnsavedContentDialogService.IsDayViewDataSaved)
+            if (!unsavedContentDialogService.IsDayViewDataSaved)
             {
                 var isDialogCancelled = await OpenConfirmationDialogAsync();
                 if (isDialogCancelled)
@@ -62,7 +64,7 @@
 
         if (args.PanelIndex == 0)
         {
-            if (!UnsavedContentDialogService.IsWeekViewDataSaved)
+            if (!unsavedContentDialogService.IsWeekViewDataSaved)
             {
                 var isDialogCancelled = await OpenConfirmationDialogAsync();
                 if (isDialogCancelled)

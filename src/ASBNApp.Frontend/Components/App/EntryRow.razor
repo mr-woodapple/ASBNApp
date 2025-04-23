@@ -6,6 +6,7 @@
 
 @inject IASBNDataService dataService;
 @inject IDialogService dialogService;
+@inject IUnsavedContentDialogService unsavedContentDialogService;
 
 
 <MudPaper Outlined="true" Class="pa-5 ma-5">
@@ -86,7 +87,7 @@
 
         @* Text *@
         <MudItem xs="12">
-            <MudTextField T="string" @bind-Text="CurrentEntry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" ValueChanged="@(() => UnsavedContentDialogService.IsWeekViewDataSaved = false)" />
+            <MudTextField T="string" @bind-Text="CurrentEntry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" ValueChanged="@(() => unsavedContentDialogService.IsWeekViewDataSaved = false)" />
         </MudItem>
     </MudGrid>
 </MudPaper>

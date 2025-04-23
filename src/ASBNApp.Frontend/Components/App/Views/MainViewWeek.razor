@@ -8,6 +8,7 @@
 @inject ISnackbar Snackbar;
 @inject DateHandler dateHandler;
 @inject IASBNDataService dataService;
+@inject IUnsavedContentDialogService unsavedContentDialogService;
 
 
 <MudPaper Outlined="true" Elevation="0" Class="my-5">
@@ -39,12 +40,24 @@
     }
 
     <MudItem xs="12" Class="pa-5">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
+        <MudButton Disabled="_isSaving" Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">
+            @if (_isSaving)
+            {
+                <MudText Class="ms-2">Saving...</MudText>
+                <MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Material.Filled.Save" />
+                <MudText Class="ms-2">Save</MudText>
+            }
+        </MudButton>
     </MudItem>
 </MudPaper>
 
 
 @code {
+    private bool _isSaving;
     private List<Entry> rows = new();
     private List<WorkLocation> _workLocationHours = new();
 
@@ -94,7 +107,7 @@
         StateHasChanged();
 
         // Override the value, because it's otherwise triggered by setting the data from what the API returned.
-        UnsavedContentDialogService.ResetWeekView();
+        unsavedContentDialogService.ResetWeekView();
     }
 
     /// <summary>
@@ -103,6 +116,8 @@
     /// </summary>
     private async void SaveData()
     {
+        _isSaving = true;
+
         // TODO: Make this refresh if a new entry is saved.
 
         // TODO: Might wanna change this to check the return of dataService? 
@@ -110,11 +125,18 @@
         if (await dataService.SaveEntries(rows))
         {
             Snackbar.Add("That's your data saved!", Severity.Success);
-            UnsavedContentDialogService.IsDayViewDataSaved = true;
+            unsavedContentDialogService.IsDayViewDataSaved = true;
+
+            // Workaround to update the data in view until dataService returns 
+            // something else than a simple boolean to indicate success/failure.
+            await RefreshView();
         }
         else
         {
             Snackbar.Add("There was an error saving your data - please try again.", Severity.Error);
         }
+
+        _isSaving = false;
+        StateHasChanged();
     }
 }

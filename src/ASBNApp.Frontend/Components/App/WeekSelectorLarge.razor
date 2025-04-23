@@ -4,17 +4,20 @@
 
 <MudItem>
     <MudStack Row="true" Justify="Justify.Center" >
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary" 
-                       OnClick=@(() => firstDateOfAWeek = cal.AddWeeks(firstDateOfAWeek.Value, -1)) />
-
-        <MudStack Row="true" Class="mud-theme-primary rounded-pill ps-5" AlignItems="AlignItems.Center">
+        <MudTooltip Text="Previous Week">
+            <MudIconButton Icon="@Icons.Material.Filled.NavigateBefore" Color="Color.Primary"
+                           OnClick=@(() => firstDateOfAWeek = cal.AddWeeks(firstDateOfAWeek.Value, -1)) />
+        </MudTooltip>
+        
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenDatePickerOverlay" Class="rounded-pill"
+                   StartIcon="@Icons.Material.Filled.CalendarMonth">
             <MudText Typo="Typo.subtitle1" Class="m-0">Week @SelectedWeek of @SelectedYear</MudText>
+        </MudButton>
 
-            <MudIconButton Icon="@Icons.Material.Filled.CalendarMonth" Color="Color.Inherit" OnClick="OpenDatePickerOverlay" />
-        </MudStack>
-
-        <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary" 
-                       OnClick=@(() => firstDateOfAWeek = cal.AddWeeks(firstDateOfAWeek.Value, 1)) />
+        <MudTooltip Text="Next Week">
+            <MudIconButton Icon="@Icons.Material.Filled.NavigateNext" Color="Color.Primary"
+                           OnClick=@(() => firstDateOfAWeek = cal.AddWeeks(firstDateOfAWeek.Value, 1)) />
+        </MudTooltip>
     </MudStack>
 
     <MudOverlay @bind-Visible="isDatePickerOverlayVisible" DarkBackground="true" AutoClose="true">
@@ -45,13 +48,9 @@
 
     // Logic & variables related to openening and closing the date picker overlay
     private bool isDatePickerOverlayVisible;
-    public async void OpenDatePickerOverlay()
+    public void OpenDatePickerOverlay()
     {
         isDatePickerOverlayVisible = true;
-
-        // Workaround for https://github.com/MudBlazor/MudBlazor/issues/10578
-        await Task.Yield();
-        _picker.GoToDate(firstDateOfAWeek.Value);
     }
 
     // Making the MudDatePicker work (& updating variables)

@@ -1,13 +1,13 @@
-﻿namespace ASBNApp.Frontend.Services;
+﻿using ASBNApp.Frontend.Interfaces;
 
-// TODO: Make this a DI service, so it's not required to be static
-public static class UnsavedContentDialogService
+namespace ASBNApp.Frontend.Services;
+
+/// <inheritdoc />
+public class UnsavedContentDialogService : IUnsavedContentDialogService
 {
-	public static bool IsDayViewDataSaved { get; set; } = true;
-	public static bool IsWeekViewDataSaved { get; set; } = true;
+	public bool IsDayViewDataSaved { get; set; } = true;
+	public bool IsWeekViewDataSaved { get; set; } = true;
 
-	public static void ResetDayView() => IsDayViewDataSaved = true;
-	public static void ResetWeekView() => IsWeekViewDataSaved = true;
-
-
+	public void ResetDayView() => IsDayViewDataSaved = true;
+	public void ResetWeekView() => IsWeekViewDataSaved = true;
 }

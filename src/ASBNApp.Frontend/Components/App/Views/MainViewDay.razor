@@ -6,8 +6,9 @@
 @using ASBNApp.Frontend.Interfaces;
 @using System.Text.Json
 
-@inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
+@inject IASBNDataService dataService;
+@inject IUnsavedContentDialogService unsavedContentDialogService;
 
 <MudPaper Outlined="true" Class="mt-5 pa-5">
 	<MudGrid>
@@ -43,7 +44,7 @@
 			}
 			else
 			{
-				<MudTextField @bind-Text="CurrentEntry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" ValueChanged="@(() => UnsavedContentDialogService.IsDayViewDataSaved = false)" />
+				<MudTextField @bind-Text="CurrentEntry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" ValueChanged="@(() => unsavedContentDialogService.IsDayViewDataSaved = false)" />
 			}
 		</MudItem>
 
@@ -56,7 +57,8 @@
 				}
 				else
 				{
-					<MudText>Save</MudText>
+					<MudIcon Icon="@Icons.Material.Filled.Save" />
+					<MudText Class="ms-2">Save</MudText>
 				}
 			</MudButton>
 		</MudItem>
@@ -65,7 +67,7 @@
 
 
 @code {
-	private bool _isSaving = false;
+	private bool _isSaving;
 
 	private DateTime _selectedDate;
 	public DateTime SelectedDate
@@ -134,7 +136,7 @@
 		StateHasChanged();
 
 		// Override the value, because it's otherwise triggered by setting the data from what the API returned.
-		UnsavedContentDialogService.ResetDayView();
+		unsavedContentDialogService.ResetDayView();
 	}
 
 	/// <summary>
@@ -165,7 +167,7 @@
 			var response = await dataService.SaveDay(data);
 			CurrentEntry = JsonSerializer.Deserialize<Entry>(await response.Content.ReadAsStringAsync());
 			Snackbar.Add("That's your data saved!", Severity.Success);
-			UnsavedContentDialogService.IsDayViewDataSaved = true;
+			unsavedContentDialogService.IsDayViewDataSaved = true;
 		}
 		catch
 		{
