@@ -69,9 +69,10 @@ a, .btn-link {
 
 .loading-wrapper {
     display: flex;
-    justify-content: center;
-    min-height: 100vh;
     color: #FF6D00;
+    min-height: 100vh;
+    justify-content: center;
+    background-color: #32333d;
 }
 
     .loading-wrapper img {

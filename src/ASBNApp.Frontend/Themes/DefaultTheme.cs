@@ -12,10 +12,12 @@ public static class DefaultTheme
                 AppbarBackground = Colors.Orange.Accent4,
                 AppbarText = Colors.Shades.White,
             },
+
             PaletteDark = new PaletteDark()
             {
                 Primary = Colors.Orange.Accent4,
             },
+
             Typography = new Typography()
             {
                 Default = new DefaultTypography()

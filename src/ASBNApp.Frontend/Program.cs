@@ -27,6 +27,8 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IASBNDataService, ASBNDataService>();
 builder.Services.AddScoped<FontServices>();
 builder.Services.AddSingleton<DateHandler>();
+builder.Services.AddSingleton<LayoutService>();
+builder.Services.AddSingleton<IUserPreferenceService, UserPreferenceService>();
 builder.Services.AddSingleton<IUnsavedContentDialogService, UnsavedContentDialogService>();
 
 // Making the FileSystemAccess package available to everyone

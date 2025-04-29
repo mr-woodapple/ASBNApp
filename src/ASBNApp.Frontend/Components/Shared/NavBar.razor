@@ -1,12 +1,14 @@
 ﻿@* Nav Bar item *@
 
+@using ASBNApp.Frontend.Models
+@using ASBNApp.Frontend.Services;
+@using ASBNApp.Frontend.Interfaces;
+
+@inject LayoutService LayoutService
 @inject IAccountManagement AccManagement
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-@using ASBNApp.Frontend.Interfaces;
-@using ASBNApp.Frontend.Models
-@using ASBNApp.Frontend.Services;
 
 <MudAppBar>
 	<AuthorizeView>
@@ -21,6 +23,7 @@
 
 			<MudSpacer />
 
+			@* TODO: Make this appear only if we're not on /app  *@
 			<MudIconButton Href="/app" Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" aria-label="Start page" />
 
 			@* Tools menu *@
@@ -45,14 +48,24 @@
 				</MudItem>
 			</MudMenu>
 
-			@* Account menu *@
+			@* Account & user preferences menu *@
 			<MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
 					 AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
 				<MudItem Class="ma-3">
-					<MudText Typo="Typo.h6" Align="Align.Center">Hi there!</MudText>
-					<MudText Class="pt-2"> You're logged in using @_email. </MudText>
-					<MudItem Class="my-5" />
+					<MudPaper Outlined Class="pa-3 mb-5">
+						<MudText Typo="Typo.h6" Align="Align.Center">Hi there!</MudText>
+						<MudText Class="mt-2"> You're logged in using @_email. </MudText>
+					</MudPaper>
 
+					@* TODO: Add correct text and icon based on selected darklightmode theme *@
+					<MudMenuItem Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit" OnClick="LayoutService.CycleDarkLightModeAsync">
+						<MudTooltip Text="Click to toggle light/dark/system mode.">
+							<MudText>Current Mode</MudText>
+						</MudTooltip>
+					</MudMenuItem>
+
+					<MudDivider />
+					
 					<MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Account Settings</MudMenuItem>
 					<MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">
 						<MudText Inline Color="Color.Error">Logout</MudText>
@@ -61,12 +74,6 @@
 			</MudMenu>
 		</Authorized>
 	</AuthorizeView>
-
-	@* <MudToggleIconButton @bind-Toggled="IsDarkMode"
-						 Icon="@Icons.Material.Filled.AlarmOff"
-						 Color="@Color.Error"
-						 ToggledIcon="@Icons.Material.Filled.AlarmOn"
-						 ToggledColor="@Color.Success" /> *@
 </MudAppBar>
 
 

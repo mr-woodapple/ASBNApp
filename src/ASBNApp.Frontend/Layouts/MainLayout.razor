@@ -1,9 +1,12 @@
 ﻿@inherits LayoutComponentBase
 
+@using ASBNApp.Frontend.Services;
+
+@inject LayoutService layoutService;
 @inject NavigationManager navigationManager;
 @inject AuthenticationStateProvider authenticationStateProvider
 
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudThemeProvider @ref="_mudThemeProvider" IsDarkMode="layoutService.IsDarkMode" Theme="layoutService.mudTheme" ObserveSystemThemeChange="layoutService.ObserveSystemThemeChange" IsDarkModeChanged="layoutService.SetDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider/>
 <MudSnackbarProvider/>
@@ -12,7 +15,7 @@
 
 
 <MudLayout>
-    <NavBar @bind-IsDarkMode="_isDarkMode"/>
+    <NavBar />
     <MudMainContent>
         <CascadingAuthenticationState>
             @if (!_isLoading)
@@ -31,19 +34,16 @@
 
 @code{
     private bool _isLoading = true;
-
-    // Theme related stuff
-    private bool _isDarkMode;
-	private MudTheme _theme = DefaultTheme.GetTheme();
-	private MudThemeProvider _mudThemeProvider;
+    private MudThemeProvider _mudThemeProvider;
 
     /// <summary>
     /// Redirect the user to the login page if he's not logged in.
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        layoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccured;
 
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity.IsAuthenticated)
         {
             // Redirect if user is on index page, but authenticated
@@ -67,17 +67,31 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await base.OnAfterRenderAsync(firstRender);
+
         if (firstRender)
         {
+            await ApplyUserPreferences();
             await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
             StateHasChanged();
         }
     }
 
-    private Task OnSystemPreferenceChanged(bool newValue)
+    private async Task ApplyUserPreferences()
     {
-        _isDarkMode = newValue;
-        StateHasChanged();
-        return Task.CompletedTask;
+        var defaultDarkMode = await _mudThemeProvider.GetSystemPreference();
+        await layoutService.ApplyUserPreferences(defaultDarkMode);
     }
+
+    private async Task OnSystemPreferenceChanged(bool newValue)
+    {
+        await layoutService.OnSystemPreferenceChanged(newValue);
+    }
+
+    public void Dispose()
+    {
+        layoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccured;
+    }
+
+    private void LayoutServiceOnMajorUpdateOccured(object sender, EventArgs e) => StateHasChanged();
 }
