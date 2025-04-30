@@ -1,6 +1,6 @@
 ﻿// Update the background color of the loading screen
 function setThemeForLoader(loadingScreen, observer) {
-    let darkLightThemeValue = (JSON.parse(localStorage.getItem('userPreferences') || '{}')).DarkLightTheme;
+    let darkLightThemeValue = (JSON.parse(localStorage.getItem('selectedDarkLightMode') || '{}'));
 
     let useLightTheme = darkLightThemeValue === 1 ||
         (darkLightThemeValue !== 2 && window.matchMedia('(prefers-color-scheme: light)').matches);
@@ -17,7 +17,7 @@ function setThemeForLoader(loadingScreen, observer) {
 const loadingScreenObserver = new MutationObserver((mutationsList, observer) => {
     for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
-            let loadingScreen = document.getElementsByClassName('loading-wrapper')[0];
+            let loadingScreen = document.getElementById('loading-wrapper');
 
             if (loadingScreen) {
                 setThemeForLoader(loadingScreen, observer);

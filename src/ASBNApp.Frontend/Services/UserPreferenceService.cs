@@ -1,18 +1,26 @@
-﻿using ASBNApp.Frontend.Interfaces;
+﻿using Blazored.LocalStorage;
+using ASBNApp.Frontend.Enums;
+using ASBNApp.Frontend.Interfaces;
 
 namespace ASBNApp.Frontend.Services;
 
 public class UserPreferenceService : IUserPreferenceService
 {
 	private const string Key = "selectedDarkLightMode";
+	private readonly ILocalStorageService _localStorageService;
 
-	public Task LoadUserPreferences()
+	public UserPreferenceService(ILocalStorageService localStorageService)
 	{
-		throw new NotImplementedException();
+		_localStorageService = localStorageService;
 	}
 
-	public Task SaveUserPreferences()
+	public async Task<DarkLightMode> LoadUserPreferences()
 	{
-		throw new NotImplementedException();
+		return await _localStorageService.GetItemAsync<DarkLightMode>(Key);
+	}
+
+	public async Task SaveUserPreferences(DarkLightMode darkLightMode)
+	{
+		await _localStorageService.SetItemAsync(Key, darkLightMode);
 	}
 }

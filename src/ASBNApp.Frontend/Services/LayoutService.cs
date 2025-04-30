@@ -8,10 +8,11 @@ public class LayoutService
 {
 	private bool _systemPreferences;
 	public MudTheme mudTheme = DefaultTheme.GetTheme();
+	private DarkLightMode _userPreferredDarkLightMode;
 	private readonly IUserPreferenceService _userPreferencesService;
 
 	public bool IsDarkMode { get; private set; }
-	public bool ObserveSystemThemeChange { get; private set; }
+	public bool ObserveSystemThemeChange { get; private set; } = true;
 	public DarkLightMode CurrentDarkLightMode { get; private set; } = DarkLightMode.System;
 
 	public LayoutService(IUserPreferenceService userPreferenceService)
@@ -23,6 +24,7 @@ public class LayoutService
 	private void OnMajorUpdateOccurred() => MajorUpdateOccurred?.Invoke(this, EventArgs.Empty);
 
 	public Task OnSystemPreferenceChanged(bool newValue)
+
 	{
 		_systemPreferences = newValue;
 
@@ -44,7 +46,25 @@ public class LayoutService
 	public async Task ApplyUserPreferences(bool isDarkModeDefaultTheme)
 	{
 		_systemPreferences = isDarkModeDefaultTheme;
-		IsDarkMode = isDarkModeDefaultTheme;
+		_userPreferredDarkLightMode = await _userPreferencesService.LoadUserPreferences();
+
+		if (_userPreferredDarkLightMode != null)
+		{
+			CurrentDarkLightMode = _userPreferredDarkLightMode;
+			IsDarkMode = CurrentDarkLightMode switch
+			{
+				DarkLightMode.Dark => true,
+				DarkLightMode.Light => false,
+				DarkLightMode.System => isDarkModeDefaultTheme,
+				_ => IsDarkMode
+			};
+		}
+		else
+		{
+			IsDarkMode = isDarkModeDefaultTheme;
+			_userPreferredDarkLightMode = DarkLightMode.System;
+			await _userPreferencesService.SaveUserPreferences(_userPreferredDarkLightMode);
+		}
 	}
 
 	public async Task CycleDarkLightModeAsync()
@@ -71,8 +91,7 @@ public class LayoutService
 				break;
 		}
 
-		CurrentDarkLightMode = CurrentDarkLightMode;
-		//await _userPreferencesService.SaveUserPreferences(_userPreferences);
+		await _userPreferencesService.SaveUserPreferences(CurrentDarkLightMode);
 		OnMajorUpdateOccurred();
 	}
 }

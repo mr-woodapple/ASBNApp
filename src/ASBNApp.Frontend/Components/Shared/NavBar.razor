@@ -1,5 +1,6 @@
 ﻿@* Nav Bar item *@
 
+@using ASBNApp.Frontend.Enums
 @using ASBNApp.Frontend.Models
 @using ASBNApp.Frontend.Services;
 @using ASBNApp.Frontend.Interfaces;
@@ -23,55 +24,61 @@
 
 			<MudSpacer />
 
-			@* TODO: Make this appear only if we're not on /app  *@
-			<MudIconButton Href="/app" Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" aria-label="Start page" />
+			@if (_showHomeIcon)
+			{
+				<MudTooltip Text="Home">
+					<MudIconButton Href="/app" Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" aria-label="Start page" />
+				</MudTooltip>
+			}
 
 			@* Tools menu *@
-			<MudMenu Icon="@Icons.Material.Filled.Apps" Color="Color.Inherit" Class="ma-2"
-					 AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
-				<MudItem Class="ma-3">
-					<MudText Typo="Typo.h6" Align="Align.Center">Tools:</MudText>
-					<MudItem Class="my-5" />
+			<MudTooltip Text="Tools">
+				<MudMenu Icon="@Icons.Material.Filled.Apps" Color="Color.Inherit" Class="ma-2"
+						 AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+					<MudItem Class="ma-3">
+						<MudText Typo="Typo.h6" Align="Align.Center">Tools:</MudText>
+						<MudItem Class="my-5" />
 
-					<MudMenuItem Href="export" Icon="@Icons.Custom.FileFormats.FileDocument" IconColor="Color.Inherit">
-						<MudStack Class="ps-5" Spacing="1">
-							<MudText Typo="Typo.subtitle1">Export to PDF</MudText>
-							<MudText Typo="Typo.body2">Generate PDF files from your entries.</MudText>
-						</MudStack>
-					</MudMenuItem>
-					<MudMenuItem Href="import" Icon="@Icons.Material.Filled.DataObject" IconColor="Color.Inherit">
-						<MudStack Class="ps-5" Spacing="1">
-							<MudText Typo="Typo.subtitle1">Import / Export</MudText>
-							<MudText Typo="Typo.body2">Import or export your data to/from JSON files.</MudText>
-						</MudStack>
-					</MudMenuItem>
-				</MudItem>
-			</MudMenu>
+						<MudMenuItem Href="export" Icon="@Icons.Custom.FileFormats.FileDocument" IconColor="Color.Inherit">
+							<MudStack Class="ps-5" Spacing="1">
+								<MudText Typo="Typo.subtitle1">Export to PDF</MudText>
+								<MudText Typo="Typo.body2">Generate PDF files from your entries.</MudText>
+							</MudStack>
+						</MudMenuItem>
+						<MudMenuItem Href="import" Icon="@Icons.Material.Filled.DataObject" IconColor="Color.Inherit">
+							<MudStack Class="ps-5" Spacing="1">
+								<MudText Typo="Typo.subtitle1">Import / Export</MudText>
+								<MudText Typo="Typo.body2">Import or export your data to/from JSON files.</MudText>
+							</MudStack>
+						</MudMenuItem>
+					</MudItem>
+				</MudMenu>
+			</MudTooltip>
 
 			@* Account & user preferences menu *@
-			<MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
-					 AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
-				<MudItem Class="ma-3">
-					<MudPaper Outlined Class="pa-3 mb-5">
-						<MudText Typo="Typo.h6" Align="Align.Center">Hi there!</MudText>
-						<MudText Class="mt-2"> You're logged in using @_email. </MudText>
-					</MudPaper>
+			<MudTooltip Text="Account & Preferences">
+				<MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
+						 AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+					<MudItem Class="ma-3">
+						<MudPaper Outlined Class="pa-3 mb-5">
+							<MudText Typo="Typo.h6" Align="Align.Center">Hi there!</MudText>
+							<MudText Class="mt-2"> You're logged in using @_email. </MudText>
+						</MudPaper>
 
-					@* TODO: Add correct text and icon based on selected darklightmode theme *@
-					<MudMenuItem Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit" OnClick="LayoutService.CycleDarkLightModeAsync">
-						<MudTooltip Text="Click to toggle light/dark/system mode.">
-							<MudText>Current Mode</MudText>
-						</MudTooltip>
-					</MudMenuItem>
+						<MudMenuItem Icon="@DarkLightModeButtonIcon" IconColor="Color.Inherit" OnClick="LayoutService.CycleDarkLightModeAsync">
+							<MudText> @DarkLightModeButtonText </MudText>
+							<MudText Typo="Typo.caption">Click to cycle modes.</MudText>
+						</MudMenuItem>
 
-					<MudDivider />
-					
-					<MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Account Settings</MudMenuItem>
-					<MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">
-						<MudText Inline Color="Color.Error">Logout</MudText>
-					</MudMenuItem>
-				</MudItem>
-			</MudMenu>
+						<MudDivider />
+
+						<MudMenuItem Href="settings" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Inherit">Account Settings</MudMenuItem>
+						<MudMenuItem OnClick="HandleLogout" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">
+							<MudText Inline Color="Color.Error">Logout</MudText>
+						</MudMenuItem>
+					</MudItem>
+				</MudMenu>
+			</MudTooltip>
 		</Authorized>
 	</AuthorizeView>
 </MudAppBar>
@@ -79,12 +86,20 @@
 
 @code
 {
-	[Parameter]
-	public bool IsDarkMode { get; set; }
-	[Parameter]
-	public EventCallback<bool> IsDarkModeChanged { get; set; }
-
 	private string? _email;
+	private bool _showHomeIcon = false;
+	public string DarkLightModeButtonText => LayoutService.CurrentDarkLightMode switch
+	{
+		DarkLightMode.Dark => "Dark mode",
+		DarkLightMode.Light => "Light mode",
+		_ => "System mode"
+	};
+	public string DarkLightModeButtonIcon => LayoutService.CurrentDarkLightMode switch
+	{
+		DarkLightMode.Dark => Icons.Material.Rounded.DarkMode,
+		DarkLightMode.Light => Icons.Material.Outlined.LightMode,
+		_ => Icons.Material.Filled.AutoMode
+	};
 
 	/// <summary>
 	/// Get the email of the current user.
@@ -93,11 +108,30 @@
 	{
 		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		_email = authState.User.Identity.Name;
+
+		UpdateHomeIconVisibility();
+		NavigationManager.LocationChanged += HandleURIChanged;
 	}
 
 	private async Task HandleLogout()
 	{
 		await AccManagement.LogoutAsync();
 		NavigationManager.NavigateTo("/");
+	}
+
+	private void HandleURIChanged(object? sender, LocationChangedEventArgs e)
+	{
+		UpdateHomeIconVisibility();
+	}
+
+	private async Task UpdateHomeIconVisibility()
+	{
+		_showHomeIcon = !NavigationManager.Uri.EndsWith("/app");
+		StateHasChanged();
+	}
+
+	public void Dispose()
+	{
+		NavigationManager.LocationChanged -= HandleURIChanged;
 	}
 }
