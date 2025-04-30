@@ -27,14 +27,14 @@
         </MudTabs>
     </MudItem>
 
-    @if (_tabs?.ActivePanelIndex == null || _tabs?.ActivePanelIndex == 0) 
-    {
-        <MainViewDay />
-    } 
-    else
-    {
-        <MainViewWeek />
-    }
+    <Condition Evaluation="_tabs?.ActivePanelIndex == null || _tabs?.ActivePanelIndex == 0">
+        <Match>
+            <MainViewDay />
+        </Match>
+        <NotMatch>
+            <MainViewWeek />
+        </NotMatch>
+    </Condition>
 </MudContainer>
 
 

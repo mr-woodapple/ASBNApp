@@ -24,12 +24,14 @@
 
 			<MudSpacer />
 
-			@if (_showHomeIcon)
-			{
-				<MudTooltip Text="Home">
-					<MudIconButton Href="/app" Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" aria-label="Start page" />
-				</MudTooltip>
-			}
+			@* Only show home icon if we're not at /app *@
+			<Condition Evaluation="_showHomeIcon">
+				<Match>
+					<MudTooltip Text="Home">
+						<MudIconButton Href="/app" Icon="@Icons.Material.Filled.Home" Color="Color.Inherit" aria-label="Start page" />
+					</MudTooltip>
+				</Match>
+			</Condition>
 
 			@* Tools menu *@
 			<MudTooltip Text="Tools">

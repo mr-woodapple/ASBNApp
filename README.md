@@ -17,3 +17,4 @@ Many thanks to the people behind these packages that made my life a lot easier!
 - [PDFsharp](https://github.com/empira/PDFsharp) by the folks behind empira
 - [Blazored LocalStorage](https://github.com/Blazored/LocalStorage)
 - [MudBlazor](https://mudblazor.com/)
+- [PrettyBlazor](https://github.com/hassanhabib/PrettyBlazor)

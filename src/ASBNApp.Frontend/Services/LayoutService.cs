@@ -40,6 +40,11 @@ public class LayoutService
 		return Task.CompletedTask;
 	}
 
+	/// <summary>
+	/// Applies user preferences for dark/light mode.
+	/// Loads preferences from the user preference service and updates the theme accordingly.
+	/// </summary>
+	/// <param name="isDarkModeDefaultTheme">Indicates whether the default theme is dark mode.</param>
 	public async Task ApplyUserPreferences(bool isDarkModeDefaultTheme)
 	{
 		_systemPreferences = isDarkModeDefaultTheme;
@@ -64,6 +69,10 @@ public class LayoutService
 		}
 	}
 
+	/// <summary>
+	/// Cycles through the dark/light mode options (System -> Light -> Dark -> System).
+	/// Updates the current mode and saves the preference using the user preference service.
+	/// </summary>
 	public async Task CycleDarkLightModeAsync()
 	{
 		switch (CurrentDarkLightMode)

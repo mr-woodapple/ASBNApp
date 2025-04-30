@@ -18,14 +18,14 @@
     <NavBar />
     <MudMainContent>
         <CascadingAuthenticationState>
-            @if (!_isLoading)
-            {
-                @Body
-            }
-            else
-            {
-                <CheckingAuthentication />
-            }
+            <Condition Evaluation="_isLoading">
+                <Match>
+                    <CheckingAuthentication />
+                </Match>
+                <NotMatch>
+                    @Body
+                </NotMatch>
+            </Condition>
         </CascadingAuthenticationState>
     </MudMainContent>
 </MudLayout>
