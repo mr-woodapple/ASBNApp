@@ -12,6 +12,11 @@
     margin-bottom: -2px;
 }
 
+/* ################ MudBlazor unorthodox customizations ################ */
+.mud-tabs-tabbar {
+    background-color: transparent !important;
+}
+
 /* ################ Debug only ################ */
 .dbg {
     border: 2px dashed red;

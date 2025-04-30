@@ -23,8 +23,11 @@ public class LayoutService
 	public event EventHandler MajorUpdateOccurred;
 	private void OnMajorUpdateOccurred() => MajorUpdateOccurred?.Invoke(this, EventArgs.Empty);
 
+	/// <summary>
+	/// Handle the OS changing the preferred color scheme.
+	/// </summary>
+	/// <param name="newValue">The boolean value representing if we're currently using a darkmode.</param>
 	public Task OnSystemPreferenceChanged(bool newValue)
-
 	{
 		_systemPreferences = newValue;
 
@@ -35,12 +38,6 @@ public class LayoutService
 		}
 
 		return Task.CompletedTask;
-	}
-
-	/// TODO: check if this is really required
-	public void SetDarkMode(bool value)
-	{
-		IsDarkMode = value;
 	}
 
 	public async Task ApplyUserPreferences(bool isDarkModeDefaultTheme)

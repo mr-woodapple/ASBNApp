@@ -2,16 +2,14 @@
 
 <MudStack Row="true">
     <MudPaper Elevation="0">
-        <MudChipSet T="string" @bind-SelectedValue="SelectedChip" Filter="true" Mandatory="true">
+        <MudChipSet T="string" @bind-SelectedValue="SelectedChip" Variant="Variant.Text" Filter Mandatory>
             <MudChip Text="today" Color="Color.Primary" Default="true"
-                @onclick="@(e => { date = DateTime.Now.Date; })"
-            >
+                     @onclick="@(e => { date = DateTime.Now.Date; })">
                 Today (@Today.Date.ToString("dd.MM.yyyy"))
             </MudChip>
 
             <MudChip Text="tomorrow" Color="Color.Primary"
-                @onclick="@(e => { date = DateTime.Now.Date.AddDays(1); })"
-            >
+                     @onclick="@(e => { date = DateTime.Now.Date.AddDays(1); })">
                 Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
             </MudChip>
 
@@ -37,7 +35,6 @@
     private DateTime Today = DateTime.Now.Date;
     private DateTime Tomorrow = DateTime.Now.Date.AddDays(1);
 
-
     // Custom get/setter for pre-filling the date picker for
     // the user selecting a date
     private DateTime _date;
@@ -55,8 +52,10 @@
         }
     }
 
-    // Using this to force-update the SelecteDate in MainViewDay (couldn't get
-    // existing values to load otherwise)
+    /// <summary>
+    /// Using this to force-update the SelecteDate in MainViewDay (couldn't get
+    /// existing values to load otherwise)
+    /// </summary>
     protected override void OnInitialized()
     {
         date = DateTime.Today;

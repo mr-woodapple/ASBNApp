@@ -23,7 +23,7 @@ else if (WorkLocationHours.Count == 0)
 }
 else if (WorkLocationHours.Count != 0)
 {
-    <MudChipSet T="WorkLocation" @bind-SelectedValue="SelectedLocation" Mandatory>
+    <MudChipSet T="WorkLocation" @bind-SelectedValue="SelectedLocation" Variant="Variant.Text" Mandatory>
         @foreach(var location in WorkLocationHours) {
             <MudChip Value="@location" Color="Color.Primary" Text="@location.LocationName" 
                 @onclick="@(e => { SelectedLocationChanged.InvokeAsync(SelectedLocation); })" />
