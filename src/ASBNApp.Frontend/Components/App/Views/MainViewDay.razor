@@ -27,40 +27,40 @@
 
 		@* Working hours *@
 		<MudItem xs="12" md="6">
-			@if (CurrentEntry == null)
-			{
-				<MudSkeleton Height="50px" />
-			}
-			else
-			{
-				<MudNumericField @bind-Value="CurrentEntry.Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
-			}
+			<Condition Evaluation="CurrentEntry == null">
+				<Match>
+					<MudSkeleton Height="50px" />
+				</Match>
+				<NotMatch>
+					<MudNumericField @bind-Value="CurrentEntry.Hours" Variant="Variant.Text" Label="I worked for..." Min="0" Format="N1" />
+				</NotMatch>
+			</Condition>
 		</MudItem>
 
 		@* Note *@
 		<MudItem xs="12">
-			@if (CurrentEntry == null)
-			{
-				<MudSkeleton Height="50px" />
-			}
-			else
-			{
-				<MudTextField @bind-Text="CurrentEntry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" ValueChanged="@(() => unsavedContentDialogService.IsDayViewDataSaved = false)" />
-			}
+			<Condition Evaluation="CurrentEntry == null">
+				<Match>
+					<MudSkeleton Height="50px" />
+				</Match>
+				<NotMatch>
+					<MudTextField @bind-Text="CurrentEntry.Note" T="string" Label="And I learned this today:" AutoGrow MaxLines="5" ValueChanged="@(() => unsavedContentDialogService.IsDayViewDataSaved = false)" />
+				</NotMatch>
+			</Condition>
 		</MudItem>
 
 		<MudItem xs="12">
 			<MudButton Disabled="_isSaving" Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">
-				@if (_isSaving)
-				{
-					<MudText Class="ms-2">Saving...</MudText>
-					<MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
-				}
-				else
-				{
-					<MudIcon Icon="@Icons.Material.Filled.Save" />
-					<MudText Class="ms-2">Save</MudText>
-				}
+				<Condition Evaluation="_isSaving">
+					<Match>
+						<MudText Class="ms-2">Saving...</MudText>
+						<MudProgressCircular Class="ms-5" Size="Size.Small" Indeterminate="true" />
+					</Match>
+					<NotMatch>
+						<MudIcon Icon="@Icons.Material.Filled.Save" />
+						<MudText Class="ms-2">Save</MudText>
+					</NotMatch>
+				</Condition>
 			</MudButton>
 		</MudItem>
 	</MudGrid>

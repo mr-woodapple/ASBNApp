@@ -4,9 +4,9 @@
 @using ASBNApp.Frontend.Interfaces;
 @using ASBNApp.Frontend.Models
 
-@inject NavigationManager navigationManager;
-@inject IASBNDataService dataService;
 @inject ISnackbar Snackbar
+@inject IASBNDataService DataService;
+@inject NavigationManager NavigationManager;
 
 
 <PageTitle>Settings | ASBN App</PageTitle>
@@ -20,78 +20,77 @@
 
     <MudPaper Outlined="true" Class="pa-5">
         <MudGrid>
-            @if(settings == null)
-            {
-                <SettingsSkeleton />
-            }
-            else
-            {
-                @* Info message to why this is important *@
-                <MudItem xs="12">
-                    <MudAlert Severity="Severity.Normal">
-                        Please fill in the information below, as they're required for generating the PDF with the correct information.
-                    </MudAlert>
-                </MudItem>
+            <Condition Evaluation="settings == null">
+                <Match>
+                    <SettingsSkeleton />
+                </Match>
+                <NotMatch>
+                    @* Info message to why this is important *@
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Normal">
+                            Please fill in the information below, as they're required for generating the PDF with the correct information.
+                        </MudAlert>
+                    </MudItem>
 
-                @* Add the users given name, surname & select the apprenticeship *@
-                <MudItem xs="12">
-                    <MudText Typo="Typo.body2" Class="mb-3">
-                        <b>My name and apprenticeship:</b>
-                    </MudText>
-                </MudItem>
+                    @* Add the users given name, surname & select the apprenticeship *@
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.body2" Class="mb-3">
+                            <b>My name and apprenticeship:</b>
+                        </MudText>
+                    </MudItem>
 
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
-                </MudItem>
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
-                </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="settings.GivenName" Label="Add your given name..." Variant="Variant.Text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="settings.Surname" Label="Add your surname..." Variant="Variant.Text" />
+                    </MudItem>
 
-                @* Choose the apprenticeship from a pre-defined list *@
-                <MudItem xs="12">
-                    <MudSelect @bind-Value="settings.Profession" Label="Select your apprenticeship:"
-                                HelperText="This will be shown as your profession on your exported documents.">
-                        @foreach (var entry in Data.Professions.Apprenticeships)
-                        {
-                            <MudSelectItem Value="@entry" />
-                        }
-                    </MudSelect>
-                </MudItem>
+                    @* Choose the apprenticeship from a pre-defined list *@
+                    <MudItem xs="12">
+                        <MudSelect @bind-Value="settings.Profession" Label="Select your apprenticeship:"
+                                   HelperText="This will be shown as your profession on your exported documents.">
+                            <Iterations Items="Data.Professions.Apprenticeships">
+                                <MudSelectItem Value="@context" />
+                            </Iterations>
+                        </MudSelect>
+                    </MudItem>
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.body2" Class="mb-3">
-                        <b>Further details:</b>
-                    </MudText>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.body2" Class="mb-3">
+                            <b>Further details:</b>
+                        </MudText>
 
-                    <MudGrid>
-                        @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
-                        <MudItem xs="12" md="6">
-                            <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="settings.ApprenticeshipStartDate" AutoClose>
-                                <PickerActions>
-                                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _startDatePicker.CloseAsync(false))">Cancel</MudButton>
-                                    <MudButton Class="mr-auto align-self-start" OnClick="SetToRecentStartDate">Recent start date</MudButton>
-                                    <MudButton Color="Color.Primary" OnClick="@(() => _startDatePicker.CloseAsync())">Ok</MudButton>
-                                </PickerActions>
-                            </MudDatePicker>
-                        </MudItem>
+                        <MudGrid>
+                            @* Add apprenticeship start date, required to calculate the current apprenticeship year *@
+                            <MudItem xs="12" md="6">
+                                <MudDatePicker @ref=_startDatePicker Label="Apprenticeship start date..." @bind-Date="settings.ApprenticeshipStartDate" AutoClose>
+                                    <PickerActions>
+                                        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _startDatePicker.CloseAsync(false))">Cancel</MudButton>
+                                        <MudButton Class="mr-auto align-self-start" OnClick="SetToRecentStartDate">Recent start date</MudButton>
+                                        <MudButton Color="Color.Primary" OnClick="@(() => _startDatePicker.CloseAsync())">Ok</MudButton>
+                                    </PickerActions>
+                                </MudDatePicker>
+                            </MudItem>
 
-                        @* Specify your legal representative (if applicable) *@
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="settings.LegalRepresentitive" Label="Enter your legal representitive..." Variant="Variant.Text" HelperText="Required for students below 18 years." />
-                        </MudItem>
+                            @* Specify your legal representative (if applicable) *@
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="settings.LegalRepresentitive" Label="Enter your legal representitive..." Variant="Variant.Text" HelperText="Required for students below 18 years." />
+                            </MudItem>
 
-                        @* Add company name here, required for the output pdf *@
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="settings.Company" Label="Company name..." Variant="Variant.Text" HelperText="Name of the company you're working at." />
-                        </MudItem>
+                            @* Add company name here, required for the output pdf *@
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="settings.Company" Label="Company name..." Variant="Variant.Text" HelperText="Name of the company you're working at." />
+                            </MudItem>
 
-                        @* Add school name here, required for the output pdf *@
-                        <MudItem xs="12" md="6">
-                            <MudTextField @bind-Value="settings.School" Label="School name..." Variant="Variant.Text" HelperText="Name of the school you're going to." />
-                        </MudItem>
-                    </MudGrid>
-                </MudItem>
-            }
+                            @* Add school name here, required for the output pdf *@
+                            <MudItem xs="12" md="6">
+                                <MudTextField @bind-Value="settings.School" Label="School name..." Variant="Variant.Text" HelperText="Name of the school you're going to." />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                </NotMatch>
+            </Condition>
 
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveData">Save</MudButton>
@@ -99,22 +98,16 @@
         </MudGrid>
     </MudPaper>
 
+    @* Specify your working locations and the hours for each location *@
     <MudPaper Outlined="true" Class="pa-5 mt-10">
-        @* Specify your working locations and the hours for each location *@
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2" Class="mb-3">
-                <b>Manage locations and their suggested hours:</b>
-            </MudText>
-
-            @if (!_hasLoadedWorkLocationHours)
-            {
-                <WorkLocationHoursSkeleton />
-            }
-            else
-            {
-                <WorkLocationHours @bind-workLocationHours="workLocationHours" />
-            }
-        </MudItem>
+            <Condition Evaluation="_hasLoadedWorkLocationHours">
+                <NotMatch>
+                    <WorkLocationHoursSkeleton />
+                </NotMatch>
+                <Match>
+                    <WorkLocationHours @bind-workLocationHours="workLocationHours" />
+                </Match>
+            </Condition>
     </MudPaper>
 </MudContainer>
 
@@ -142,14 +135,14 @@
     /// <returns></returns>
     public async Task LoadSettingsData()
     {
-        settings = await dataService.GetSettings();
+        settings = await DataService.GetSettings();
         StateHasChanged();
     }
 
     // Load work location data
     public async Task LoadWorkLocationHoursData()
     {
-        workLocationHours = await dataService.GetWorkLocationHours();
+        workLocationHours = await DataService.GetWorkLocationHours();
         _hasLoadedWorkLocationHours = true;
         StateHasChanged();
     }
@@ -159,7 +152,7 @@
     /// </summary>
     public async void SaveData()
     {
-        if (await dataService.SaveSettings(settings))
+        if (await DataService.SaveSettings(settings))
         {
             // Show dialog if successful
             Snackbar.Add("That's your settings saved!", Severity.Success);

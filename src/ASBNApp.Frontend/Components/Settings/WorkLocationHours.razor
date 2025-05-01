@@ -1,5 +1,4 @@
-@* Component to show location & working hours for all entries of WorkLocationHours,
-also manage editing states & update parent component if necessary. *@
+@* Component to show location & working hours for all entries of WorkLocationHours *@
 
 @using System.Text.Json
 @using ASBNApp.Frontend.Models;
@@ -10,20 +9,24 @@ also manage editing states & update parent component if necessary. *@
 
 
 <MudPaper Elevation="0" Class="mb-5">
-
     <MudGrid>
-        @foreach(var entry in workLocationHours)
-        {
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2">
+                <b>Manage locations and their suggested hours:</b>
+            </MudText>
+        </MudItem>
+
+        <Iterations Items="workLocationHours">
             <MudItem xs="6" md="7">
-                <MudTextField Dense @bind-Value="entry.LocationName" Label="Work location:" Variant="Variant.Outlined"/>
+                <MudTextField Dense @bind-Value="@context.LocationName" Label="Work location:" Variant="Variant.Outlined" />
             </MudItem>
             <MudItem xs="4">
-                <MudNumericField @bind-Value="@entry.SuggestedHours" Variant="Variant.Outlined" Label="Suggested working hours:" Min="0" Format="N1" HideSpinButtons />
+                <MudNumericField @bind-Value="@context.SuggestedHours" Variant="Variant.Outlined" Label="Suggested working hours:" Min="0" Format="N1" HideSpinButtons />
             </MudItem>
             <MudItem xs="2" md="1">
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => DeleteWorkLocationHoursEntry(entry))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(() => DeleteWorkLocationHoursEntry(@context))" />
             </MudItem>
-        }
+        </Iterations>
 
         @* Additional rows to add data: *@
         <MudItem xs="6" md="7">

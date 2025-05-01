@@ -1,13 +1,15 @@
 <MudPaper Elevation="0" Class="mb-5">
     <MudGrid>
-
+        <MudItem xs="12">
+            <MudSkeleton Height="25px" Width="25%"/>
+        </MudItem>
         <MudItem xs="7">
             <MudSkeleton Height="50px" Width="100%" />
         </MudItem>
-        <MudItem xs="4">
+        <MudItem xs="5" md="4">
             <MudSkeleton Height="50px" />
         </MudItem>
-        <MudItem xs="1">
+        <MudItem md="1" Class="d-none d-md-block">
             <MudSkeleton Height="50px" />
         </MudItem>
     </MudGrid>

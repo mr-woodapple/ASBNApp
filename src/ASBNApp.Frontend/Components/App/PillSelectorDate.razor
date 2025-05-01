@@ -17,11 +17,13 @@
         </MudChipSet>
     </MudPaper>
 
-    @if(SelectedChip != null && SelectedChip == "customdate") {
-        <MudPaper Elevation="0" Class="mt-n5">
-            <MudDatePicker Label="Select custom date:" @bind-Date="date" />
-        </MudPaper>
-    }
+    <Condition Evaluation="@(SelectedChip != null && SelectedChip == "customdate")">
+        <Match>
+            <MudPaper Elevation="0" Class="mt-n5">
+                <MudDatePicker Label="Select custom date:" @bind-Date="date" />
+            </MudPaper>
+        </Match>
+    </Condition>
 </MudStack>
 
 

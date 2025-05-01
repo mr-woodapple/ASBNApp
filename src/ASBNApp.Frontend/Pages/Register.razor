@@ -11,13 +11,12 @@
 
 
 <MudContainer Class="mt-5">
-
 	<MudPaper Outlined Class="pa-10">
 
 		<MudText Typo="Typo.h3" Class="mb-5">Create your account!</MudText>
 		<MudText Typo="Typo.subtitle1">Get started by creating your account now.</MudText>
 
-		<MudItem Class="my-10">
+		<MudPaper Elevation="0" Class="my-10">
 			<MudForm Model="registerAccountModel" @ref="@form" Validation="@(registerAccountValidator.ValidateValue)">
 				<MudTextField Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" autocomplete="new-email"
 							  @bind-Value="registerAccountModel.Email" For="@(() => registerAccountModel.Email)" Immediate="true"/>
@@ -28,46 +27,40 @@
 				<MudTextField @bind-Value="registerAccountModel.PasswordRepeated" Label="Repeat Password *" Variant="Variant.Text" InputType="_passwordInputType" For="@(() => registerAccountModel.PasswordRepeated)" autocomplete="new-password"
 							  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" Immediate="true" />
 			</MudForm>
-		</MudItem>
+		</MudPaper>
 
-		<MudItem Outlined>
+		<MudPaper Elevation="0" Outlined Class="pa-5">
 			@* Show API validation errors here *@
-			@if (ValidationErrors.Count > 0)
-			{
-				<MudStack Row AlignItems="AlignItems.Center">
-					<MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
-					<MudText Typo="Typo.h6">@ValidationErrors.Count error(s) occured during registration. Please fix them and try again! </MudText>
-				</MudStack>
-				
-				@foreach (var entry in ValidationErrors)
-				{
-					<MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2"> @entry </MudAlert>
-				}
-			}
-		</MudItem>
+			<Condition Evaluation="ValidationErrors.Count > 0">
+				<Match>
+					<MudStack Row AlignItems="AlignItems.Center">
+						<MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
+						<MudText>@ValidationErrors.Count error(s) occured during registration. Please fix them and try again! </MudText>
+					</MudStack>
+
+					<Iterations Items="ValidationErrors">
+						<MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2"> @context </MudAlert>
+					</Iterations>
+				</Match>
+			</Condition>
+		</MudPaper>
 		
-
-
 		<MudButton Disabled="@_isRegistering" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="@(async () => await HandleRegistering())">
-			@if (_isRegistering)
-			{
-				<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-				<MudText Class="ms-2">Creating your account...</MudText>
-			}
-			else
-			{
-				<MudText>Create account</MudText>
-			}
+			<Condition Evaluation="_isRegistering">
+				<Match>
+					<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+					<MudText Class="ms-2">Creating your account...</MudText>
+				</Match>
+				<NotMatch>
+					<MudText>Create account</MudText>
+				</NotMatch>
+			</Condition>
 		</MudButton>
 
-		<MudItem Class="mt-5">
-			<MudText>
-				Already have an account?
-				<MudLink Href="/login" Underline="Underline.Always">Sign in here!</MudLink>
-			</MudText>
-		</MudItem>
-
-		
+		<MudStack Row Class="mt-5">
+			<MudText>Already have an account?</MudText>
+			<MudLink Href="/login" Underline="Underline.Always">Sign in here!</MudLink>
+		</MudStack>
 	</MudPaper>
 </MudContainer>
 
