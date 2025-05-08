@@ -1,0 +1,44 @@
+
+# This workflow will build a .NET Core app when a a PR to main is openend, 
+# synchronized or reopened.
+name: ASBNApp DataAPI Build
+
+env:
+  DOTNET_VERSION: '9'             # set this to the .NET Core version to use
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: "main"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Set up dependency caching for faster builds
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: dotnet build
+        run: dotnet build -c Release src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
