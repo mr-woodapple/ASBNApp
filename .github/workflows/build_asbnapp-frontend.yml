@@ -5,11 +5,11 @@ name: ASBNApp Frontend Build
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: "main"
+    branches: [ 'main' ]
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  APP_LOCATION: "/src/ASBNApp.Frontend/"  # location of your client code
+  APP_LOCATION: './src/ASBNApp.Frontend/'  # location of your client code
   DOTNET_VERSION: '9'                     # set this to the .NET Core version to use
 
 permissions:
@@ -28,7 +28,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x' # Use your required .NET version
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore dependencies
         run: dotnet restore ${{ env.APP_LOCATION }}
