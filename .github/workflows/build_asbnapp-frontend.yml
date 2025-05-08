@@ -35,6 +35,3 @@ jobs:
 
       - name: Build
         run: dotnet build ${{ env.APP_LOCATION }} --configuration Release --no-restore
-
-      - name: Publish
-        run: dotnet publish ${{ env.APP_LOCATION }} --configuration Release --no-restore --output build_output
