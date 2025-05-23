@@ -14,9 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D4E30455-9625-42D0-BD95-435CBE7841A0}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		.github\workflows\asbnapp-dataapi.yml = .github\workflows\asbnapp-dataapi.yml
-		.github\workflows\asbnapp-frontend.yml = .github\workflows\asbnapp-frontend.yml
+		.github\workflows\build_asbnapp-dataapi.yml = .github\workflows\build_asbnapp-dataapi.yml
+		.github\workflows\build_asbnapp-frontend.yml = .github\workflows\build_asbnapp-frontend.yml
 		global.json = global.json
+		.github\workflows\build-deploy_asbnapp-dataapi.yml = .github\workflows\build-deploy_asbnapp-dataapi.yml
+		.github\workflows\build-deploy_asbnapp-frontend.yml = .github\workflows\build-deploy_asbnapp-frontend.yml
 		README.md = README.md
 	EndProjectSection
 EndProject

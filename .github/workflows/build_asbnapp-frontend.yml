@@ -1,0 +1,37 @@
+# This workflow will build a blazor web application when a PR to main is openend, 
+# synchronized or reopened.
+name: ASBNApp Frontend Build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ 'main' ]
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  APP_LOCATION: './src/ASBNApp.Frontend/'  # location of your client code
+  DOTNET_VERSION: '9'                     # set this to the .NET Core version to use
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Blazor WASM App
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.APP_LOCATION }}
+
+      - name: Build
+        run: dotnet build ${{ env.APP_LOCATION }} --configuration Release --no-restore

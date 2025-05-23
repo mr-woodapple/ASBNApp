@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.Authorization;
 using KristofferStrube.Blazor.FileSystemAccess;
 using MudBlazor.Services;
+using Blazored.LocalStorage;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -20,17 +21,18 @@ using (var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvir
 	builder.Configuration.AddJsonStream(responseStream);
 }
 
-// MudBlazor
+// Adding external (installed) services
 builder.Services.AddMudServices();
+builder.Services.AddFileSystemAccessService();
+builder.Services.AddBlazoredLocalStorageAsSingleton();
 
-// Adding dependcy injection services
+// Adding custom services
 builder.Services.AddScoped<IASBNDataService, ASBNDataService>();
 builder.Services.AddScoped<FontServices>();
 builder.Services.AddSingleton<DateHandler>();
-
-// Making the FileSystemAccess package available to everyone
-builder.Services.AddFileSystemAccessService();
-
+builder.Services.AddSingleton<LayoutService>();
+builder.Services.AddSingleton<IUserPreferenceService, UserPreferenceService>();
+builder.Services.AddSingleton<IUnsavedContentDialogService, UnsavedContentDialogService>();
 
 // Identity related stuff:
 // Register the cookie handler

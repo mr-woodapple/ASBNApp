@@ -4,9 +4,6 @@ A Blazor Web Assembly app that allows you to write your mandatory apprenticeship
 
 The app uses a custom API to handle storing the data in an SQL database. Authentication is handled using ASP.NET Core Identity. There's also a legacy version available that uses JSON to store data - simply check-out "legacy-version" to access that (there's no support for this version, use at your own risk).
 
-## Stats
-![Alt](https://repobeats.axiom.co/api/embed/a1ab77f807a4ff827d7004849fde015aeb5390fd.svg "Repobeats analytics image for ASBN App")
-
 ## Contributing
 PRs accepted. Looking forward to your ideas / bugfixes, whatever you may wanna do. :)
 
@@ -18,4 +15,6 @@ Many thanks to the people behind these packages that made my life a lot easier!
 
 - [Blazor.FileSystemAccess](https://github.com/KristofferStrube/Blazor.FileSystemAccess) by Kristoffer Strube
 - [PDFsharp](https://github.com/empira/PDFsharp) by the folks behind empira
-- [MudBlazor](https://mudblazor.com/) 
+- [Blazored LocalStorage](https://github.com/Blazored/LocalStorage)
+- [MudBlazor](https://mudblazor.com/)
+- [PrettyBlazor](https://github.com/hassanhabib/PrettyBlazor)

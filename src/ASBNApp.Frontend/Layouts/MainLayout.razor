@@ -1,9 +1,12 @@
-﻿@inject NavigationManager navigationManager;
-@inject AuthenticationStateProvider authenticationStateProvider
+﻿@inherits LayoutComponentBase
 
-@inherits LayoutComponentBase
+@using ASBNApp.Frontend.Services;
 
-<MudThemeProvider Theme="LightTheme.GetTheme()"/>
+@inject LayoutService LayoutService;
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudThemeProvider @ref="_mudThemeProvider" IsDarkMode="LayoutService.IsDarkMode" Theme="LayoutService.mudTheme" ObserveSystemThemeChange="LayoutService.ObserveSystemThemeChange" />
 <MudPopoverProvider />
 <MudDialogProvider/>
 <MudSnackbarProvider/>
@@ -15,51 +18,89 @@
     <NavBar />
     <MudMainContent>
         <CascadingAuthenticationState>
-            @if (!_isLoading)
-            {
-                @Body
-            }
-            else
-            {
-                <CheckingAuthentication />
-            }
+            <Condition Evaluation="_isLoading">
+                <Match>
+                    <CheckingAuthentication />
+                </Match>
+                <NotMatch>
+                    @Body
+                </NotMatch>
+            </Condition>
         </CascadingAuthenticationState>
     </MudMainContent>
 </MudLayout>
 
 
-
 @code{
     private bool _isLoading = true;
+    private MudThemeProvider _mudThemeProvider;
 
     /// <summary>
     /// Redirect the user to the login page if he's not logged in.
     /// </summary>
     protected override async Task OnInitializedAsync()
     {
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        LayoutService.MajorUpdateOccurred += LayoutServiceOnMajorUpdateOccured;
 
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity.IsAuthenticated)
         {
             // Redirect if user is on index page, but authenticated
-            if (navigationManager.Uri.EndsWith("/"))
+            if (NavigationManager.Uri.EndsWith("/"))
             {
-                navigationManager.NavigateTo("/app");
+                NavigationManager.NavigateTo("/app");
             }
         }
         else
         {
             // Redirect if user is on a protected page, but not authenticated
-            if (navigationManager.Uri.EndsWith("/login") || navigationManager.Uri.EndsWith("/register") || navigationManager.Uri.EndsWith("/"))
-            {
-                // do nothing
-            } 
+            if (NavigationManager.Uri.EndsWith("/login") || NavigationManager.Uri.EndsWith("/register") || NavigationManager.Uri.EndsWith("/")) { } 
             else
             {
-                navigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/");
             }
         }
 
         _isLoading = false;
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        // Apply user preferences, attach handler
+        if (firstRender)
+        {
+            await ApplyUserPreferences();
+            await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Applies user preferences for the theme based on system settings.
+    /// </summary>
+    private async Task ApplyUserPreferences()
+    {
+        var defaultDarkMode = await _mudThemeProvider.GetSystemPreference();
+        await LayoutService.ApplyUserPreferences(defaultDarkMode);
+    }
+
+    private async Task OnSystemPreferenceChanged(bool newValue)
+    {
+        await LayoutService.OnSystemPreferenceChanged(newValue);
+    }
+
+    /// <summary>
+    /// Cleans up event handlers when the component is disposed.
+    /// </summary>
+    public void Dispose()
+    {
+        LayoutService.MajorUpdateOccurred -= LayoutServiceOnMajorUpdateOccured;
+    }
+
+    /// <summary>
+    /// Updates the UI when a major update occurs in the LayoutService.
+    /// </summary>
+    private void LayoutServiceOnMajorUpdateOccured(object sender, EventArgs e) => StateHasChanged();
 }

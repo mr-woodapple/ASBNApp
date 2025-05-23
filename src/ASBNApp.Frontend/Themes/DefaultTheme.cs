@@ -1,6 +1,6 @@
 using MudBlazor;
 
-public static class LightTheme
+public static class DefaultTheme
 {
     public static MudTheme GetTheme()
     {
@@ -11,12 +11,16 @@ public static class LightTheme
                 Primary = Colors.Orange.Accent4,
                 AppbarBackground = Colors.Orange.Accent4,
                 AppbarText = Colors.Shades.White,
-                
+            },
+
+            PaletteDark = new PaletteDark()
+            {
+                Primary = Colors.Orange.Accent4,
             },
 
             Typography = new Typography()
             {
-                Default = new Default()
+                Default = new DefaultTypography()
                 {
                     FontFamily = ["Inter"]
                 }

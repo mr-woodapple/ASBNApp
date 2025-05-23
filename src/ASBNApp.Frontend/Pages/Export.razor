@@ -41,27 +41,27 @@
 				</MudItem>
 
 				<MudItem xs="12">
-					@if(_tooManyEntries)
-					{
-						<MudAlert Severity="Severity.Error">
-							<b>Cannot export a week with more than 5 entries.</b> 
-							Please delete entries from the week view before exporting.
-						</MudAlert>
-					}
-					else
-					{
-						<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">
-							@if(_isExporting)
-							{
-								<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-								<MudText Class="ms-2">Exporting report...</MudText>
-							}
-							else
-							{
-								<MudText>Export Data</MudText>
-							}
-						</MudButton>
-					}
+					<Condition Evaluation="_tooManyEntries">
+						<Match>
+							<MudAlert Severity="Severity.Error">
+								<b>Cannot export a week with more than 5 entries.</b> 
+								Please delete entries from the week view before exporting.
+							</MudAlert>
+						</Match>
+						<NotMatch>
+							<MudButton Disabled="@_isExporting" Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportData">
+								<Condition Evaluation="_isExporting">
+									<Match>
+										<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+										<MudText Class="ms-2">Exporting report...</MudText>
+									</Match>
+									<NotMatch>
+										<MudText>Export Data</MudText>
+									</NotMatch>
+								</Condition>
+							</MudButton>
+						</NotMatch>
+					</Condition>
 				</MudItem>
 			</MudGrid>
 		</MudPaper>
@@ -137,7 +137,7 @@
 		List<ASBNApp.Models.WorkLocation> locations = await dataService.GetWorkLocationHours();
 
 		// Handles exporting the PDF
-		PDFExportHandler pdfHandler = new PDFExportHandler(dateHandler);
+		PDFExportService pdfHandler = new PDFExportService(dateHandler);
 
 		// Open the pdf template file in a bytestream
 		var _httpClient = httpClientFactory.CreateClient("FrontendClient");

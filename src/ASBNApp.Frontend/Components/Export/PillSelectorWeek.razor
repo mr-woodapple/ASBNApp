@@ -1,7 +1,7 @@
 @* Simple chip selector component for weeks *@
 
 <MudStack Row>
-    <MudChipSet T="string" @bind-SelectedValue="_selected" Filter Mandatory>
+    <MudChipSet T="string" @bind-SelectedValue="_selected" Variant="Variant.Text" Filter Mandatory>
         <MudChip Value="@("currentWeek")" Color="Color.Primary" OnClick="@(e => { UpdateFromWeekPicker(); _selected = "currentWeek"; })">
             Current Week (Week @_currentWeek)
         </MudChip>
@@ -69,7 +69,6 @@
         _currentWeek = dateHandler.GetCurrentWeekOfYear();
     }
 
-
     // Logic related to open and closing the date picker overlay
     private bool isDatePickerOverlayVisible;
     public void OpenDatePickerOverlay()
@@ -107,15 +106,19 @@
         date = DateTime.Now;
     }
 
-    // Required to update the CurrentWeek variable if the user selects
-    // a week through the HTML input (which returns a string "yyyy-Www")
+    /// <summary>
+    /// Required to update the CurrentWeek variable if the user selects
+    /// a week through the HTML input (which returns a string "yyyy-Www")
+    /// </summary>
     public void UpdateWeekFromSelector()
     {
         // Update variables with extracted year and week from the WeekFormatInput string
         TriggerAllCallbacks(SelectedWeek, SelectedYear);
     }
 
-    // Updated SelectedYear & Selected Week from the pill selector
+    /// <summary>
+    /// Updated SelectedYear & Selected Week from the pill selector
+    /// </summary>
     public void UpdateFromWeekPicker()
     {
         // this week selected

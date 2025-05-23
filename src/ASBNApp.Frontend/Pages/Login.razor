@@ -1,27 +1,27 @@
 ﻿@page "/login"
 
-@inject IAccountManagement Acct
-@inject NavigationManager navigationManager;
-@inject AuthenticationStateProvider authenticationStateProvider
+@inject IAccountManagement AccountManagement
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider;
 
-@using System.Text.Json
-@using ASBNApp.Frontend.Interfaces
-@using ASBNApp.Frontend.Models
+@using System.Text.Json;
+@using ASBNApp.Frontend.Interfaces;
+@using ASBNApp.Frontend.Models;
 @using ASBNApp.Frontend.Services;
 
 <AuthorizeView>
 	<Authorized>
 		<MudContainer Class="mt-5">
-
 			<MudPaper Outlined Class="pa-10">
 				<MudText Typo="Typo.h3" Class="mb-5">You're signed in.</MudText>
 			</MudPaper>
 		</MudContainer>
 	</Authorized>
+
 	<NotAuthorized>
 		<MudContainer Class="mt-5">
-
 			<MudPaper Outlined Class="pa-10">
+
 				<MudText Typo="Typo.h3" Class="mb-5">Sign in.</MudText>
 				<MudText Typo="Typo.subtitle1">Sign in to create, view and export your entries!</MudText>
 
@@ -32,35 +32,32 @@
 				</MudItem>
 
 				@* Show validation errors *@
-				@if (_loginAttemptFailed)
-				{
-					<MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2">Failed to login, please check your e-mail and password before trying again!</MudAlert>
-				}
+				<Condition Evaluation="_loginAttemptFailed">
+					<Match>
+						<MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2">Failed to login, please check your e-mail and password before trying again!</MudAlert>
+					</Match>
+				</Condition>
 
 				<MudButton Disabled="@_isLoggingIn" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogin">
-					@if (_isLoggingIn)
-					{
-						<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
-						<MudText Class="ms-2">Signing in...</MudText>
-					}
-					else
-					{
-						<MudText>Sign in </MudText>
-					}
+					<Condition Evaluation="_isLoggingIn">
+						<Match>
+							<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+							<MudText Class="ms-2">Signing in...</MudText>
+						</Match>
+						<NotMatch>
+							<MudText>Sign in</MudText>
+						</NotMatch>
+					</Condition>
 				</MudButton>
 
-				<MudItem Class="mt-5">
-					<MudText>
-						Don't have an account yet?
-						<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
-					</MudText>
-				</MudItem>
-
+				<MudStack Row Class="mt-5">
+					<MudText>Don't have an account yet?</MudText>
+					<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
+				</MudStack>
 			</MudPaper>
 		</MudContainer>
 	</NotAuthorized>
 </AuthorizeView>
-
 
 
 @code {
@@ -102,10 +99,10 @@
 	/// </summary>
 	protected override async Task OnInitializedAsync()
 	{
-		var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		if (authState.User.Identity.IsAuthenticated)
 		{
-			navigationManager.NavigateTo("/app");
+			NavigationManager.NavigateTo("/app");
 		}
 	}
 
@@ -122,13 +119,13 @@
 				EMail = EMailValue,
 				Password = PasswordValue
 			};
-		var response = await Acct.LoginAsync(loginData);
+		var response = await AccountManagement.LoginAsync(loginData);
 		_isLoggingIn = false;
 
 		// Handle what happens depending on the result of the login attempt
 		if(response.IsSuccessStatusCode)
 		{
-			navigationManager.NavigateTo("/app");
+			NavigationManager.NavigateTo("/app");
 		}
 		else
 		{

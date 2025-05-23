@@ -1,72 +1,87 @@
 @* UI bit that represents a single entry, supposed to be used in MainViewWeek. *@
 
-@using ASBNApp.Frontend.Interfaces
-@using ASBNApp.Frontend.Models
+@using ASBNApp.Frontend.Models;
+@using ASBNApp.Frontend.Services;
+@using ASBNApp.Frontend.Interfaces;
 
-@inject IASBNDataService dataService;
-@inject IDialogService dialogService;
+@inject IASBNDataService DataService;
+@inject IDialogService DialogService;
+@inject IUnsavedContentDialogService UnsavedContentDialogService;
 
 
 <MudPaper Outlined="true" Class="pa-5 ma-5">
     <MudGrid>
         @* Name of the day *@
-        <MudItem xs="3">
+        <MudItem xs="12" sm="6" md="3" Class="d-flex justify-space-between">
             <MudText Typo="Typo.h4"> @CurrentEntry.Date.DayOfWeek </MudText>
-        </MudItem>
+
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight" Class="d-sm-none">
+                <Condition Evaluation="string.IsNullOrWhiteSpace(CurrentEntry.Note)">
+                    <Match>
+                        <MudMenuItem Disabled>
+                            <MudText>No action available.</MudText>
+                        </MudMenuItem>
+                    </Match>
+                    <NotMatch>
+                        <MudMenuItem OnClick="DeleteEntry" Class="d-flex align-center">
+                            <MudIcon Icon="@Icons.Material.Filled.Delete" Title="Delete" />
+                            <MudText Typo="Typo.button" Class="ps-4">Delete entry</MudText>
+                        </MudMenuItem>
+                    </NotMatch>
+                </Condition>
+            </MudMenu>
+        </MudItem>        
 
         @* Date picker *@
-        <MudItem xs="3">
+        <MudItem xs="12" sm="6" md="3">
             <MudDatePicker Label="Select Date" @bind-Date="Date" MinDate="@_minDateValue" MaxDate="@_maxDateValue"/>
         </MudItem>
 
         @* Location selector *@
-        <MudItem xs="3">
-            @if (WorkLocations.Count != 0)
-            {
-                <MudSelect T="WorkLocation" Value="SelectedWorkLocation" Label="Select Location" AnchorOrigin="Origin.BottomCenter" ValueChanged="@UpdateWorkHoursFromLocation">
-                    @foreach (var location in WorkLocations)
-                    {
-                        <MudSelectItem Value="location">@location.LocationName</MudSelectItem>
-                    }
-                </MudSelect>
-            }
-            else
-            {
-                <MudAlert Severity="Severity.Warning" Dense="true">
-                    No data available, please add new work location in settings.
-                    <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
-                </MudAlert>
-            }
+        <MudItem xs="7" sm="6" md="3">
+            <Condition Evaluation="WorkLocations.Count != 0">
+                <Match>
+                    <MudSelect T="WorkLocation" Value="SelectedWorkLocation" Label="Select Location" ValueChanged="UpdateWorkHoursFromLocation">
+                        <Iterations Items="WorkLocations">
+                            <MudSelectItem Value="@context">@context.LocationName</MudSelectItem>
+                        </Iterations>
+                    </MudSelect>
+                </Match>
+                <NotMatch>
+                    <MudAlert Severity="Severity.Warning" Dense="true">
+                        <MudText>No data available, please add new work location in settings.</MudText>
+                        <MudLink Href="settings" Underline="Underline.Always" Typo="Typo.body2">Settings Page</MudLink>
+                    </MudAlert>
+                </NotMatch>
+            </Condition>
         </MudItem>
 
-        @* Location hours input *@
-        <MudItem xs="3">
+        @* Work hours input *@
+        <MudItem xs="5" sm="6" md="3">
             <MudStack Row>
                 <MudNumericField @bind-Value="CurrentEntry.Hours" Label="Set hours" Min="0" Format="N1" />
 
-                <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight">
-                    @if (!string.IsNullOrWhiteSpace(CurrentEntry.Note))
-                    {
-                        <MudMenuItem OnClick="DeleteEntry">
-                            <div class="d-flex align-center">
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.CenterRight" Class="d-none d-sm-block">
+                    <Condition Evaluation="CurrentEntry.Id != null">
+                        <Match>
+                            <MudMenuItem OnClick="DeleteEntry" Class="d-flex align-center">
                                 <MudIcon Icon="@Icons.Material.Filled.Delete" Title="Delete" />
                                 <MudText Typo="Typo.button" Class="ps-4">Delete entry</MudText>
-                            </div>
-                        </MudMenuItem>
-                    }
-                    else
-                    {
-                        <MudMenuItem Disabled>
-                            <MudText>No action available.</MudText>
-                        </MudMenuItem>
-                    }
+                            </MudMenuItem>
+                        </Match>
+                        <NotMatch>
+                            <MudMenuItem Disabled>
+                                <MudText>No action available.</MudText>
+                            </MudMenuItem>
+                        </NotMatch>
+                    </Condition>
                 </MudMenu>
             </MudStack>
         </MudItem>
 
         @* Text *@
         <MudItem xs="12">
-            <MudTextField T="string" @bind-Text="CurrentEntry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" />
+            <MudTextField T="string" @bind-Text="CurrentEntry.Note" Label="And I learned this today:" AutoGrow Lines="3" MaxLines="5" ValueChanged="@(() => UnsavedContentDialogService.IsWeekViewDataSaved = false)" />
         </MudItem>
     </MudGrid>
 </MudPaper>
@@ -123,16 +138,9 @@
 
     WorkLocation? SelectedWorkLocation { get; set; }
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
-        try
-        {
-            SelectedWorkLocation = WorkLocations.First(l => l.Id == CurrentEntry.LocationId);
-        }
-        catch
-        {
-            Console.WriteLine("Test");
-        }
+        SelectedWorkLocation = WorkLocations.FirstOrDefault(l => l.Id == CurrentEntry.LocationId);
 
         UpdateMinMaxDates();
         UpdateWorkHoursFromLocation(SelectedWorkLocation);
@@ -148,7 +156,7 @@
         var dialogCancelled = await OpenConfirmationDialogAsync();
         if (dialogCancelled) { return; }
 
-        bool success = await dataService.DeleteDay(CurrentEntry.Id);
+        bool success = await DataService.DeleteDay(CurrentEntry.Id);
         if (success)
         {
             OnItemDeleted.InvokeAsync((int)CurrentEntry.Id);
@@ -168,7 +176,7 @@
             { x => x.Color, Color.Error }
         };
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog = await dialogService.ShowAsync<DialogTemplate>("Delete entry?", parameters, options);
+        var dialog = await DialogService.ShowAsync<DialogTemplate>("Delete entry?", parameters, options);
         var result = await dialog.Result;
         return result.Canceled;
     }

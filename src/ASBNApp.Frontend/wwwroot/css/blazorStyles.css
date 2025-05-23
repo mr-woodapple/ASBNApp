@@ -67,23 +67,24 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-.loading-wrapper {
+#loading-wrapper {
     display: flex;
-    justify-content: center;
-    min-height: 100vh;
     color: #FF6D00;
+    min-height: 100vh;
+    justify-content: center;
+    background-color: #32333d;
 }
 
-    .loading-wrapper img {
+    #loading-wrapper img {
         margin: auto;
         width: 20%;
     }
 
-    .loading-wrapper .loading-progress-text {
+    #loading-wrapper .loading-progress-text {
         text-align: center;
         font-weight: bold;
     }
 
-        .loading-wrapper .loading-progress-text:after {
+        #loading-wrapper .loading-progress-text:after {
             content: var(--blazor-load-percentage-text, "Loading");
         }

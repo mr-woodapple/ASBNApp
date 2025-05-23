@@ -9,10 +9,10 @@ namespace ASBNApp.Frontend.Services;
 /// <summary>
 /// PDF handler, allows to generate pdfs from user data.
 /// </summary>
-public class PDFExportHandler
+public class PDFExportService
 {
 
-    public PDFExportHandler(DateHandler dateHandler)
+    public PDFExportService(DateHandler dateHandler)
     {
         this.dateHandler = dateHandler;
     }

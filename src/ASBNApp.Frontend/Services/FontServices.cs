@@ -41,5 +41,4 @@ public class FontServices
         sourceStream.CopyTo(memoryStream);
         return memoryStream.ToArray();
     }
-
 }

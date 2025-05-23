@@ -49,12 +49,10 @@ namespace ASBNApp.Frontend.Services
 
 
 		/// <summary>
-		/// TODO
+		/// Handle registering the user with the api.
 		/// </summary>
-		/// <param name="email"></param>
-		/// <param name="password"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
+		/// <param name="email">The users e-mail address.</param>
+		/// <param name="password">The users password.</param>
 		public async Task<HttpResponseMessage> RegisterAsync(UserAccount userAccount)
 		{
 			var json = JsonSerializer.Serialize(userAccount);
@@ -65,10 +63,10 @@ namespace ASBNApp.Frontend.Services
 		}
 
 		/// <summary>
-		/// TODO
+		/// Handle login with the api and update the authentication state.
 		/// </summary>
-		/// <param name="userAccount"></param>
-		/// <returns></returns>
+		/// <param name="userAccount">The user account to login.</param>
+		/// <returns>The requests response message.</returns>
 		public async Task<HttpResponseMessage> LoginAsync(UserAccount userAccount)
 		{
 			var json = JsonSerializer.Serialize(userAccount);
@@ -85,10 +83,8 @@ namespace ASBNApp.Frontend.Services
 		}
 
 		/// <summary>
-		/// TODO
+		/// Handle logout with the api and update the authentication state.
 		/// </summary>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
 		public async Task LogoutAsync()
 		{
 			const string empty = "{}";
@@ -99,9 +95,9 @@ namespace ASBNApp.Frontend.Services
 		}
 
 		/// <summary>
-		/// TODO
+		/// Update the authentication state used across the app.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The updated <see cref="AuthenticationState"/>, if any.</returns>
 		public override async Task<AuthenticationState> GetAuthenticationStateAsync()
 		{
 			_authenticated = false;
@@ -146,7 +142,7 @@ namespace ASBNApp.Frontend.Services
 		/// <summary>
 		/// Only used when logging out.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>True if authenticated, false if not.</returns>
 		public async Task<bool> CheckAuthenticatedAsync()
 		{
 			await GetAuthenticationStateAsync();
