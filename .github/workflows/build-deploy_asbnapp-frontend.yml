@@ -3,7 +3,7 @@ name: ASBNApp Frontend Azure Deployment
 
 on:
   push:
-    branches: [ "main" ]
+    # branches: [ "main" ]
 
 # Environment variables available to all jobs and steps in this workflow
 env:

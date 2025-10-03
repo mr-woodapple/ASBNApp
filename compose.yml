@@ -6,7 +6,7 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: ${DB_SA_PASSWORD} 
     ports:
-      - "9433:1433" 
+      - "7131:1433" 
     volumes:
       - sqlData:/var/opt/mssql
 
@@ -16,11 +16,11 @@ services:
       context: ./src 
       dockerfile: ASBNApp.DataAPI/Dockerfile
     ports:
-      - "7132:80"
+      - "7132:8080"
     depends_on:
       - sql-server # Ensures the database starts before the API
     environment:
-      ConnectionStrings__DefaultConnection: ${API_CONNECTIONSTRING}
+      ConnectionStrings__DatabaseConnection: ${API_CONNECTIONSTRING}
     restart: unless-stopped
 
   asbnapp-frontend:
@@ -29,7 +29,7 @@ services:
       context: ./src
       dockerfile: ASBNApp.Frontend/Dockerfile
     ports:
-      - "9478:80" 
+      - "7133:80" 
     environment:
       ApiUrl: ${FE_APIURL}
     depends_on:
