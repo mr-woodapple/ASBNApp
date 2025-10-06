@@ -11,12 +11,20 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
-<MudAppBar>
+<MudAppBar Elevation="1">
 	<AuthorizeView>
+
+		@* Navbar shows only selected controls if user isn't logged in. *@
 		<NotAuthorized>
 			<MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />
+
+			<MudSpacer />
+
+			<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" />
+			<MudIconButton Icon="@DarkLightModeButtonIcon" Color="Color.Inherit" OnClick="LayoutService.CycleDarkLightModeAsync" />
 		</NotAuthorized>
 
+		@* Full navbar feature selection for authenticated users *@
 		<Authorized>
 			<MudLink Href="/app">
 				<MudImage Src="images/Logo-Rect-Grey-Dark.png" Width="100" Alt="ASBN App Logo" />

@@ -17,6 +17,13 @@
     background-color: transparent !important;
 }
 
+
+/* ################ Custom styling for index page ################ */
+.gradient-transparent-orange{
+    background: #FF6D00;
+    background: linear-gradient(270deg, rgba(255, 109, 0, 0.35) 0%, rgba(255, 109, 0, 0.1) 100%);
+}
+
 /* ################ Debug only ################ */
 .dbg {
     border: 2px dashed red;
