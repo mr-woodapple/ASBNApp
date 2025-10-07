@@ -403,3 +403,5 @@ FodyWeavers.xsd
 
 # Demo Export stuff
 docs/sampleJSON/test.pdf
+
+.env

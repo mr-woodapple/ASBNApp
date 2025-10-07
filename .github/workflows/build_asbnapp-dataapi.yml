@@ -4,6 +4,7 @@
 name: ASBNApp DataAPI Build
 
 env:
+  APP_LOCATION: './src/ASBNApp.DataAPI/' 
   DOTNET_VERSION: '9'             # set this to the .NET Core version to use
 
 on:
@@ -17,28 +18,18 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Build AspNetCore web api
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Set up dependency caching for faster builds
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.APP_LOCATION }}
 
-      - name: dotnet build
-        run: dotnet build -c Release src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj -o ${{env.DOTNET_ROOT}}/myapp
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+      - name: Build
+        run: dotnet build ${{ env.APP_LOCATION }} -c Release --no-restore

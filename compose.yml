@@ -1,0 +1,39 @@
+services:
+  sql-server:
+    container_name: ASBNApp.SqlServer
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${DB_SA_PASSWORD} 
+    ports:
+      - "7131:1433" 
+    volumes:
+      - sqlData:/var/opt/mssql
+
+  asbnapp-api:
+    container_name: ASBNApp.DataAPI
+    build:
+      context: ./src 
+      dockerfile: ASBNApp.DataAPI/Dockerfile
+    ports:
+      - "7132:8080"
+    depends_on:
+      - sql-server # Ensures the database starts before the API
+    environment:
+      ConnectionStrings__DatabaseConnection: ${API_CONNECTIONSTRING}
+    restart: unless-stopped
+
+  asbnapp-frontend:
+    container_name: ASBNApp.Frontend
+    build:
+      context: ./src
+      dockerfile: ASBNApp.Frontend/Dockerfile
+    ports:
+      - "7133:80" 
+    environment:
+      ApiUrl: ${FE_APIURL}
+    depends_on:
+      - asbnapp-api # Ensures the API starts before the frontend tries to call it
+
+volumes:
+  sqlData: 

@@ -1,0 +1,20 @@
+﻿@* Simple footer component *@
+
+@using System.Reflection
+
+<MudStack Justify="Justify.Center" Class="mx-5 pa-5">
+	<MudText Color="Color.Surface" Typo="Typo.subtitle2" Align="Align.Center">© @DateTime.UtcNow.Year ASBN App (v @GetVersion())</MudText>
+</MudStack>
+
+@code {
+	/// <summary>
+	/// Extract the version info from the projects .csproj
+	/// </summary>
+	/// <returns>Version info if present, otherwise disclaimer that no version was found.</returns>
+	public string GetVersion()
+	{
+		var assembly = Assembly.GetExecutingAssembly();
+		var versionString = assembly.GetName().Version?.ToString() ?? "No version info found.";
+		return versionString;
+	}
+}

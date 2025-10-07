@@ -11,37 +11,89 @@
 @*  Index view to show if the user isn't logged in. *@
 <PageTitle>Start</PageTitle>
 
-<MudContainer Class="pt-0" MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudGrid Class="pa-5 align-content-center" Style="min-height: 100vh">
-
-        <MudItem xs="12" lg="6">
-            <MudImage Src="./images/Logo-Rect-Orange-Light.png" style="width: 50%" />
-            <MudText Typo="Typo.body1" Class="mt-5">
-                This app makes writing your mandatory apprenticeship report as simple
-                as possible. And all of that, while being completely free.
+<MudContainer Class="mb-10 mt-20">
+    <MudItem>
+        <MudStack AlignItems="AlignItems.Center" Spacing="8">
+            <MudText Typo="Typo.h2" Align="Align.Center">Journaling made simple!</MudText>
+            <MudText Typo="Typo.subtitle1" Align="Align.Center">
+                ASBN App makes writing your mandatory apprenticeship report as simple
+                as possible.<br />
+                And all of that, while being completely free.
             </MudText>
-            <MudText Typo="Typo.body1" Class="mt-5">
-                Your data is safely stored in the cloud. You can export PDF files from your data at every time and upload them
-                anywhere else if necessary.
-            </MudText>
+            <MudStack Row>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" href="/login">Login</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" href="/register">Sign up</MudButton>
+            </MudStack>
+        </MudStack>
+    </MudItem>
 
-            <MudButton Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" Class="mt-10"
-                       Variant="Variant.Outlined" EndIcon="@Icons.Custom.Brands.GitHub" Color="Color.Primary" Style="text-transform:none">
-                View on GitHub
-            </MudButton>
-        </MudItem>
+    <MudItem Class="d-flex justify-center">
+        <MudImage Fluid Src="./images/mockups/asbnapp-macbook-ipad-iphone-mockup.png" />
+    </MudItem>
 
-        <MudItem xs="12" lg="6" Class="align-content-center">
-            <MudPaper Class="pa-10" Elevation="2">
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-10">
+        <MudGrid>
+            <MudItem xs="12">
                 <MudStack>
-                    <MudText Typo="Typo.h6">Get started!</MudText>
-                    <MudText Typo="Typo.body1">Login to your existing account or create a new one to get started.</MudText>
-                    <MudSpacer />
-                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" FullWidth="true" href="/register">Create new Account</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" href="/login">Login</MudButton>
-                </MudStack>
-            </MudPaper>
-        </MudItem>
+                    <MudText Typo="Typo.subtitle1">WHAT IS ASBN APP?</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Surface">
+                        A simple way to write your mandatory apprenticeship report from everywhere.
+                    </MudText>
 
-    </MudGrid>
+                    <MudGrid Class="mt-10" Spacing="10">
+                        <MudItem xs="12" md="4">
+                            <MudStack>
+                                <MudStack Row>
+                                    <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Color="Color.Primary" />
+                                    <MudText Typo="Typo.button">Generate PDF</MudText>
+                                </MudStack>
+
+                                <MudText Typo="Typo.body2">Easily export your weekly report as a PDF and upload it wherever you might have to.</MudText>
+                            </MudStack>
+                        </MudItem>
+
+                        <MudItem xs="12" md="4">
+                            <MudStack>
+                                <MudStack Row>
+                                    <MudIcon Icon="@Icons.Material.Filled.Devices" Color="Color.Primary" />
+                                    <MudText Typo="Typo.button">Responsive</MudText>
+                                </MudStack>
+
+                                <MudText Typo="Typo.body2">Perfect user experience across all devices, from desktop to mobile.</MudText>
+                            </MudStack>
+                        </MudItem>
+
+                        <MudItem xs="12" md="4">
+                            <MudStack>
+                                <MudStack Row>
+                                    <MudIcon Icon="@Icons.Material.Filled.ImportExport" Color="Color.Primary" />
+                                    <MudText Typo="Typo.button">Easy Export (& Import!)</MudText>
+                                </MudStack>
+
+                                <MudText Typo="Typo.body2">Easily export your data to .json - do with it whatever you can imagine.</MudText>
+                            </MudStack>
+                        </MudItem>
+                    </MudGrid>
+                </MudStack>
+            </MudItem>
+
+            <MudItem xs="12" Class="my-10">
+                <MudPaper Elevation="1" Class="pa-10 rounded-xl gradient-transparent-orange">
+                    <MudStack Spacing="5">
+                        <MudText Typo="Typo.h4">Completely open source!</MudText>
+                        <MudText Typo="Typo.body1">
+                            The entrie ASBN App project is completely open source - you can spin up your own instance or just get inspiration for your next project.<br />
+                            If you want to support me, feel free to create an issue, open a PR or star the project. Your support is appreciated!
+                        </MudText>
+                    </MudStack>
+
+                    <MudButton Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" Class="mt-10"
+                                Variant="Variant.Outlined" StartIcon="@Icons.Custom.Brands.GitHub" Color="Color.Primary" Style="text-transform:none">
+                        ASBN App on GitHub
+                    </MudButton>
+                </MudPaper>
+            </MudItem>
+
+        </MudGrid>
+    </MudContainer>
 </MudContainer>
