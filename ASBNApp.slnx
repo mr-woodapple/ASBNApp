@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/build_asbnapp-dataapi.yml" />
+    <File Path=".github/workflows/build_asbnapp-frontend.yml" />
+    <File Path=".gitignore" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj" />
+    <Project Path="src/ASBNApp.Frontend/ASBNApp.Frontend.csproj" />
+    <Project Path="src/ASBNApp.Models/ASBNApp.Models.csproj" />
+  </Folder>
+</Solution>
