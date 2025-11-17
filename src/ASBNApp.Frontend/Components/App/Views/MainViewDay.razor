@@ -14,10 +14,7 @@
 <MudPaper Outlined="true" Class="my-5 pa-5">
 	<MudGrid>
 		@* Date *@
-		<MudItem xs="12">
-			<MudText Typo="Typo.body2">I'm writing a log for...</MudText>
-			<PillSelectorDate @bind-SelectedDate="SelectedDate" />
-		</MudItem>
+		<PillSelectorDate @bind-SelectedDate="SelectedDate" />
 
 		@* Location *@
 		<MudItem xs="12" md="6">

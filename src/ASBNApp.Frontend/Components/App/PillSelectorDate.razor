@@ -1,30 +1,32 @@
-@*  Simple selector component for dates, shows today and tomorrow, as well as a date picker. *@
+@*  Selector component for dates (including a header), 
+    shows today and tomorrow, as well as a date picker if the user want's to select a different date. *@
 
-<MudStack Row="true">
-    <MudPaper Elevation="0">
-        <MudChipSet T="string" @bind-SelectedValue="SelectedChip" Variant="Variant.Text" Filter Mandatory>
-            <MudChip Text="today" Color="Color.Primary" Default="true"
-                     @onclick="@(e => { date = DateTime.Now.Date; })">
-                Today (@Today.Date.ToString("dd.MM.yyyy"))
-            </MudChip>
 
-            <MudChip Text="tomorrow" Color="Color.Primary"
-                     @onclick="@(e => { date = DateTime.Now.Date.AddDays(1); })">
-                Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
-            </MudChip>
+<MudItem xs="12" md="@(SelectedChip != "customdate" ? 12 : 6)">
+    <MudText Typo="Typo.body2">I'm writing a log for...</MudText>
 
-            <MudChip Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
-        </MudChipSet>
-    </MudPaper>
+    <MudChipSet T="string" @bind-SelectedValue="SelectedChip" Variant="Variant.Text" Filter Mandatory>
+        <MudChip Text="today" Color="Color.Primary" Default="true"
+                 @onclick="@(e => { date = DateTime.Now.Date; })">
+            Today (@Today.Date.ToString("dd.MM.yyyy"))
+        </MudChip>
 
-    <Condition Evaluation="@(SelectedChip != null && SelectedChip == "customdate")">
-        <Match>
-            <MudPaper Elevation="0" Class="mt-n5">
-                <MudDatePicker Label="Select custom date:" @bind-Date="date" />
-            </MudPaper>
-        </Match>
-    </Condition>
-</MudStack>
+        <MudChip Text="tomorrow" Color="Color.Primary"
+                 @onclick="@(e => { date = DateTime.Now.Date.AddDays(1); })">
+            Tomorrow (@Tomorrow.Date.ToString("dd.MM.yyyy"))
+        </MudChip>
+
+        <MudChip Text="customdate" Color="Color.Primary">Pick custom date</MudChip>
+    </MudChipSet>
+</MudItem>
+
+<Condition Evaluation="@(SelectedChip != null && SelectedChip == "customdate")">
+    <Match>
+        <MudItem xs="12" md="6">
+            <MudDatePicker Label="Select custom date:" @bind-Date="date" />
+        </MudItem>
+    </Match>
+</Condition>
 
 
 @code {
