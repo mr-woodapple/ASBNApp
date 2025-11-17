@@ -207,8 +207,10 @@
         {
             var location = WorkLocations.First(l => l.Id == workLocation.Id);
             SelectedWorkLocation = location;
+            // Order of updating is important, because we'll make this check useless updating the CurrentEntry.LocationId first
+            CurrentEntry.Hours = CurrentEntry.LocationId != workLocation.Id ? workLocation.SuggestedHours : CurrentEntry.Hours;
             CurrentEntry.LocationId = location.Id;
-            CurrentEntry.Hours = location.SuggestedHours;
+
             StateHasChanged();
         }
         catch (Exception ex)

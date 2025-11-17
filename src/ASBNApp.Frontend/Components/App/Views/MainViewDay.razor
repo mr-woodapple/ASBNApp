@@ -95,7 +95,8 @@
 				_selectedWorkLocation = value;
 				if (CurrentEntry != null && value != null)
 				{
-					CurrentEntry.Hours = value.SuggestedHours;
+					CurrentEntry.Hours = CurrentEntry.LocationId != value.Id ? value.SuggestedHours : CurrentEntry.Hours;
+					CurrentEntry.LocationId = value.Id;
 				}
 			}
 		}
@@ -160,7 +161,7 @@
 			Hours = CurrentEntry.Hours,
 			Note = CurrentEntry.Note,
 			Date = SelectedDate,
-			LocationId = SelectedWorkLocation?.Id ?? null
+			LocationId = CurrentEntry.LocationId
 		};
 
 		try
