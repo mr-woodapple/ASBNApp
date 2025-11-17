@@ -1,13 +1,14 @@
 ﻿@page "/login"
 
-@inject IAccountManagement AccountManagement
+@inject IAccountManagement AccountManagement;
 @inject NavigationManager NavigationManager;
 @inject AuthenticationStateProvider AuthenticationStateProvider;
 
-@using System.Text.Json;
 @using ASBNApp.Frontend.Interfaces;
 @using ASBNApp.Frontend.Models;
 @using ASBNApp.Frontend.Services;
+@using MudBlazor.Services
+@using System.Text.Json;
 
 <AuthorizeView>
 	<Authorized>
@@ -28,7 +29,8 @@
 				<MudItem Class="my-10">
 					<MudTextField @bind-Value="EMailValue" Label="E-Mail *" Variant="Variant.Text" InputType="InputType.Email" />
 					<MudTextField @bind-Value="PasswordValue" Label="Password *" Variant="Variant.Text" InputType="_passwordInputType"
-								  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" />
+								  Adornment="Adornment.End" AdornmentIcon="@_passwordInputIcon" OnAdornmentClick="TogglePasswordInputMode" AdornmentAriaLabel="Show Password" 
+								  id="@_ButtonSignInId" @onkeydown="HandleEnterDown" />
 				</MudItem>
 
 				@* Show validation errors *@
@@ -38,7 +40,8 @@
 					</Match>
 				</Condition>
 
-				<MudButton Disabled="@_isLoggingIn" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogin">
+				<MudButton Disabled="@_isLoggingIn" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="HandleLogin" 
+						   id="@_ButtonSignInId" @onkeydown="HandleEnterDown">
 					<Condition Evaluation="_isLoggingIn">
 						<Match>
 							<MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
@@ -75,6 +78,12 @@
 	// Handle errors from the API
 	private bool _loginAttemptFailed;
 
+	// Enable login on pressing ENTER
+	[Inject]
+	private IKeyInterceptorService KeyInterceptorService { get; set; }
+	private string _ButtonSignInId = "SignInButton";
+	private string _InputFieldPasswordId = "PasswordInputField";
+
 	/// <summary>
 	/// Toggle the password input between hidden and visibile
 	/// </summary>
@@ -104,6 +113,39 @@
 		{
 			NavigationManager.NavigateTo("/app");
 		}
+	}
+
+	/// <summary>
+	/// Register keyboard inputs the app should react to 
+	/// and assign the HTML elements we want to listen for key presses on.
+	/// </summary>
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		KeyInterceptorOptions options = new KeyInterceptorOptions
+		{
+			Keys = new List<KeyOptions>
+			{
+				new(key: "Enter", subscribeDown: true),
+			}
+		};
+
+		await KeyInterceptorService.SubscribeAsync(_ButtonSignInId, options, keyDown: HandleEnterDown);
+		await KeyInterceptorService.SubscribeAsync(_InputFieldPasswordId, options, keyDown: HandleEnterDown);
+	}
+
+	/// <summary>
+	/// Handle the user pressing a keyboard button (and call the <see cref="HandleLogin"/> method if it's ENTER).
+	/// </summary>
+	private async Task HandleEnterDown(KeyboardEventArgs e)
+	{
+		switch (e.Key)
+		{
+			case "Enter":
+				await HandleLogin();
+				break;
+		}
+
+		await Task.CompletedTask;
 	}
 
 	/// <summary>
