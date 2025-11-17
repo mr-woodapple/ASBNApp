@@ -89,9 +89,9 @@
 
 @code {
     [Parameter]
-    public List<WorkLocation> WorkLocations { get; set; }
+    public List<WorkLocation>? WorkLocations { get; set; }
     [Parameter]
-    public Entry CurrentEntry { get; set; }
+    public Entry? CurrentEntry { get; set; }
     [Parameter]
     public EventCallback<int> OnItemDeleted { get; set; }
 
@@ -201,6 +201,8 @@
     /// </summary>
     public void UpdateWorkHoursFromLocation(WorkLocation? workLocation) 
     {
+        if (workLocation == null) { return; }
+
         try
         {
             var location = WorkLocations.First(l => l.Id == workLocation.Id);
@@ -208,10 +210,10 @@
             CurrentEntry.LocationId = location.Id;
             CurrentEntry.Hours = location.SuggestedHours;
             StateHasChanged();
-        } 
-        catch (Exception e)
+        }
+        catch (Exception ex)
         {
-            Console.WriteLine($"No location available, not assigning any values. Exception: {e.Message}");
+            Console.WriteLine($"Failed to update work hours with error: {ex.Message}.");
         }
     }
 }
