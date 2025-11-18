@@ -8,12 +8,7 @@
     <UserSecretsId>8dd985a0-e9e4-46d8-939f-a489e18ff0ad</UserSecretsId>
     <OutputType>Exe</OutputType>
 	<Version>1.3.1.0</Version>
-	<!--<WasmEnableStreamingResponse>false</WasmEnableStreamingResponse>-->
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="C:\Users\jsho\.nuget\packages\prettyblazor\1.3.0\contentFiles\any\net9.0\License.txt" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" />
