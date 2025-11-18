@@ -67,29 +67,27 @@
 @code {
 	private bool _isSaving;
 
-	private DateTime _selectedDate;
 	public DateTime SelectedDate
 	{
-		get => _selectedDate;
+		get;
 		set
 		{
-			if (value != _selectedDate)
+			if (value != field)
 			{
-				_selectedDate = value;
+				field = value;
 				GetData();
 			}
 		}
 	}
 
-	public WorkLocation? _selectedWorkLocation;
 	public WorkLocation? SelectedWorkLocation
 	{
-		get => _selectedWorkLocation;
+		get;
 		set
 		{
-			if (value != _selectedWorkLocation)
+			if (value != field)
 			{
-				_selectedWorkLocation = value;
+				field = value;
 				if (CurrentEntry != null && value != null)
 				{
 					CurrentEntry.Hours = CurrentEntry.LocationId != value.Id ? value.SuggestedHours : CurrentEntry.Hours;

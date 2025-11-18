@@ -96,37 +96,34 @@
     public EventCallback<int> OnItemDeleted { get; set; }
 
     // Week & year variables to set min and max values for the date picker
-    private int? _selectedWeek;
     [Parameter]
     public int? SelectedWeek
     {
-        get => _selectedWeek;
+        get;
         set
         {
-            _selectedWeek = value;
+            field = value;
             UpdateMinMaxDates();
         }
     }
 
-    private int? _selectedYear;
     [Parameter]
     public int? SelectedYear
     {
-        get => _selectedYear;
+        get;
         set
         {
-            _selectedYear = value;
+            field = value;
             UpdateMinMaxDates();
         }
     }
 
-    private DateTime _date;
     private DateTime? Date 
-    { 
-        get => _date; 
+    {
+        get;
         set 
         {
-            _date = (DateTime)value;
+            field = (DateTime)value;
             CurrentEntry.Date = (DateTime)value;
         }
     }
