@@ -14,11 +14,10 @@ public class Entry
     public int? Id { get; set; }
 	
     // This is removing any time zone related information, as there's no point in saving that.
-    private DateTime _date;
     public DateTime Date 
     { 
-        get => _date;
-        set => _date = value.Date; 
+        get;
+        set => field = value.Date; 
     }
 
     public string? Note { get; set; }

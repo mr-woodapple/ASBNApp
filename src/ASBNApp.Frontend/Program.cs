@@ -17,8 +17,9 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // Loading the appsettings.json
 using (var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
 {
-	var responseStream = await httpClient.GetStreamAsync("appsettings.json");
-	builder.Configuration.AddJsonStream(responseStream);
+    var response = await httpClient.GetAsync("appsettings.json");
+    using var stream = await response.Content.ReadAsStreamAsync();
+    builder.Configuration.AddJsonStream(stream);
 }
 
 // Adding external (installed) services

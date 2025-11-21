@@ -14,10 +14,7 @@
 <MudPaper Outlined="true" Class="my-5 pa-5">
 	<MudGrid>
 		@* Date *@
-		<MudItem xs="12">
-			<MudText Typo="Typo.body2">I'm writing a log for...</MudText>
-			<PillSelectorDate @bind-SelectedDate="SelectedDate" />
-		</MudItem>
+		<PillSelectorDate @bind-SelectedDate="SelectedDate" />
 
 		@* Location *@
 		<MudItem xs="12" md="6">
@@ -70,32 +67,31 @@
 @code {
 	private bool _isSaving;
 
-	private DateTime _selectedDate;
 	public DateTime SelectedDate
 	{
-		get => _selectedDate;
+		get;
 		set
 		{
-			if (value != _selectedDate)
+			if (value != field)
 			{
-				_selectedDate = value;
+				field = value;
 				GetData();
 			}
 		}
 	}
 
-	public WorkLocation? _selectedWorkLocation;
 	public WorkLocation? SelectedWorkLocation
 	{
-		get => _selectedWorkLocation;
+		get;
 		set
 		{
-			if (value != _selectedWorkLocation)
+			if (value != field)
 			{
-				_selectedWorkLocation = value;
+				field = value;
 				if (CurrentEntry != null && value != null)
 				{
-					CurrentEntry.Hours = value.SuggestedHours;
+					CurrentEntry.Hours = CurrentEntry.LocationId != value.Id ? value.SuggestedHours : CurrentEntry.Hours;
+					CurrentEntry.LocationId = value.Id;
 				}
 			}
 		}
@@ -160,7 +156,7 @@
 			Hours = CurrentEntry.Hours,
 			Note = CurrentEntry.Note,
 			Date = SelectedDate,
-			LocationId = SelectedWorkLocation?.Id ?? null
+			LocationId = CurrentEntry.LocationId
 		};
 
 		try

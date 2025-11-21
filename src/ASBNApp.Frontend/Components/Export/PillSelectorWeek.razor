@@ -79,13 +79,12 @@
 
     // Making the MudDatePicker work (& updating variables)
     MudDatePicker _picker;
-    DateTime? _date;
     DateTime? date
     {
-        get => _date;
+        get;
         set
         {
-            _date = value;
+            field = value;
             SelectedWeek = dateHandler.GetWeekOfYear((DateTime)value);
             SelectedYear = ((DateTime)value).Year;
             isDatePickerOverlayVisible = false;

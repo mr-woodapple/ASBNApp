@@ -21,7 +21,9 @@
 			<MudSpacer />
 
 			<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/mr-woodapple/ASBNApp" Target="_blank" />
-			<MudIconButton Icon="@DarkLightModeButtonIcon" Color="Color.Inherit" OnClick="LayoutService.CycleDarkLightModeAsync" />
+			<MudTooltip Text="Toggle between light/dark mode.">
+				<MudIconButton Icon="@DarkLightModeButtonIcon" Color="Color.Inherit" OnClick="LayoutService.CycleDarkLightModeAsync" />
+			</MudTooltip>
 		</NotAuthorized>
 
 		@* Full navbar feature selection for authenticated users *@
@@ -108,7 +110,7 @@
 	{
 		DarkLightMode.Dark => Icons.Material.Rounded.DarkMode,
 		DarkLightMode.Light => Icons.Material.Outlined.LightMode,
-		_ => Icons.Material.Filled.AutoMode
+		_ => Icons.Material.Filled.BrightnessAuto
 	};
 
 	/// <summary>

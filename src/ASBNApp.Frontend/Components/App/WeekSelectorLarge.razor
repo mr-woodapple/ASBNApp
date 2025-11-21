@@ -56,15 +56,14 @@
     // Making the MudDatePicker work (& updating variables)
     Calendar cal = CultureInfo.InvariantCulture.Calendar;
     MudDatePicker _picker;
-    DateTime? _date;
     DateTime? firstDateOfAWeek
     { 
-        get => _date;
+        get;
         set {
             // Ensure we have the first date of a given week before setting it.
             int week = dateHandler.GetWeekOfYear((DateTime)value);
             DateTime dateToSet = dateHandler.GetFirstDateOfWeek(week, ((DateTime)value).Year);
-            _date = dateToSet;
+            field = dateToSet;
             isDatePickerOverlayVisible = false;
 
             SelectedWeek = dateHandler.GetWeekOfYear(dateToSet);

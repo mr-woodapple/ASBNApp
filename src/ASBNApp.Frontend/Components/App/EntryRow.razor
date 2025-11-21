@@ -89,44 +89,41 @@
 
 @code {
     [Parameter]
-    public List<WorkLocation> WorkLocations { get; set; }
+    public List<WorkLocation>? WorkLocations { get; set; }
     [Parameter]
-    public Entry CurrentEntry { get; set; }
+    public Entry? CurrentEntry { get; set; }
     [Parameter]
     public EventCallback<int> OnItemDeleted { get; set; }
 
     // Week & year variables to set min and max values for the date picker
-    private int? _selectedWeek;
     [Parameter]
     public int? SelectedWeek
     {
-        get => _selectedWeek;
+        get;
         set
         {
-            _selectedWeek = value;
+            field = value;
             UpdateMinMaxDates();
         }
     }
 
-    private int? _selectedYear;
     [Parameter]
     public int? SelectedYear
     {
-        get => _selectedYear;
+        get;
         set
         {
-            _selectedYear = value;
+            field = value;
             UpdateMinMaxDates();
         }
     }
 
-    private DateTime _date;
     private DateTime? Date 
-    { 
-        get => _date; 
+    {
+        get;
         set 
         {
-            _date = (DateTime)value;
+            field = (DateTime)value;
             CurrentEntry.Date = (DateTime)value;
         }
     }
@@ -201,17 +198,21 @@
     /// </summary>
     public void UpdateWorkHoursFromLocation(WorkLocation? workLocation) 
     {
+        if (workLocation == null) { return; }
+
         try
         {
             var location = WorkLocations.First(l => l.Id == workLocation.Id);
             SelectedWorkLocation = location;
+            // Order of updating is important, because we'll make this check useless updating the CurrentEntry.LocationId first
+            CurrentEntry.Hours = CurrentEntry.LocationId != workLocation.Id ? workLocation.SuggestedHours : CurrentEntry.Hours;
             CurrentEntry.LocationId = location.Id;
-            CurrentEntry.Hours = location.SuggestedHours;
+
             StateHasChanged();
-        } 
-        catch (Exception e)
+        }
+        catch (Exception ex)
         {
-            Console.WriteLine($"No location available, not assigning any values. Exception: {e.Message}");
+            Console.WriteLine($"Failed to update work hours with error: {ex.Message}.");
         }
     }
 }
