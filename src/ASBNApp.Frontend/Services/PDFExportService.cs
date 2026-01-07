@@ -140,7 +140,7 @@ public class PDFExportService
     /// <param name="entry"><see cref="Entry"/> to find the location for.</param>
     /// <param name="locations">A list of all available <see cref="WorkLocation"/> for the user.</param>
     /// <returns>The <see cref="WorkLocation"/> or null if no <see cref="Entry.LocationId"/> is present on the entry.</returns>
-    private WorkLocation? ResolveWorkLocation(Entry entry, IEnumerable<WorkLocation> locations)
+    private static WorkLocation? ResolveWorkLocation(Entry entry, IEnumerable<WorkLocation> locations)
     {
         try { return locations.Single(l => l.Id == entry.LocationId); }
         catch { return null; }
