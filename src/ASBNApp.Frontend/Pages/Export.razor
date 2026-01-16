@@ -85,10 +85,6 @@
 	public int? SelectedWeek { get; set; }
 	public int? SelectedYear { get; set; }
 
-	protected override void OnInitialized()
-	{
-		GetData();
-	}
 
 
 	// As soon as we finished loading the page, get the required fonts
@@ -100,6 +96,8 @@
 			_isSupported = await FileSystemAccessService.IsSupportedAsync();
 			StateHasChanged();
 
+			await GetData();
+
 			// Implement a custom font resolver (we do seem to need one, yes ^^)
 			// And yes, this is even working with the font not being in the repo.
 			Fonts font = await fontServices.LoadFonts();
@@ -107,9 +105,9 @@
 			{
 				GlobalFontSettings.FontResolver = new CustomFontResolver(font);
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Console.WriteLine(e.Message);
+				Console.WriteLine(ex.Message);
 			}
 		}
 	}
@@ -163,7 +161,7 @@
 				Snackbar.Add("Your PDF just finished exporting!", Severity.Success);
 			}
 		}
-		catch (Exception e)
+		catch
 		{
 			Snackbar.Add($"Failed to create your PDF file, please try again.", Severity.Error);
 		}

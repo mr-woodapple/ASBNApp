@@ -26,7 +26,6 @@ public class FontServices
         return fonts;
     }
 
-
     /// <summary>
     /// Load the actual font file via an http request from our wwwroot folder,
     /// return it as a bytestream
@@ -35,10 +34,10 @@ public class FontServices
     /// <returns>Font data as a Bytestream</returns>
     private async Task<byte[]> GetFontData(string name)
     {
-        var sourceStream = await _httpClient.GetStreamAsync($"fonts/{name}");
+        using var sourceStream = await _httpClient.GetStreamAsync($"fonts/{name}");
         using MemoryStream memoryStream = new();
 
-        sourceStream.CopyTo(memoryStream);
+        await sourceStream.CopyToAsync(memoryStream);
         return memoryStream.ToArray();
     }
 }
