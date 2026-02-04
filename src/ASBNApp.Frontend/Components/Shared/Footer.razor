@@ -3,7 +3,7 @@
 @using System.Reflection
 
 <MudStack Justify="Justify.Center" Class="mx-5 pa-5">
-	<MudText Color="Color.Surface" Typo="Typo.subtitle2" Align="Align.Center">© @DateTime.UtcNow.Year ASBN App (v @GetVersion())</MudText>
+	<MudText Color="Color.Surface" Typo="Typo.subtitle2" Align="Align.Center">© @DateTime.UtcNow.Year ASBN App @($"v{GetVersion()}")</MudText>
 </MudStack>
 
 @code {

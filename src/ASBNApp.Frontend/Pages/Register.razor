@@ -29,10 +29,10 @@
 			</MudForm>
 		</MudPaper>
 
-		<MudPaper Elevation="0" Outlined Class="pa-5">
-			@* Show API validation errors here *@
-			<Condition Evaluation="ValidationErrors.Count > 0">
-				<Match>
+		@* Show API validation errors here *@
+		<Condition Evaluation="ValidationErrors.Count > 0">
+			<Match>
+				<MudPaper Elevation="0" Outlined Class="pa-5">
 					<MudStack Row AlignItems="AlignItems.Center">
 						<MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
 						<MudText>@ValidationErrors.Count error(s) occured during registration. Please fix them and try again! </MudText>
@@ -41,9 +41,9 @@
 					<Iterations Items="ValidationErrors">
 						<MudAlert Severity="Severity.Error" Variant="Variant.Filled" Dense="true" Class="my-2"> @context </MudAlert>
 					</Iterations>
-				</Match>
-			</Condition>
-		</MudPaper>
+				</MudPaper>
+			</Match>
+		</Condition>
 		
 		<MudButton Disabled="@_isRegistering" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Class="mt-5" OnClick="@(async () => await HandleRegistering())">
 			<Condition Evaluation="_isRegistering">

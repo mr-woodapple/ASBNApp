@@ -99,4 +99,13 @@ app.UseAuthorization();
 app.MapIdentityApi<User>();
 app.MapControllers();
 
+// Apply migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+	Console.WriteLine("Applying migrations...");
+	Console.WriteLine($"Connection string used: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
+	var db = scope.ServiceProvider.GetRequiredService<ASBNAppContext>();
+	db.Database.Migrate();
+}
+
 app.Run();
