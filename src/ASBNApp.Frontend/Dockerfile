@@ -1,5 +1,5 @@
 # Use the .NET SDK image to build the Blazor WebAssembly app
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
 COPY . .
