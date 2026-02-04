@@ -2,8 +2,8 @@ services:
   asbnapp-frontend:
     container_name: ASBNApp.Frontend
     build:
-      context: ./src
-      dockerfile: ASBNApp.Frontend/Dockerfile
+      context: .
+      dockerfile: src/ASBNApp.Frontend/Dockerfile
     ports:
       - "7133:80" 
     environment:
@@ -15,8 +15,8 @@ services:
   asbnapp-api:
     container_name: ASBNApp.DataAPI
     build:
-      context: ./src 
-      dockerfile: ASBNApp.DataAPI/Dockerfile
+      context: .
+      dockerfile: src/ASBNApp.DataAPI/Dockerfile
     depends_on:
       - sql-server # Ensures the database starts before the API
     environment:

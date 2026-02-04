@@ -35,4 +35,10 @@
 		<ProjectReference Include="..\ASBNApp.Models\ASBNApp.Models.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Migrations\*.sql">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>
