@@ -50,9 +50,15 @@ builder.Services.AddScoped(
 	sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
 
 // Configure client for auth/backend interactions
+#if DEBUG
+var uri = new Uri("https://localhost:7148");
+#else
+var uri = new Uri(builder.Configuration["ApiUrl"]);
+#endif
+
 builder.Services.AddHttpClient(
 	"BackendClient",
-	client => client.BaseAddress = new Uri(builder.Configuration["ApiUrl"]))
+	client => client.BaseAddress = uri)
 	.AddHttpMessageHandler<CookieHandler>();
 
 // Configure frontend client
