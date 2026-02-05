@@ -14,7 +14,8 @@
 	public string GetVersion()
 	{
 		var assembly = Assembly.GetExecutingAssembly();
-		var versionString = assembly.GetName().Version?.ToString() ?? "No version info found.";
-		return versionString;
+		var version = assembly.GetName().Version;
+
+		return version is null ? "No version info found." : $"{version.Major}.{version.Minor}.{version.Build}";
 	}
 }

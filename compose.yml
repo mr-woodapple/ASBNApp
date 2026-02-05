@@ -19,6 +19,8 @@ services:
       dockerfile: src/ASBNApp.DataAPI/Dockerfile
     depends_on:
       - sql-server # Ensures the database starts before the API
+    ports:
+      - "7132:8080"
     environment:
       ConnectionStrings__DatabaseConnection: ${API_CONNECTIONSTRING}
     restart: unless-stopped
@@ -28,7 +30,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: ${DB_SA_PASSWORD} 
+      MSSQL_SA_PASSWORD: ${DB_SA_PASSWORD}
     volumes:
       - sqlData:/var/opt/mssql
     restart: unless-stopped
