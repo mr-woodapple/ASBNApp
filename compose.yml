@@ -8,6 +8,7 @@ services:
       - "7133:80" 
     environment:
       ApiUrl: ${FE_APIURL}
+      API_PROXY_PASS_URL: ${FE_API_PROXY_PASS_URL:-http://asbnapp-api:8080/api/}
     depends_on:
       - asbnapp-api # Ensures the API starts before the frontend tries to call it
     restart: unless-stopped

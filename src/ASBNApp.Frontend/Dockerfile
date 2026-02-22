@@ -23,7 +23,7 @@ RUN rm -rf ./*
 # Copy the published Blazor files from the build stage
 # Copy a custom Nginx configuration to handle Blazor routing (essential!)
 COPY --from=build /app/out/wwwroot .
-COPY src/ASBNApp.Frontend/nginx.conf /etc/nginx/conf.d/default.conf
+COPY src/ASBNApp.Frontend/nginx.conf /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
