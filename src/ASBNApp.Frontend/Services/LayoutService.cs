@@ -6,14 +6,34 @@ namespace ASBNApp.Frontend.Services;
 
 public class LayoutService
 {
-	private bool _systemPreferences;
+	private bool _systemDarkMode;
 	public MudTheme mudTheme = DefaultTheme.GetTheme();
 	private DarkLightMode _userPreferredDarkLightMode;
 	private readonly IUserPreferenceService _userPreferencesService;
 
-	public bool IsDarkMode { get; private set; }
 	public bool ObserveSystemThemeChange { get; private set; } = true;
+
+	/// <summary>
+	/// The user's preferred dark/light mode setting.
+	/// This preference is used to determine the actual <see cref="IsDarkMode"/> state.
+	/// </summary>
 	public DarkLightMode CurrentDarkLightMode { get; private set; } = DarkLightMode.System;
+
+	/// <summary>
+	/// Dark mode is currently active.
+	/// This is determined by <see cref="UpdateDarkModeAsync"/> based on user and system preferences and should not be modified directly.
+	/// </summary>
+	public bool IsDarkMode { get; private set; }
+
+	/// <summary>
+	/// Observes system theme changes to update dark/light mode.
+	/// </summary>
+	public bool ObserveSystemDarkModeChange { get; private set; }
+
+	/// <summary>
+	/// The currently active MudBlazor theme.
+	/// </summary>
+	public MudTheme CurrentTheme { get; private set; }
 
 	public LayoutService(IUserPreferenceService userPreferenceService)
 	{
@@ -24,21 +44,37 @@ public class LayoutService
 	private void OnMajorUpdateOccurred() => MajorUpdateOccurred?.Invoke(this, EventArgs.Empty);
 
 	/// <summary>
-	/// Handle the OS changing the preferred color scheme.
+	/// Updates the dark mode state based on user preference and, optionally, the system's dark mode setting.
 	/// </summary>
-	/// <param name="newValue">The boolean value representing if we're currently using a darkmode.</param>
-	public Task OnSystemPreferenceChanged(bool newValue)
+	/// <param name="systemMode">The current system dark mode setting. If <c>null</c>, the existing known system mode is used.</param>
+	public void UpdateDarkModeState(bool? systemMode = null)
 	{
-		_systemPreferences = newValue;
-
-		if (CurrentDarkLightMode == DarkLightMode.System)
+		if (systemMode.HasValue)
 		{
-			IsDarkMode = newValue;
-			OnMajorUpdateOccurred();
+			_systemDarkMode = systemMode.Value;
 		}
 
+		IsDarkMode = CurrentDarkLightMode switch
+		{
+			DarkLightMode.Dark => true,
+			DarkLightMode.Light => false,
+			_ => _systemDarkMode,
+		};
+	}
+
+
+	/// <summary>
+	/// Handles changes in the system's dark mode setting.
+	/// </summary>
+	/// <param name="isSystemDarkMode"><c>true</c> if the system is in dark mode, otherwise <c>false</c>.</param>
+	public Task OnSystemModeChangedAsync(bool isSystemDarkMode)
+	{
+		_systemDarkMode = isSystemDarkMode;
+		UpdateDarkModeState();
+		OnMajorUpdateOccurred();
 		return Task.CompletedTask;
 	}
+
 
 	/// <summary>
 	/// Applies user preferences for dark/light mode.
@@ -47,7 +83,7 @@ public class LayoutService
 	/// <param name="isDarkModeDefaultTheme">Indicates whether the default theme is dark mode.</param>
 	public async Task ApplyUserPreferences(bool isDarkModeDefaultTheme)
 	{
-		_systemPreferences = isDarkModeDefaultTheme;
+		_systemDarkMode = isDarkModeDefaultTheme;
 		_userPreferredDarkLightMode = await _userPreferencesService.LoadUserPreferences();
 
 		if (_userPreferredDarkLightMode != null)
@@ -93,7 +129,7 @@ public class LayoutService
 			case DarkLightMode.Dark:
 				CurrentDarkLightMode = DarkLightMode.System;
 				ObserveSystemThemeChange = true;
-				IsDarkMode = _systemPreferences;
+				IsDarkMode = _systemDarkMode;
 				break;
 		}
 

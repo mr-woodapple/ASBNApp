@@ -36,7 +36,6 @@ builder.Services.AddSwaggerGen(options =>
 	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddApplicationInsightsTelemetry();
 
 // Configure cookie policy
 builder.Services.ConfigureApplicationCookie(options =>

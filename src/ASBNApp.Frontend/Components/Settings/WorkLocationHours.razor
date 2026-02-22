@@ -78,7 +78,7 @@
             // Add new entry & clear inputs
             workLocationHours.Add(newLocation);
 
-            NewLocationTextField.Clear();
+            await NewLocationTextField.ClearAsync();
             _newSuggestedHours = null;
 
             // Update parent component
