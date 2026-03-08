@@ -4,12 +4,11 @@ using ASBNApp.Frontend.Interfaces;
 
 namespace ASBNApp.Frontend.Services;
 
-public class LayoutService
+public class LayoutService(IUserPreferenceService userPreferenceService)
 {
 	private bool _systemDarkMode;
 	public MudTheme mudTheme = DefaultTheme.GetTheme();
 	private DarkLightMode _userPreferredDarkLightMode;
-	private readonly IUserPreferenceService _userPreferencesService;
 
 	public bool ObserveSystemThemeChange { get; private set; } = true;
 
@@ -33,14 +32,10 @@ public class LayoutService
 	/// <summary>
 	/// The currently active MudBlazor theme.
 	/// </summary>
-	public MudTheme CurrentTheme { get; private set; }
-
-	public LayoutService(IUserPreferenceService userPreferenceService)
-	{
-		_userPreferencesService = userPreferenceService;
-	}
+	public MudTheme CurrentTheme { get; private set; } = DefaultTheme.GetTheme();
 
 	public event EventHandler MajorUpdateOccurred;
+
 	private void OnMajorUpdateOccurred() => MajorUpdateOccurred?.Invoke(this, EventArgs.Empty);
 
 	/// <summary>
@@ -84,25 +79,18 @@ public class LayoutService
 	public async Task ApplyUserPreferences(bool isDarkModeDefaultTheme)
 	{
 		_systemDarkMode = isDarkModeDefaultTheme;
-		_userPreferredDarkLightMode = await _userPreferencesService.LoadUserPreferences();
+		_userPreferredDarkLightMode = await userPreferenceService.LoadUserPreferences();
 
-		if (_userPreferredDarkLightMode != null)
+		CurrentDarkLightMode = _userPreferredDarkLightMode;
+		IsDarkMode = CurrentDarkLightMode switch
 		{
-			CurrentDarkLightMode = _userPreferredDarkLightMode;
-			IsDarkMode = CurrentDarkLightMode switch
-			{
-				DarkLightMode.Dark => true,
-				DarkLightMode.Light => false,
-				DarkLightMode.System => isDarkModeDefaultTheme,
-				_ => IsDarkMode
-			};
-		}
-		else
-		{
-			IsDarkMode = isDarkModeDefaultTheme;
-			_userPreferredDarkLightMode = DarkLightMode.System;
-			await _userPreferencesService.SaveUserPreferences(_userPreferredDarkLightMode);
-		}
+			DarkLightMode.Dark => true,
+			DarkLightMode.Light => false,
+			DarkLightMode.System => isDarkModeDefaultTheme,
+			_ => IsDarkMode
+		};
+		
+		CurrentTheme = mudTheme;
 	}
 
 	/// <summary>
@@ -133,7 +121,7 @@ public class LayoutService
 				break;
 		}
 
-		await _userPreferencesService.SaveUserPreferences(CurrentDarkLightMode);
+		await userPreferenceService.SaveUserPreferences(CurrentDarkLightMode);
 		OnMajorUpdateOccurred();
 	}
 }
