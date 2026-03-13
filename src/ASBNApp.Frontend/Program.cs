@@ -47,7 +47,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, CookieAccountManagement>
 
 // Register the account management interface
 builder.Services.AddScoped(
-	sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
+    sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
 
 // Configure client for auth/backend interactions
 #if DEBUG
@@ -56,15 +56,18 @@ var uri = new Uri("https://localhost:7148");
 var uri = new Uri(builder.Configuration["ApiUrl"]);
 #endif
 
+if (string.IsNullOrWhiteSpace(uri.OriginalString))
+    throw new InvalidOperationException($"Backend url is not set, uri = '${uri.OriginalString}'");
+
 builder.Services.AddHttpClient(
-	"BackendClient",
-	client => client.BaseAddress = uri)
-	.AddHttpMessageHandler<CookieHandler>();
+    "BackendClient",
+    client => client.BaseAddress = uri)
+    .AddHttpMessageHandler<CookieHandler>();
 
 // Configure frontend client
 builder.Services.AddHttpClient(
-	"FrontendClient",
-	client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+    "FrontendClient",
+    client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 // Add Logger
 builder.Services.AddLogging();
