@@ -40,13 +40,6 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:release, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:${{ github.event.release.tag_name }}
 
-      - name: Generate Artifact Attestation for Frontend Image
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.FE_IMAGE_NAME }}
-          subject-digest: ${{ steps.push-frontend.outputs.digest }}
-          push-to-registry: true
-
       - name: Build and Push DataAPI image
         id: push-backend
         uses: docker/build-push-action@v7
@@ -55,10 +48,4 @@ jobs:
           file: ./src/ASBNApp.DataAPI/Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:release, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:${{ github.event.release.tag_name }}
-
-      - name: Generate Artifact Attestation for Backend Image
-        uses: actions/attest-build-provenance@v3
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.BE_IMAGE_NAME }}
-          subject-digest: ${{ steps.push-backend.outputs.digest }}
-          push-to-registry: true
+          
