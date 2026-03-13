@@ -1,11 +1,10 @@
-# Whenever a PR to main is updated, publish new dev container images for front and backend.
+# On creating a new release, publish new container images for front and backend.
 
 name: Publish DEV Docker Images
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ 'main' ]
+  release:
+    types: [published]
 
 env:
   REGISTRY: ghcr.io
@@ -39,7 +38,7 @@ jobs:
           context: .
           file: ./src/ASBNApp.Frontend/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:dev, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:pr-${{ github.event.number }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:release, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:${{ github.event.release.tag_name }}
 
       - name: Generate Artifact Attestation for Frontend Image
         uses: actions/attest-build-provenance@v3
@@ -55,7 +54,7 @@ jobs:
           context: .
           file: ./src/ASBNApp.DataAPI/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:dev, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:pr-${{ github.event.number }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:release, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:${{ github.event.release.tag_name }}
 
       - name: Generate Artifact Attestation for Backend Image
         uses: actions/attest-build-provenance@v3
