@@ -28,11 +28,11 @@ COPY src/ASBNApp.Frontend/nginx.conf /etc/nginx/templates/default.conf.template
 
 # Run custom script to set appsettings.json from docker envs
 # Copy the shell script
-# COPY src/ASBNApp.Frontend/wwwroot/set-docker-env-variables.sh /usr/share/nginx/html/
-# # Set the execution permission
-# RUN chmod +x /usr/share/nginx/html/set-docker-env-variables.sh
+COPY src/ASBNApp.Frontend/wwwroot/set-docker-env-variables.sh /usr/share/nginx/html/
+# Set the execution permission
+RUN chmod +x /usr/share/nginx/html/set-docker-env-variables.sh
 
 # Execute the script on container startup
 EXPOSE 80
-# CMD /usr/share/nginx/html/set-docker-env-variables.sh && nginx -g "daemon off;"
-CMD nginx -g "daemon off;"
+CMD /usr/share/nginx/html/set-docker-env-variables.sh && nginx -g "daemon off;"
+# CMD nginx -g "daemon off;"

@@ -49,16 +49,14 @@ builder.Services.AddScoped<AuthenticationStateProvider, CookieAccountManagement>
 builder.Services.AddScoped(
     sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
 
-// Configure client for auth/backend interactions
+Uri uri;
 #if DEBUG
-var uri = new Uri("https://localhost:7148");
+Uri.TryCreate("https://localhost:7148", UriKind.RelativeOrAbsolute, out uri);
 #else
-var uri = new Uri(builder.Configuration["ApiUrl"]);
+Uri.TryCreate(builder.Configuration["ApiUrl"], UriKind.RelativeOrAbsolute, out uri);
 #endif
 
-if (string.IsNullOrWhiteSpace(uri.OriginalString))
-    throw new InvalidOperationException($"Backend url is not set, uri = '${uri.OriginalString}'");
-
+// Configure client for auth/backend interactions
 builder.Services.AddHttpClient(
     "BackendClient",
     client => client.BaseAddress = uri)

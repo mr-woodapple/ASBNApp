@@ -47,24 +47,18 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 // Configuring CORS (only for local development)
+#if DEBUG
+var allowedOrigin = "https://localhost:5227";
+#else 
+var allowedOrigin = builder.Configuration.GetValue<string>("FrontendUrl");
+#endif
+Console.WriteLine("Allowed CORS origin: " + allowedOrigin);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowASBNAppFrontend", policy =>
     {
-        var configuredOrigins = (builder.Configuration.GetValue<string>("FrontendUrl") ?? string.Empty)
-            .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-        if (configuredOrigins.Length > 0)
-        {
-            policy.WithOrigins(configuredOrigins)
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-            return;
-        }
-
         // Local fallback when no environment value is provided.
-        policy.WithOrigins("https://localhost:5227", "http://localhost:7133")
+        policy.WithOrigins(allowedOrigin)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
