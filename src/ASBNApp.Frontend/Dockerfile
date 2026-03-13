@@ -11,20 +11,16 @@ RUN dotnet restore "src/ASBNApp.Frontend/ASBNApp.Frontend.csproj"
 COPY src/ASBNApp.Frontend/ src/ASBNApp.Frontend/
 COPY src/ASBNApp.Models/ src/ASBNApp.Models/
 
-RUN dotnet publish "src/ASBNApp.Frontend/ASBNApp.Frontend.csproj" -c Release -o /app/out
+RUN dotnet publish "src/ASBNApp.Frontend/ASBNApp.Frontend.csproj" -c Release -o /app
 
 # Serve the published application with Nginx
 FROM nginx:stable-alpine
 WORKDIR /usr/share/nginx/html
 
-# Remove the default Nginx index.html and error pages
-RUN rm -rf ./*
-
 # Copy the published Blazor files from the build stage
 # Copy a custom Nginx configuration to handle Blazor routing (essential!)
-COPY --from=build /app/out/wwwroot .
+COPY --from=build /app/wwwroot /usr/share/nginx/html/
 COPY src/ASBNApp.Frontend/nginx.conf /etc/nginx/templates/default.conf.template
-
 
 # Run custom script to set appsettings.json from docker envs
 # Copy the shell script
