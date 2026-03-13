@@ -11,8 +11,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  FE_IMAGE_NAME: ASBNApp.Frontend
-  BE_IMAGE_NAME: ABSNApp.DataApi
+  FE_IMAGE_NAME: asbnapp-frontend
+  BE_IMAGE_NAME: asbnapp-backend
 
 
 jobs:
