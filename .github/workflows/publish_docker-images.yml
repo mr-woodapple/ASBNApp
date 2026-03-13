@@ -41,9 +41,10 @@ jobs:
         # id: push
         uses: docker/build-push-action@v6
         with:
-          context: ./src/ASBNApp.Frontend
+          context: .
+          file: ./src/ASBNApp.Frontend/Dockerfile
           push: true
-          tags: user/app:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:pr-${{ github.event.number }}
           labels: version xy
 
       # Add attestation
@@ -52,9 +53,10 @@ jobs:
         # id: push
         uses: docker/build-push-action@v6
         with:
-          context: ./src/ASBNApp.DataAPI
+          context: .
+          file: ./src/ASBNApp.DataAPI/Dockerfile
           push: true
-          tags: user/app:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:pr-${{ github.event.number }}
           labels: testlabel
 
       # Add attestation
