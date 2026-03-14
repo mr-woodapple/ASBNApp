@@ -84,7 +84,7 @@ public class ASBNDataService : IASBNDataService
 
             return odata.value;
         }
-        catch (Exception ex)
+        catch
         {
             return new List<Entry>();
         }
