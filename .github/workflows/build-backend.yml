@@ -1,6 +1,5 @@
 
-# This workflow will build a .NET Core app when a a PR to main is openend, 
-# synchronized or reopened.
+# Reusable workflow to build the DataAPI project.
 name: ASBNApp DataAPI Build
 
 env:
@@ -8,9 +7,7 @@ env:
   DOTNET_VERSION: '9'             # set this to the .NET Core version to use
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ "main" ]
+  workflow_call:
 
 permissions:
   contents: read

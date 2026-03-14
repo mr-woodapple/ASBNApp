@@ -1,51 +1,17 @@
 # On creating a new release, publish new container images for front and backend.
 
-name: Publish DEV Docker Images
+name: Publish new Release
 
 on:
   release:
     types: [published]
 
-env:
-  REGISTRY: ghcr.io
-  FE_IMAGE_NAME: asbnapp-frontend
-  BE_IMAGE_NAME: asbnapp-backend
-
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Push Frontend Image
-        id: push-frontend
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: ./src/ASBNApp.Frontend/Dockerfile
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:release, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.FE_IMAGE_NAME }}:${{ github.event.release.tag_name }}
-
-      - name: Build and Push DataAPI image
-        id: push-backend
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: ./src/ASBNApp.DataAPI/Dockerfile
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:release, ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.BE_IMAGE_NAME }}:${{ github.event.release.tag_name }}
+  publish-release-images:
+    name: Publish Release Images
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      stage: release
+      version: ${{ github.event.release.tag_name }}
+    secrets: inherit
           

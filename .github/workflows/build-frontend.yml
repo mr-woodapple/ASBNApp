@@ -1,11 +1,8 @@
-# This workflow will build a blazor web application when a PR to main is openend, 
-# synchronized or reopened.
+# Reusable workflow to build the Blazor frontend project.
 name: ASBNApp Frontend Build
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [ 'main' ]
+  workflow_call:
 
 # Environment variables available to all jobs and steps in this workflow
 env:

@@ -1,3 +1,4 @@
+# Complete docker compose with actual build steps (useful for developing)
 services:
   asbnapp-frontend:
     container_name: ASBNApp.Frontend
@@ -39,3 +40,4 @@ services:
   
 volumes:
   sqlData: 
+  
