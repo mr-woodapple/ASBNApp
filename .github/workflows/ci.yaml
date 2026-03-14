@@ -5,10 +5,6 @@ on:
     types: [opened, synchronize, reopened]
     branches: ["main"]
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   build-dataapi:
     name: Build DataAPI
@@ -19,7 +15,7 @@ jobs:
     uses: ./.github/workflows/build-frontend.yml
 
   publish-dev-images:
-    name: Publish Dev Images
+    name: Publish Docker Dev Images
     needs: [build-dataapi, build-frontend]
     uses: ./.github/workflows/publish-docker.yml
     with:

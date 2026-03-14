@@ -4,7 +4,7 @@ name: ASBNApp DataAPI Build
 
 env:
   APP_LOCATION: './src/ASBNApp.DataAPI/' 
-  DOTNET_VERSION: '9'             # set this to the .NET Core version to use
+  DOTNET_VERSION: '10'
 
 on:
   workflow_call:

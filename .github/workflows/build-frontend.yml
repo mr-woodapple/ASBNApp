@@ -4,10 +4,9 @@ name: ASBNApp Frontend Build
 on:
   workflow_call:
 
-# Environment variables available to all jobs and steps in this workflow
 env:
-  APP_LOCATION: './src/ASBNApp.Frontend/'  # location of your client code
-  DOTNET_VERSION: '9'                      # set this to the .NET Core version to use
+  APP_LOCATION: './src/ASBNApp.Frontend/'
+  DOTNET_VERSION: '10'
 
 permissions:
   contents: read

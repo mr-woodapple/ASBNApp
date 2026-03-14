@@ -8,7 +8,7 @@ on:
 
 jobs:
   publish-release-images:
-    name: Publish Release Images
+    name: Publish Docker Release Images
     uses: ./.github/workflows/publish-docker.yml
     with:
       stage: release
