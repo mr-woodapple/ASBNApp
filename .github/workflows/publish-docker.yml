@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Assemble tags (for PRs it's :dev and :pr-<pull-request-number>)
       - name: Compose image tags
