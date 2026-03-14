@@ -1,10 +1,15 @@
 # On creating a new release, publish new container images for front and backend.
-
 name: Publish new Release
 
 on:
   release:
     types: [published]
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
 
 jobs:
   publish-release-images:

@@ -5,6 +5,12 @@ on:
     types: [opened, synchronize, reopened]
     branches: ["main"]
 
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
 jobs:
   build-dataapi:
     name: Build DataAPI
