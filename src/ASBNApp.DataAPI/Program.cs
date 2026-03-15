@@ -3,6 +3,7 @@ using ASBNApp.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi;
@@ -103,12 +104,26 @@ app.MapIdentityApi<User>();
 app.MapControllers();
 
 // Apply migrations automatically on startup
-using (var scope = app.Services.CreateScope())
+// Simple retry logic for Docker startups
+for (int i = 0; i < 5; i++)
 {
-    Console.WriteLine("Applying migrations...");
-    Console.WriteLine($"Connection string used: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
-    var db = scope.ServiceProvider.GetRequiredService<ASBNAppContext>();
-    db.Database.Migrate();
+	try
+	{
+		using (var scope = app.Services.CreateScope())
+		{
+			Console.WriteLine("Applying migrations...");
+			Console.WriteLine($"Connection string used: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
+			var db = scope.ServiceProvider.GetRequiredService<ASBNAppContext>();
+			db.Database.Migrate();
+			Console.WriteLine("Migration successfully applied.");
+		}
+		break; // Success!
+	}
+	catch (SqlException)
+	{
+		if (i == 4) throw;
+		Thread.Sleep(5000); // Wait 5 seconds and try again
+	}
 }
 
 app.Run();
