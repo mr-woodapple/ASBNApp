@@ -50,7 +50,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Configuring CORS (only for local development)
 #if DEBUG
 var allowedOrigin = "https://localhost:5227";
-#else 
+#else
 var allowedOrigin = builder.Configuration.GetValue<string>("FrontendUrl");
 #endif
 Console.WriteLine("Allowed CORS origin: " + allowedOrigin);
