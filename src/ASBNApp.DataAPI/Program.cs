@@ -105,25 +105,53 @@ app.MapControllers();
 
 // Apply migrations automatically on startup
 // Simple retry logic for Docker startups
-for (int i = 0; i < 5; i++)
+
+// Refined logic to handle the "Already Exists" race condition
+for (int i = 0; i < 10; i++)
 {
 	try
 	{
-		using (var scope = app.Services.CreateScope())
-		{
-			Console.WriteLine("Applying migrations...");
-			Console.WriteLine($"Connection string used: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
-			var db = scope.ServiceProvider.GetRequiredService<ASBNAppContext>();
-			db.Database.Migrate();
-			Console.WriteLine("Migration successfully applied.");
-		}
-		break; // Success!
+		using var scope = app.Services.CreateScope();
+		var db = scope.ServiceProvider.GetRequiredService<ASBNAppContext>();
+
+		Console.WriteLine("Applying migrations...");
+		db.Database.Migrate();
+
+		Console.WriteLine("Migration successfully applied.");
+		break;
 	}
-	catch (SqlException)
+	catch (SqlException ex) when (ex.Number == 1801) // 1801 = Database already exists
 	{
-		if (i == 4) throw;
-		Thread.Sleep(5000); // Wait 5 seconds and try again
+		Console.WriteLine("DB already exists but isn't ready yet. Retrying...");
+		Thread.Sleep(2000);
+	}
+	catch (Exception ex)
+	{
+		Console.WriteLine($"Migration failed: {ex.Message}. Retrying in 5s...");
+		Thread.Sleep(5000);
 	}
 }
+
+
+//for (int i = 0; i < 5; i++)
+//{
+//	try
+//	{
+//		using (var scope = app.Services.CreateScope())
+//		{
+//			Console.WriteLine("Applying migrations...");
+//			Console.WriteLine($"Connection string used: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
+//			var db = scope.ServiceProvider.GetRequiredService<ASBNAppContext>();
+//			db.Database.Migrate();
+//			Console.WriteLine("Migration successfully applied.");
+//		}
+//		break; // Success!
+//	}
+//	catch (SqlException)
+//	{
+//		if (i == 4) throw;
+//		Thread.Sleep(5000); // Wait 5 seconds and try again
+//	}
+//}
 
 app.Run();
