@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi;
 using System.Reflection;
+using static System.Net.WebRequestMethods;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,22 +50,19 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 // Configuring CORS (only for local development)
 #if DEBUG
-var allowedOrigin = "https://localhost:5227";
-#else
-var allowedOrigin = builder.Configuration.GetValue<string>("FrontendUrl");
-#endif
-Console.WriteLine("Allowed CORS origin: " + allowedOrigin);
+Console.WriteLine("Allowed CORS origin: https://localhost:5227");
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowASBNAppFrontend", policy =>
     {
         // Local fallback when no environment value is provided.
-        policy.WithOrigins(allowedOrigin)
-            .AllowAnyHeader()
+        policy.WithOrigins("https://localhost:5227")
+			.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
 });
+#endif
 
 // Log http details (headers)
 builder.Services.AddHttpLogging(options =>
@@ -104,8 +102,6 @@ app.MapIdentityApi<User>();
 app.MapControllers();
 
 // Apply migrations automatically on startup
-// Simple retry logic for Docker startups
-
 // Refined logic to handle the "Already Exists" race condition
 for (int i = 0; i < 10; i++)
 {
@@ -131,27 +127,5 @@ for (int i = 0; i < 10; i++)
 		Thread.Sleep(5000);
 	}
 }
-
-
-//for (int i = 0; i < 5; i++)
-//{
-//	try
-//	{
-//		using (var scope = app.Services.CreateScope())
-//		{
-//			Console.WriteLine("Applying migrations...");
-//			Console.WriteLine($"Connection string used: {builder.Configuration.GetConnectionString("DatabaseConnection")}");
-//			var db = scope.ServiceProvider.GetRequiredService<ASBNAppContext>();
-//			db.Database.Migrate();
-//			Console.WriteLine("Migration successfully applied.");
-//		}
-//		break; // Success!
-//	}
-//	catch (SqlException)
-//	{
-//		if (i == 4) throw;
-//		Thread.Sleep(5000); // Wait 5 seconds and try again
-//	}
-//}
 
 app.Run();
