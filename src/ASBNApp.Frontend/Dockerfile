@@ -20,7 +20,7 @@ WORKDIR /usr/share/nginx/html
 # Copy the published Blazor files from the build stage
 # Copy a custom Nginx configuration to handle Blazor routing (essential!)
 COPY --from=build /app/wwwroot /usr/share/nginx/html/
-COPY src/ASBNApp.Frontend/nginx.conf /etc/nginx/templates/default.conf.template
+COPY src/ASBNApp.Frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Run custom script to set appsettings.json from docker envs
 # Copy the shell script
