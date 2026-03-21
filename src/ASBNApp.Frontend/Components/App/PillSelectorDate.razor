@@ -5,7 +5,7 @@
 <MudItem xs="12" md="@(SelectedChip != "customdate" ? 12 : 6)">
     <MudText Typo="Typo.body2">I'm writing a log for...</MudText>
 
-    <MudChipSet T="string" @bind-SelectedValue="SelectedChip" Variant="Variant.Text" Filter Mandatory>
+    <MudChipSet T="string" @bind-SelectedValue="SelectedChip" Variant="Variant.Text">
         <MudChip Text="today" Color="Color.Primary" Default="true"
                  @onclick="@(e => { date = DateTime.Now.Date; })">
             Today (@Today.Date.ToString("dd.MM.yyyy"))

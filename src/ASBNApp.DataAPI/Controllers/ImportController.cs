@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASBNApp.DataAPI.Controllers;
 
+/// <summary>
+/// Dedicated controller handling importing data into the database.
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("[controller]")]
