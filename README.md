@@ -17,10 +17,9 @@ services:
     container_name: ASBNApp.Frontend
     image: ghcr.io/mr-woodapple/asbnapp-frontend:release
     environment:
-      ApiUrl: ${FE_APIURL}
-      API_PROXY_PASS_URL: ${FE_API_PROXY_PASS_URL:-http://asbnapp-api:8080/api/}
+      ApiUrl: ${FRONTEND_URL}
     ports:
-      - "7133:80" 
+      - "7133:80"
     depends_on:
       - asbnapp-api # Ensures the API starts before the frontend tries to call it
     restart: unless-stopped
@@ -30,9 +29,7 @@ services:
     image: ghcr.io/mr-woodapple/asbnapp-backend:release
     environment:
       ConnectionStrings__DatabaseConnection: ${API_CONNECTIONSTRING}
-      FrontendUrl: ${API_FRONTEND_URL}
-    ports:
-      - "7132:8080"
+      FrontendUrl: ${FRONTEND_URL}
     depends_on:
       - sql-server # Ensures the database starts before the API
     restart: unless-stopped
@@ -46,9 +43,10 @@ services:
     volumes:
       - sqlData:/var/opt/mssql
     restart: unless-stopped
-  
+
 volumes:
-  sqlData: 
+  sqlData:
+
 ```
 
 Then, create a `.env` file on your machine with the following entries:
@@ -58,11 +56,8 @@ Then, create a `.env` file on your machine with the following entries:
 API_CONNECTIONSTRING=Server=sql-server,1433;Database=asbnapp-sql-database;User=sa;Password=<replace-with-super-secure-password>;Encrypt=False;TrustServerCertificate=True;
 DB_SA_PASSWORD=<replace-with-super-secure-password>
 
-# Backend url to be used by the frontend
-FE_APIURL=http://<replace-with-your-ip-or-domain>:7132
-
-# Frontend url, used for CORS
-API_FRONTEND_URL=http://<replace-with-your-ip-or-domain>:7133
+# Frontend url, under which you're accessing the app
+FRONTEND_URL=https://<replace-with-your-ip-or-domain>:7133
 ```
 
 Once you have these in place, you can spin up the app like so:
