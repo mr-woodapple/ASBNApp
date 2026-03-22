@@ -23,7 +23,7 @@
                 </MudAlert>
             </Match>
             <NotMatch>
-                <MudChipSet T="WorkLocation" @bind-SelectedValue="SelectedLocation" Variant="Variant.Text" Mandatory>
+                <MudChipSet T="WorkLocation" @bind-SelectedValue="SelectedLocation" Variant="Variant.Text">
                     <Iterations Items="WorkLocationHours">
                         <MudChip Value="@context" Color="Color.Primary" Text="@context.LocationName"
                                  @onclick="@(e => SelectedLocationChanged.InvokeAsync(SelectedLocation))" />

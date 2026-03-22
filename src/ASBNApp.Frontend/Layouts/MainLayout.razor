@@ -6,7 +6,7 @@
 @inject NavigationManager NavigationManager;
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MudThemeProvider @ref="_mudThemeProvider" IsDarkMode="LayoutService.IsDarkMode" Theme="LayoutService.mudTheme" ObserveSystemThemeChange="LayoutService.ObserveSystemThemeChange" />
+<MudThemeProvider @ref="_mudThemeProvider" Theme="@LayoutService.CurrentTheme" ObserveSystemDarkModeChange="@LayoutService.ObserveSystemDarkModeChange" IsDarkMode="@LayoutService.IsDarkMode" IsDarkModeChanged="@((dark) => LayoutService.UpdateDarkModeState(dark))" />
 <MudPopoverProvider />
 <MudDialogProvider/>
 <MudSnackbarProvider/>
@@ -73,7 +73,7 @@
         if (firstRender)
         {
             await ApplyUserPreferences();
-            await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+            await _mudThemeProvider.WatchSystemDarkModeAsync(LayoutService.OnSystemModeChangedAsync);
             StateHasChanged();
         }
     }
@@ -83,14 +83,11 @@
     /// </summary>
     private async Task ApplyUserPreferences()
     {
-        var defaultDarkMode = await _mudThemeProvider.GetSystemPreference();
+        var defaultDarkMode = await _mudThemeProvider.GetSystemDarkModeAsync();
         await LayoutService.ApplyUserPreferences(defaultDarkMode);
     }
 
-    private async Task OnSystemPreferenceChanged(bool newValue)
-    {
-        await LayoutService.OnSystemPreferenceChanged(newValue);
-    }
+    // private async Task OnSystemPreferenceChanged(bool newValue) => await LayoutService.OnSystemPreferenceChanged(newValue);
 
     /// <summary>
     /// Cleans up event handlers when the component is disposed.

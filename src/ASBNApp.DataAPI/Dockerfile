@@ -16,5 +16,6 @@ RUN dotnet publish "src/ASBNApp.DataAPI/ASBNApp.DataAPI.csproj" -c Release -o /a
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app/out .
+ENV ASPNETCORE_URLS=http://*:8080
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "ASBNApp.DataAPI.dll"]

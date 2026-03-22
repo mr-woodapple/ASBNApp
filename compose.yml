@@ -1,3 +1,4 @@
+# Complete docker compose with actual build steps (useful for developing)
 services:
   asbnapp-frontend:
     container_name: ASBNApp.Frontend
@@ -8,6 +9,7 @@ services:
       - "7133:80" 
     environment:
       ApiUrl: ${FE_APIURL}
+      API_PROXY_PASS_URL: ${FE_API_PROXY_PASS_URL:-http://asbnapp-api:8080/api/}
     depends_on:
       - asbnapp-api # Ensures the API starts before the frontend tries to call it
     restart: unless-stopped
@@ -23,8 +25,9 @@ services:
       - "7132:8080"
     environment:
       ConnectionStrings__DatabaseConnection: ${API_CONNECTIONSTRING}
+      FrontendUrl: ${API_FRONTEND_URL}
     restart: unless-stopped
-
+      
   sql-server:
     container_name: ASBNApp.SqlServer
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -37,3 +40,4 @@ services:
   
 volumes:
   sqlData: 
+  

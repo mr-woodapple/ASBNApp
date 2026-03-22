@@ -78,11 +78,11 @@
             // Add new entry & clear inputs
             workLocationHours.Add(newLocation);
 
-            NewLocationTextField.Clear();
+            await NewLocationTextField.ClearAsync();
             _newSuggestedHours = null;
 
             // Update parent component
-            WorkLocationHoursChanged.InvokeAsync(workLocationHours);
+            await WorkLocationHoursChanged.InvokeAsync(workLocationHours);
             Snackbar.Add("Success! Location created.", Severity.Success);
         }
     }
@@ -97,7 +97,7 @@
                 throw new Exception($"Failed to delete location '{location.LocationName}'.");
             }
             workLocationHours.Remove(location);
-            WorkLocationHoursChanged.InvokeAsync(workLocationHours);
+            await WorkLocationHoursChanged.InvokeAsync(workLocationHours);
 
             Snackbar.Add("Success! Location deleted.", Severity.Success);
         }

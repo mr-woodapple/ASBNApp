@@ -11,7 +11,13 @@ namespace ASBNApp.Frontend.Services
 	/// <summary>
 	/// Handles cookie-based authentication and provides information about the auth state.
 	/// </summary>
-	public class CookieAccountManagement : AuthenticationStateProvider, IAccountManagement
+	/// <remarks>
+	/// Create a new instance of the auth provider.
+	/// </remarks>
+	/// <param name="httpClientFactory">Factory to retrieve auth client.</param>
+	public class CookieAccountManagement(
+		IHttpClientFactory httpClientFactory, 
+		ILogger<CookieAccountManagement> logger) : AuthenticationStateProvider, IAccountManagement
 	{
 		/// <summary>
 		/// Map the JavaScript-formatted properties to C#-formatted classes.
@@ -27,26 +33,12 @@ namespace ASBNApp.Frontend.Services
 		/// <summary>
 		/// Default principal for anonymous (not authenticated) users.
 		/// </summary>
-		private readonly ClaimsPrincipal Unauthenticated =
-			new(new ClaimsIdentity());
+		private readonly ClaimsPrincipal Unauthenticated = new(new ClaimsIdentity());
 
 		/// <summary>
 		/// Special auth client.
 		/// </summary>
-		private readonly HttpClient _httpClient;
-
-		private readonly IConfiguration _config;
-
-		/// <summary>
-		/// Create a new instance of the auth provider.
-		/// </summary>
-		/// <param name="httpClientFactory">Factory to retrieve auth client.</param>
-		public CookieAccountManagement(IHttpClientFactory httpClientFactory, IConfiguration config)
-		{
-			_httpClient = httpClientFactory.CreateClient("BackendClient");
-			_config = config;
-		}
-
+		private readonly HttpClient _httpClient = httpClientFactory.CreateClient("BackendClient");
 
 		/// <summary>
 		/// Handle registering the user with the api.
@@ -75,7 +67,7 @@ namespace ASBNApp.Frontend.Services
 
 			if (response.IsSuccessStatusCode)
 			{
-				// need to refresh auth state
+				// Need to refresh auth state
 				NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 			}
 
@@ -105,36 +97,36 @@ namespace ASBNApp.Frontend.Services
 
 			try
 			{
-				var infoURL = String.Concat(_config.GetValue<string>("ApiUrl"), "/api/manage/info");
-				var userResponse = await _httpClient.GetAsync(infoURL);
+				var userResponse = await _httpClient.GetAsync("/api/manage/info");
 				userResponse.EnsureSuccessStatusCode();
 
-				// user is authenticated,so let's build their authenticated identity
+				// User is authenticated,so let's build their authenticated identity
 				var userJson = await userResponse.Content.ReadAsStringAsync();
 				var userInfo = JsonSerializer.Deserialize<UserInfo>(userJson, jsonSerializerOptions);
 
 				if (userInfo != null)
 				{
-					// create the user object:
+					// Create the user object:
 					var claims = new List<Claim>
 					{
 						new(ClaimTypes.Name, userInfo.Email),
 						new(ClaimTypes.Email, userInfo.Email)
 					};
 
-					// add any additional claims
+					// Add any additional claims
 					claims.AddRange(
 						userInfo.Claims.Where(c => c.Key != ClaimTypes.Name && c.Key != ClaimTypes.Email)
 							.Select(c => new Claim(c.Key, c.Value)));
-
-					// If we need roles, these could be added to the claim here.
 
 					var id = new ClaimsIdentity(claims, nameof(CookieAccountManagement));
 					user = new ClaimsPrincipal(id);
 					_authenticated = true;
 				}
 			}
-			catch { }
+			catch 
+			{
+				logger.LogError("Failed retrieving user authentication state. User is not logged in.");
+			}
 			
 			return new AuthenticationState(user);
 		}

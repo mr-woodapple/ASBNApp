@@ -47,24 +47,25 @@ builder.Services.AddScoped<AuthenticationStateProvider, CookieAccountManagement>
 
 // Register the account management interface
 builder.Services.AddScoped(
-	sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
+    sp => (IAccountManagement)sp.GetRequiredService<AuthenticationStateProvider>());
 
-// Configure client for auth/backend interactions
+Uri uri;
 #if DEBUG
-var uri = new Uri("https://localhost:7148");
+Uri.TryCreate("https://localhost:7148", UriKind.RelativeOrAbsolute, out uri);
 #else
-var uri = new Uri(builder.Configuration["ApiUrl"]);
+Uri.TryCreate(builder.Configuration["ApiUrl"], UriKind.RelativeOrAbsolute, out uri);
 #endif
 
+// Configure client for auth/backend interactions
 builder.Services.AddHttpClient(
-	"BackendClient",
-	client => client.BaseAddress = uri)
-	.AddHttpMessageHandler<CookieHandler>();
+    "BackendClient",
+    client => client.BaseAddress = uri)
+    .AddHttpMessageHandler<CookieHandler>();
 
 // Configure frontend client
 builder.Services.AddHttpClient(
-	"FrontendClient",
-	client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+    "FrontendClient",
+    client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 // Add Logger
 builder.Services.AddLogging();

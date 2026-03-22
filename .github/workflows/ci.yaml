@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: ["main"]
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  build-dataapi:
+    name: Build DataAPI
+    uses: ./.github/workflows/build-backend.yml
+
+  build-frontend:
+    name: Build Frontend
+    uses: ./.github/workflows/build-frontend.yml
+
+  publish-dev-images:
+    name: Publish Docker Dev Images
+    needs: [build-dataapi, build-frontend]
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      stage: dev
+    secrets: inherit

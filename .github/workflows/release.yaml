@@ -1,0 +1,22 @@
+# On creating a new release, publish new container images for front and backend.
+name: Publish new Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  publish-release-images:
+    name: Publish Docker Release Images
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      stage: release
+      version: ${{ github.event.release.tag_name }}
+    secrets: inherit
+          

@@ -1,0 +1,31 @@
+# Reusable workflow to build the Blazor frontend project.
+name: ASBNApp Frontend Build
+
+on:
+  workflow_call:
+
+env:
+  APP_LOCATION: './src/ASBNApp.Frontend/'
+  DOTNET_VERSION: '10'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Blazor WASM website
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.APP_LOCATION }}
+
+      - name: Build
+        run: dotnet build ${{ env.APP_LOCATION }} -c Release --no-restore

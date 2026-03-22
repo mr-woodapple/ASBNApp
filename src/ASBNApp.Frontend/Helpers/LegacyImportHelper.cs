@@ -65,7 +65,9 @@ public static class LegacyImportHelper
         {
             foreach (var locationNode in workLocationsNode)
             {
-                var location = locationNode.Value.Deserialize<LegacyWorkLocation>();
+#pragma warning disable CS0618 // Hiding obsolete warning, as we need to use the legacy model for deserialization here.
+				var location = locationNode.Value.Deserialize<LegacyWorkLocation>();
+#pragma warning restore CS0618
 				if (location != null)
                 {
                     workLocations.Add(new WorkLocation
@@ -96,8 +98,10 @@ public static class LegacyImportHelper
                         {
                             foreach (var entryNode in entriesNode) // Iterate over individual entries
                             {
-                                var entry = entryNode.Value?.Deserialize<LegacyEntry>();
-                                if (entry != null)
+#pragma warning disable CS0618 // Hiding obsolete warning, as we need to use the legacy model for deserialization here.
+								var entry = entryNode.Value?.Deserialize<LegacyEntry>();
+#pragma warning restore CS0618 
+								if (entry != null)
                                 {
                                     loggedData.Add(new Entry
                                     {
