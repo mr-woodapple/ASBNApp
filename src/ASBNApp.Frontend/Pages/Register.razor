@@ -2,6 +2,7 @@
 
 @inject IAccountManagement Acct
 @inject NavigationManager navigationManager;
+@inject IConfiguration Configuration;
 
 @using System.Text.Json;
 @using ASBNApp.Frontend.Interfaces;
@@ -73,11 +74,22 @@
 
 	// Handle errors from the API
 	List<string>? ValidationErrors { get; set; } = new();
+	private bool AllowRegistration => Configuration.GetValue<bool>("Features:AllowRegistration", true);
 
 	// Variables for the password input
 	private bool _isVisible;
 	private InputType _passwordInputType = InputType.Password;
 	private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+	protected override Task OnInitializedAsync()
+	{
+		if (!AllowRegistration)
+		{
+			navigationManager.NavigateTo("/login", true);
+		}
+
+		return Task.CompletedTask;
+	}
 
 	/// <summary>
 	/// Toggle the password input between hidden and visibile
@@ -109,6 +121,7 @@
 		if (form.IsValid)
 		{
 			_isRegistering = true;
+			ValidationErrors.Clear();
 
 			var data = new UserAccount()
 				{
@@ -122,11 +135,25 @@
 			// Show validation errors from the backend in a list
 			if (!response.IsSuccessStatusCode)
 			{
-				var registerAccountResponse = JsonSerializer.Deserialize<RegisterAccountBadRequest>(jsonResponse);
-
-				foreach(var error in registerAccountResponse.errors)
+				if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
 				{
-					ValidationErrors.Add(error.Value[0]);
+					ValidationErrors.Add("Registration is currently disabled.");
+				}
+				else
+				{
+					var registerAccountResponse = JsonSerializer.Deserialize<RegisterAccountBadRequest>(jsonResponse);
+
+					if (registerAccountResponse?.errors != null)
+					{
+						foreach (var error in registerAccountResponse.errors)
+						{
+							ValidationErrors.Add(error.Value[0]);
+						}
+					}
+					else
+					{
+						ValidationErrors.Add("Registration failed. Please try again.");
+					}
 				}
 
 				_isRegistering = false;

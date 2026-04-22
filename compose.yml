@@ -9,6 +9,7 @@ services:
       - "7133:80" 
     environment:
       ApiUrl: ${FE_APIURL}
+      AllowRegistration: ${FE_ALLOW_REGISTRATION:-true}
       API_PROXY_PASS_URL: ${FE_API_PROXY_PASS_URL:-http://asbnapp-api:8080/api/}
     depends_on:
       - asbnapp-api # Ensures the API starts before the frontend tries to call it
@@ -26,6 +27,7 @@ services:
     environment:
       ConnectionStrings__DatabaseConnection: ${API_CONNECTIONSTRING}
       FrontendUrl: ${API_FRONTEND_URL}
+      Authentication__AllowRegistration: ${API_ALLOW_REGISTRATION:-true}
     restart: unless-stopped
       
   sql-server:

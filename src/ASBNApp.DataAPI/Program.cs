@@ -84,6 +84,7 @@ builder.Services.AddDbContext<ASBNAppContext>(
 
 // Finalizing
 var app = builder.Build();
+var allowRegistration = builder.Configuration.GetValue<bool>("Authentication:AllowRegistration", true);
 
 
 if (app.Environment.IsDevelopment())
@@ -93,6 +94,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UsePathBase(new PathString("/api"));
+
+app.Use(async (context, next) =>
+{
+    if (!allowRegistration && HttpMethods.IsPost(context.Request.Method) && context.Request.Path.Equals("/register", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return;
+    }
+
+    await next();
+});
+
 app.UseCors("AllowASBNAppFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
