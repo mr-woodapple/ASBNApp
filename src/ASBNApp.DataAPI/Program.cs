@@ -1,4 +1,5 @@
 using ASBNApp.DataAPI.Context;
+using ASBNApp.DataAPI.Extensions;
 using ASBNApp.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +22,7 @@ builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<ASBNAppContext>()
     .AddApiEndpoints();
 
-// Add various services (Swagger & Application Insights)
+// Add Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -84,8 +85,6 @@ builder.Services.AddDbContext<ASBNAppContext>(
 
 // Finalizing
 var app = builder.Build();
-var allowRegistration = builder.Configuration.GetValue<bool>("Authentication:AllowRegistration", true);
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -94,19 +93,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UsePathBase(new PathString("/api"));
-
-app.Use(async (context, next) =>
-{
-    if (!allowRegistration && HttpMethods.IsPost(context.Request.Method) && context.Request.Path.Equals("/register", StringComparison.OrdinalIgnoreCase))
-    {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
-        return;
-    }
-
-    await next();
-});
-
 app.UseCors("AllowASBNAppFrontend");
+app.UseRegistrationGuard(builder.Configuration);
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapIdentityApi<User>();
