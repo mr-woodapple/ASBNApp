@@ -62,7 +62,7 @@ DB_SA_PASSWORD=<replace-with-super-secure-password>
 FRONTEND_URL=https://<replace-with-your-ip-or-domain>:7133
 
 # Optional feature flag, disabling new registrations
-# ALLOW_REGISTRATION="false"
+# ALLOW_REGISTRATION=false
 ```
 
 Once you have these in place, you can spin up the app like so:
