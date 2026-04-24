@@ -74,7 +74,7 @@
 
 	// Handle errors from the API
 	List<string>? ValidationErrors { get; set; } = new();
-	private bool AllowRegistration => Configuration.GetValue<bool>("Features:AllowRegistration", true);
+	private bool AllowRegistration => Configuration.GetValue<bool>("FeatureFlags:AllowRegistration", true);
 
 	// Variables for the password input
 	private bool _isVisible;

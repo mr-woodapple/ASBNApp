@@ -104,5 +104,5 @@
 </MudContainer>
 
 @code {
-    private bool AllowRegistration => Configuration.GetValue<bool>("Features:AllowRegistration", true);
+    private bool AllowRegistration => Configuration.GetValue<bool>("FeatureFlags:AllowRegistration", true);
 }
