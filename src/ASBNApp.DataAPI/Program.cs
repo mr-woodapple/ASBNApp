@@ -1,4 +1,5 @@
 using ASBNApp.DataAPI.Context;
+using ASBNApp.DataAPI.Extensions;
 using ASBNApp.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +22,7 @@ builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<ASBNAppContext>()
     .AddApiEndpoints();
 
-// Add various services (Swagger & Application Insights)
+// Add Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -85,7 +86,6 @@ builder.Services.AddDbContext<ASBNAppContext>(
 // Finalizing
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -94,6 +94,8 @@ if (app.Environment.IsDevelopment())
 
 app.UsePathBase(new PathString("/api"));
 app.UseCors("AllowASBNAppFrontend");
+app.UseRegistrationGuard(builder.Configuration);
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapIdentityApi<User>();

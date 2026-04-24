@@ -17,6 +17,7 @@ services:
     container_name: ASBNApp.Frontend
     image: ghcr.io/mr-woodapple/asbnapp-frontend:release
     environment:
+      FeatureFlags__AllowRegistration: ${ALLOW_REGISTRATION:-true}
       ApiUrl: ${FRONTEND_URL}
     ports:
       - "7133:80"
@@ -28,6 +29,7 @@ services:
     container_name: ASBNApp.DataAPI
     image: ghcr.io/mr-woodapple/asbnapp-backend:release
     environment:
+      FeatureFlags__AllowRegistration: ${ALLOW_REGISTRATION:-true}
       ConnectionStrings__DatabaseConnection: ${API_CONNECTIONSTRING}
       FrontendUrl: ${FRONTEND_URL}
     depends_on:
@@ -58,6 +60,9 @@ DB_SA_PASSWORD=<replace-with-super-secure-password>
 
 # Frontend url, under which you're accessing the app
 FRONTEND_URL=https://<replace-with-your-ip-or-domain>:7133
+
+# Optional feature flag, disabling new registrations
+# ALLOW_REGISTRATION=false
 ```
 
 Once you have these in place, you can spin up the app like so:

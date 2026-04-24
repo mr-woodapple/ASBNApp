@@ -7,6 +7,7 @@
 @* Keep the square brackets to add info where the log originated from *@
 @inject ILogger<NavBar> Logger;
 @inject IASBNDataService dataService;
+@inject IConfiguration Configuration;
 
 @*  Index view to show if the user isn't logged in. *@
 <PageTitle>Start</PageTitle>
@@ -22,7 +23,11 @@
             </MudText>
             <MudStack Row>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" href="/login">Login</MudButton>
-                <MudButton Variant="Variant.Text" Color="Color.Primary" href="/register">Sign up</MudButton>
+                <Condition Evaluation="AllowRegistration">
+                    <Match>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" href="/register">Sign up</MudButton>
+                    </Match>
+                </Condition>
             </MudStack>
         </MudStack>
     </MudItem>
@@ -97,3 +102,7 @@
         </MudGrid>
     </MudContainer>
 </MudContainer>
+
+@code {
+    private bool AllowRegistration => Configuration.GetValue<bool>("FeatureFlags:AllowRegistration", true);
+}

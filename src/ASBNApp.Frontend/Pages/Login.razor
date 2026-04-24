@@ -3,6 +3,7 @@
 @inject IAccountManagement AccountManagement;
 @inject NavigationManager NavigationManager;
 @inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject IConfiguration Configuration;
 
 @using ASBNApp.Frontend.Interfaces;
 @using ASBNApp.Frontend.Models;
@@ -53,10 +54,14 @@
 					</Condition>
 				</MudButton>
 
-				<MudStack Row Class="mt-5">
-					<MudText>Don't have an account yet?</MudText>
-					<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
-				</MudStack>
+				<Condition Evaluation="AllowRegistration">
+					<Match>
+						<MudStack Row Class="mt-5">
+							<MudText>Don't have an account yet?</MudText>
+							<MudLink Href="/register" Underline="Underline.Always">Create one now!</MudLink>
+						</MudStack>
+					</Match>
+				</Condition>
 			</MudPaper>
 		</MudContainer>
 	</NotAuthorized>
@@ -64,6 +69,8 @@
 
 
 @code {
+	private bool AllowRegistration => Configuration.GetValue<bool>("FeatureFlags:AllowRegistration", true);
+
 	public string EMailValue { get; set; }
 	public string PasswordValue { get; set; }
 
